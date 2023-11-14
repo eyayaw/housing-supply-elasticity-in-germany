@@ -1,0 +1,42 @@
+
+\begin{table}[H]
+\caption{\textbf{OLS Results: Housing Supply Elasticity Estimates}}
+\begin{center}
+\begin{footnotesize}
+\begin{threeparttable}
+\begin{tabular}{l c c c c}
+\toprule
+ & \multicolumn{1}{c}{Floorspace} & \multicolumn{1}{c}{Units} & \multicolumn{1}{c}{Permits} & \multicolumn{1}{c}{Completions} \\
+\cmidrule(lr){2-2} \cmidrule(lr){3-3} \cmidrule(lr){4-4} \cmidrule(lr){5-5}
+ & (1) & (2) & (3) & (4) \\
+\midrule
+$\Delta\ln{\text{P--single-family}}$ & $0.023^{*}$    & $0.014$        & $-0.129$       & $0.059$        \\
+                                     & $(0.013)$      & $(0.015)$      & $(0.147)$      & $(0.145)$      \\
+$\text{Developed}$                   & $0.062^{***}$  & $0.113^{***}$  & $-1.234^{***}$ & $-1.133^{***}$ \\
+                                     & $(0.015)$      & $(0.018)$      & $(0.197)$      & $(0.248)$      \\
+$\text{Unavail}$                     & $0.012$        & $0.032$        & $-0.689^{***}$ & $-0.400^{*}$   \\
+                                     & $(0.022)$      & $(0.024)$      & $(0.225)$      & $(0.206)$      \\
+$\text{Urban}$                       & $0.017^{***}$  & $0.014^{**}$   & $-0.282^{***}$ & $-0.156^{**}$  \\
+                                     & $(0.006)$      & $(0.006)$      & $(0.066)$      & $(0.073)$      \\
+$\text{West}$                        & $-0.024^{**}$  & $-0.038^{***}$ & $0.199^{**}$   & $0.103$        \\
+                                     & $(0.010)$      & $(0.010)$      & $(0.077)$      & $(0.097)$      \\
+$\ln{\text{Constr. costs}}$          & $-0.124^{***}$ & $-0.181^{***}$ & $-0.262$       & $-0.462$       \\
+                                     & $(0.021)$      & $(0.022)$      & $(0.225)$      & $(0.294)$      \\
+$\ln{\text{Constr. labor}}$          & $0.001$        & $-0.003$       & $0.428^{***}$  & $0.534^{***}$  \\
+                                     & $(0.010)$      & $(0.012)$      & $(0.123)$      & $(0.135)$      \\
+Constant                             & $-0.287$       & $-0.026$       & $6.232^{**}$   & $1.403$        \\
+                                     & $(0.286)$      & $(0.294)$      & $(3.011)$      & $(3.384)$      \\
+\midrule
+R$^2$                                & $0.301$        & $0.396$        & $0.379$        & $0.239$        \\
+Num. obs.                            & $401$          & $401$          & $401$          & $401$          \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\tiny{\item $^{***}p<0.01$; $^{**}p<0.05$; $^{*}p<0.1$. \\ \textit{Notes:} The dependent variables are changes in the log of total residential floorspace, buildings, permits, and completions, all for single-family homes. Regressions include the log of construction costs in 2019, the log of construction labor in 2008, urban vs. rural, and west vs. east district classifications as defined by BBSR (2021), and the log of population and household income in 2008. The fraction of land developed (Developed) and unavailable (Unavail) are for 2006. Robust standard errors are in parentheses.}
+\end{tablenotes}
+\end{threeparttable}
+\end{footnotesize}
+\label{tab:ols-results--single-family-checked}
+\end{center}
+\end{table}
+

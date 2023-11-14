@@ -1,0 +1,52 @@
+Instructions to construct physical constraints indexes
+##########################################################
+
+# Saiz (2010)
+
+## Estimate the amount of (un)developable land
+From digital contour maps
+    1. estimate the area that is forgone to the sea and the Great Lakes within
+    r-km radii from metropolitan central cities
+From land cover data: from the area apportioned to each category of land cover uses
+    2. calculate the area lost to internal water bodies and wetlands
+From Digital Elevation Model
+    3. create slope maps
+    calculate the share of the area corresponding to land with a slope above 15%
+    How much of the land around each city exhibits slopes above 15%?
+
+Combining 1-3 = a precise measure of exogenously undevelopable land in cities
+
+
+# Baum-snow & Han (2021)
+
+From remote sensing information, measure tract level topography and land development intensity
+Land cover information is also used to help determine whether new housing is built on previously
+undeveloped land.
+
+1. Raster info on slope and elevation range for all 30x30 meter land pixels within
+a 0.56 km radius (1 sqm) of each pixel to classify into one of nine categories that
+describe how flat or hilly the surrounding area is. => the fraction of land area
+surrounded by flat plains as their main topographic measure.
+Flat plains = slope < 8% in more than half of these nearby pixels and an
+elevation range of < 15m in this 1km sq region.
+
+2. Tract Developed Fraction from land cover data, 4 categories of development
+(0-19%, 20-49%, 50-79%, 80-100%)
+They construct the square meters of land in each tract by density of development
+and aggregate, assigning category medians, to impute average developed fraction
+for the land area of each census tract.
+
+ To be consistent with Saiz (2010), they calculate the fraction of area within
+ 50 km of the CBD of each region that is undevelopable due to a steep slope
+ (e.g. mountains), water or wetlands (e.g. oceans, lakes, etc), and that is developed.
+ They also build variants of these two measures instead aggregating to the
+ metro area level and within 50% or 100% radii from the CBD to the furthest
+ tract in each metro area.
+
+
+# Distance to the CBD
+The average distance from the distance of each municipality to the centroid of the
+municipality with the highest population
+
+
+

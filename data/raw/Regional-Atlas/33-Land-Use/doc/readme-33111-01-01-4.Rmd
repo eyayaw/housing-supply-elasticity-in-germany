@@ -1,0 +1,45 @@
+---
+title: "Some translation"
+author: "Eyayaw Beze"
+date: "12/12/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 33111-01-01-4:
+- Floor area according to the type of actual use - reference date 31.12. - circles and circular Cities (until 2015)
+- Bodenfläche nach Art der tatsächlichen Nutzung - Stichtag 31.12. - Kreise und kreisfr. Städte (bis 2015)
+- Available period: December 31, 1996 - December 31, 2015
+
+
+
+## 33111-01-02-4: 
+- Floor area according to the type of actual use - reference date 31.12. - circles and circular Cities (from 2016)
+- Bodenfläche nach Art der tatsächlichen Nutzung - Stichtag 31.12. - Kreise und kreisfr. Städte (ab 2016)
+
+--------------------------------
+
+* Floor area,--- Bodenfläche, 
+* Settlement and traffic areas,--- Siedlungs- und Verkehrsfläche, 
+* Total building and open space,--- Gebäude- und Freifläche-Insgesamt,
+* Building and open space living,--- Gebäude- und Freifläche-Wohnen,
+* Building and open space trade, industry,--- Gebäude- und Freifläche-Gewerbe, * Industrie, 
+* Operating area (without mining land),--- Betriebsfläche (ohne Abbauland), 
+* Total recreational area,--- Erholungsfläche-Insgesamt,
+* Recreation area green area,--- Erholungsfläche-Grünanlage,
+* Recreation area-cemetery area,--- Erholungsfläche-Friedhofsfläche,
+* Total traffic area,--- Verkehrsfläche-Insgesamt,
+* Traffic area-street,--- way, place, Verkehrsfläche-Straße, Weg, Platz, 
+* Total agricultural area,--- Landwirtschaftsfläche-Insgesamt,
+* Agricultural area bog,--- Landwirtschaftsfläche-Moor, 
+* Agricultural area-heather,--- Landwirtschaftsfläche-Heide, 
+* Forest area,--- Waldfläche, 
+* Water surface,--- Wasserfläche, 
+* Mining land,--- Abbauland, 
+* Areas of other use (excluding cemetery area) - total,--- Flächen anderer Nutzung (ohne Friedhofsfläche)-Insgesamt,
+* Areas for other uses (excluding cemetery areas) -Unland, --- Flächen anderer Nutzung (ohne Friedhofsfläche)-Unland
+
+---------------------------

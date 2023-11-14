@@ -1,0 +1,366 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>label3</Description>
+    <GDALRasterAttributeTable tableType="thematic">
+      <FieldDefn index="0">
+        <Name>id</Name>
+        <Type>0</Type>
+        <Usage>0</Usage>
+      </FieldDefn>
+      <FieldDefn index="1">
+        <Name>count</Name>
+        <Type>0</Type>
+        <Usage>0</Usage>
+      </FieldDefn>
+      <FieldDefn index="2">
+        <Name>label3</Name>
+        <Type>2</Type>
+        <Usage>0</Usage>
+      </FieldDefn>
+      <FieldDefn index="3">
+        <Name>red</Name>
+        <Type>1</Type>
+        <Usage>0</Usage>
+      </FieldDefn>
+      <FieldDefn index="4">
+        <Name>green</Name>
+        <Type>1</Type>
+        <Usage>0</Usage>
+      </FieldDefn>
+      <FieldDefn index="5">
+        <Name>blue</Name>
+        <Type>1</Type>
+        <Usage>0</Usage>
+      </FieldDefn>
+      <FieldDefn index="6">
+        <Name>code_12</Name>
+        <Type>2</Type>
+        <Usage>0</Usage>
+      </FieldDefn>
+      <Row index="0">
+        <F>1</F>
+        <F>20095</F>
+        <F>Continuous urban fabric</F>
+        <F>0.901960784314</F>
+        <F>0</F>
+        <F>0.301960784314</F>
+        <F>111</F>
+      </Row>
+      <Row index="1">
+        <F>2</F>
+        <F>595110</F>
+        <F>Discontinuous urban fabric</F>
+        <F>1</F>
+        <F>0</F>
+        <F>0</F>
+        <F>112</F>
+      </Row>
+      <Row index="2">
+        <F>3</F>
+        <F>131186</F>
+        <F>Industrial or commercial units</F>
+        <F>0.8</F>
+        <F>0.301960784314</F>
+        <F>0.949019607843</F>
+        <F>121</F>
+      </Row>
+      <Row index="3">
+        <F>4</F>
+        <F>5481</F>
+        <F>Road and rail networks and associated land</F>
+        <F>0.8</F>
+        <F>0</F>
+        <F>0</F>
+        <F>122</F>
+      </Row>
+      <Row index="4">
+        <F>5</F>
+        <F>2321</F>
+        <F>Port areas</F>
+        <F>0.901960784314</F>
+        <F>0.8</F>
+        <F>0.8</F>
+        <F>123</F>
+      </Row>
+      <Row index="5">
+        <F>6</F>
+        <F>10179</F>
+        <F>Airports</F>
+        <F>0.901960784314</F>
+        <F>0.8</F>
+        <F>0.901960784314</F>
+        <F>124</F>
+      </Row>
+      <Row index="6">
+        <F>7</F>
+        <F>19324</F>
+        <F>Mineral extraction sites</F>
+        <F>0.650980392157</F>
+        <F>0</F>
+        <F>0.8</F>
+        <F>131</F>
+      </Row>
+      <Row index="7">
+        <F>8</F>
+        <F>4221</F>
+        <F>Dump sites</F>
+        <F>0.650980392157</F>
+        <F>0.301960784314</F>
+        <F>0</F>
+        <F>132</F>
+      </Row>
+      <Row index="8">
+        <F>9</F>
+        <F>1396</F>
+        <F>Construction sites</F>
+        <F>1</F>
+        <F>0.301960784314</F>
+        <F>1</F>
+        <F>133</F>
+      </Row>
+      <Row index="9">
+        <F>10</F>
+        <F>9775</F>
+        <F>Green urban areas</F>
+        <F>1</F>
+        <F>0.650980392157</F>
+        <F>1</F>
+        <F>141</F>
+      </Row>
+      <Row index="10">
+        <F>11</F>
+        <F>42512</F>
+        <F>Sport and leisure facilities</F>
+        <F>1</F>
+        <F>0.901960784314</F>
+        <F>1</F>
+        <F>142</F>
+      </Row>
+      <Row index="11">
+        <F>12</F>
+        <F>3411444</F>
+        <F>Non-irrigated arable land</F>
+        <F>1</F>
+        <F>1</F>
+        <F>0.658823529412</F>
+        <F>211</F>
+      </Row>
+      <Row index="12">
+        <F>15</F>
+        <F>32709</F>
+        <F>Vineyards</F>
+        <F>0.901960784314</F>
+        <F>0.501960784314</F>
+        <F>0</F>
+        <F>221</F>
+      </Row>
+      <Row index="13">
+        <F>16</F>
+        <F>41165</F>
+        <F>Fruit trees and berry plantations</F>
+        <F>0.949019607843</F>
+        <F>0.650980392157</F>
+        <F>0.301960784314</F>
+        <F>222</F>
+      </Row>
+      <Row index="14">
+        <F>18</F>
+        <F>1625782</F>
+        <F>Pastures</F>
+        <F>0.901960784314</F>
+        <F>0.901960784314</F>
+        <F>0.301960784314</F>
+        <F>231</F>
+      </Row>
+      <Row index="15">
+        <F>20</F>
+        <F>21427</F>
+        <F>Complex cultivation patterns</F>
+        <F>1</F>
+        <F>0.901960784314</F>
+        <F>0.301960784314</F>
+        <F>242</F>
+      </Row>
+      <Row index="16">
+        <F>21</F>
+        <F>26112</F>
+        <F>Land principally occupied by agriculture, with significant areas of natural vegetation</F>
+        <F>0.901960784314</F>
+        <F>0.8</F>
+        <F>0.301960784314</F>
+        <F>243</F>
+      </Row>
+      <Row index="17">
+        <F>23</F>
+        <F>906568</F>
+        <F>Broad-leaved forest</F>
+        <F>0.501960784314</F>
+        <F>1</F>
+        <F>0</F>
+        <F>311</F>
+      </Row>
+      <Row index="18">
+        <F>24</F>
+        <F>1479259</F>
+        <F>Coniferous forest</F>
+        <F>0</F>
+        <F>0.650980392157</F>
+        <F>0</F>
+        <F>312</F>
+      </Row>
+      <Row index="19">
+        <F>25</F>
+        <F>343010</F>
+        <F>Mixed forest</F>
+        <F>0.301960784314</F>
+        <F>1</F>
+        <F>0</F>
+        <F>313</F>
+      </Row>
+      <Row index="20">
+        <F>26</F>
+        <F>41477</F>
+        <F>Natural grasslands</F>
+        <F>0.8</F>
+        <F>0.949019607843</F>
+        <F>0.301960784314</F>
+        <F>321</F>
+      </Row>
+      <Row index="21">
+        <F>27</F>
+        <F>24971</F>
+        <F>Moors and heathland</F>
+        <F>0.650980392157</F>
+        <F>1</F>
+        <F>0.501960784314</F>
+        <F>322</F>
+      </Row>
+      <Row index="22">
+        <F>29</F>
+        <F>56483</F>
+        <F>Transitional woodland-shrub</F>
+        <F>0.650980392157</F>
+        <F>0.949019607843</F>
+        <F>0</F>
+        <F>324</F>
+      </Row>
+      <Row index="23">
+        <F>30</F>
+        <F>3606</F>
+        <F>Beaches, dunes, sands</F>
+        <F>0.901960784314</F>
+        <F>0.901960784314</F>
+        <F>0.901960784314</F>
+        <F>331</F>
+      </Row>
+      <Row index="24">
+        <F>31</F>
+        <F>3049</F>
+        <F>Bare rocks</F>
+        <F>0.8</F>
+        <F>0.8</F>
+        <F>0.8</F>
+        <F>332</F>
+      </Row>
+      <Row index="25">
+        <F>32</F>
+        <F>2302</F>
+        <F>Sparsely vegetated areas</F>
+        <F>0.8</F>
+        <F>1</F>
+        <F>0.8</F>
+        <F>333</F>
+      </Row>
+      <Row index="26">
+        <F>34</F>
+        <F>10</F>
+        <F>Glaciers and perpetual snow</F>
+        <F>0.650980392157</F>
+        <F>0.901960784314</F>
+        <F>0.8</F>
+        <F>335</F>
+      </Row>
+      <Row index="27">
+        <F>35</F>
+        <F>10537</F>
+        <F>Inland marshes</F>
+        <F>0.650980392157</F>
+        <F>0.650980392157</F>
+        <F>1</F>
+        <F>411</F>
+      </Row>
+      <Row index="28">
+        <F>36</F>
+        <F>18871</F>
+        <F>Peat bogs</F>
+        <F>0.301960784314</F>
+        <F>0.301960784314</F>
+        <F>1</F>
+        <F>412</F>
+      </Row>
+      <Row index="29">
+        <F>37</F>
+        <F>6430</F>
+        <F>Salt marshes</F>
+        <F>0.8</F>
+        <F>0.8</F>
+        <F>1</F>
+        <F>421</F>
+      </Row>
+      <Row index="30">
+        <F>39</F>
+        <F>72525</F>
+        <F>Intertidal flats</F>
+        <F>0.650980392157</F>
+        <F>0.650980392157</F>
+        <F>0.901960784314</F>
+        <F>423</F>
+      </Row>
+      <Row index="31">
+        <F>40</F>
+        <F>21427</F>
+        <F>Water courses</F>
+        <F>0</F>
+        <F>0.8</F>
+        <F>0.949019607843</F>
+        <F>511</F>
+      </Row>
+      <Row index="32">
+        <F>41</F>
+        <F>80682</F>
+        <F>Water bodies</F>
+        <F>0.501960784314</F>
+        <F>0.949019607843</F>
+        <F>0.901960784314</F>
+        <F>512</F>
+      </Row>
+      <Row index="33">
+        <F>42</F>
+        <F>24621</F>
+        <F>Coastal lagoons</F>
+        <F>0</F>
+        <F>1</F>
+        <F>0.650980392157</F>
+        <F>521</F>
+      </Row>
+      <Row index="34">
+        <F>43</F>
+        <F>11851</F>
+        <F>Estuaries</F>
+        <F>0.650980392157</F>
+        <F>1</F>
+        <F>0.901960784314</F>
+        <F>522</F>
+      </Row>
+      <Row index="35">
+        <F>44</F>
+        <F>96755</F>
+        <F>Sea and ocean</F>
+        <F>0.901960784314</F>
+        <F>0.949019607843</F>
+        <F>1</F>
+        <F>523</F>
+      </Row>
+    </GDALRasterAttributeTable>
+  </PAMRasterBand>
+</PAMDataset>

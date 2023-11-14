@@ -1,0 +1,39 @@
+
+\begin{table}[H]
+\caption{\textbf{First-stage Results}}
+\begin{center}
+\begin{footnotesize}
+\begin{threeparttable}
+\begin{tabular}{l c c}
+\toprule
+ & \multicolumn{1}{c}{\textbf{All homes}} & \multicolumn{1}{c}{\textbf{Single-family homes}} \\
+\cmidrule(lr){2-2} \cmidrule(lr){3-3}
+ & (1) & (2) \\
+\midrule
+$\text{Bartik}$         & $3.781^{***}$  & $3.146^{***}$  \\
+                        & $(0.916)$      & $(1.115)$      \\
+$\ln{\text{Pop}}$       & $-0.002$       & $-0.006$       \\
+                        & $(0.014)$      & $(0.016)$      \\
+$\ln{\text{HH income}}$ & $0.673^{***}$  & $0.635^{***}$  \\
+                        & $(0.080)$      & $(0.087)$      \\
+$\text{Urban}$          & $-0.014$       & $-0.017$       \\
+                        & $(0.020)$      & $(0.023)$      \\
+$\text{West}$           & $-0.103^{***}$ & $-0.150^{***}$ \\
+                        & $(0.024)$      & $(0.025)$      \\
+Constant                & $-6.619^{***}$ & $-6.116^{***}$ \\
+                        & $(0.810)$      & $(0.880)$      \\
+\midrule
+R$^2$                   & $0.181$        & $0.141$        \\
+Num. obs.               & $401$          & $401$          \\
+F statistic             & $17.415$       & $12.917$       \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\tiny{\item $^{***}p<0.01$; $^{**}p<0.05$; $^{*}p<0.1$. \\ \textit{Notes:} The dependent variable is change in the log of house prices (of all-type, including single-family homes) in the first column, and of only single-family homes in the second column. Regressions include urban vs. rural and west vs. east district classifications as defined by BBSR (2021), the log of population and household income in 2008. Robust standard errors are in parentheses.}
+\end{tablenotes}
+\end{threeparttable}
+\end{footnotesize}
+\label{tab:first-stage-results-checked}
+\end{center}
+\end{table}
+

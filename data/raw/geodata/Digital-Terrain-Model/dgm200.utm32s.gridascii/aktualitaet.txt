@@ -1,0 +1,34 @@
+Aktualitaeten 
+Stand 31.12.2019
+
+der Ausgangsdaten des DGM5, die den DGM5 /10 /25 / 50 /200 /1000 zugrunde liegen:
+
+Bundesland Brandenburg;              2009 - 2017
+Bundesland Berlin;                   2015 - 2018
+Bundesland Hansestadt Bremen;        2012 - 2018
+Bundesland Baden-Wuerttemberg;       2000 - 2018
+Bundesland Bayern;                   2006 - 2018
+Bundesland Hessen;                   2010 - 2018
+Bundesland Hansestadt Hamburg;       2010      
+Bundesland Mecklenburg-Vorpommern;   2006 - 2016
+Bundesland Niedersachsen;            1955 - 2018
+Bundesland Nordrhein-Westfalen;      2007 - 2019
+Bundesland Rheinland-Pfalz;          2003 - 2018
+Bundesland Sachsen-Anhalt;           2015 - 2018
+Bundesland Schleswig-Holstein;       2005 - 2019
+Bundesland Sachsen;                  2008 - 2018
+Bundesland Saarland;                 2016
+Bundesland Thueringen;               2012 - 2017
+
+Aktualitäten aller Kacheln sind zu finden in den zugehörigen Metadaten. 
+Diese werden als CSV-Dateien (öffnen z.B. mit EXCEL) von den Bundesländern geliefert.
+
+Hinweise zur Struktur der Metadaten gibt der Produkt- und Qaulitätsstandard für Digitale Geländemodelle,Version 3.1.
+
+Vom BKG wurde nachträglich aus den CSV-Dateien der Länder ein gesamter Metadatensatz im SHAPE-Format erzeugt. 
+Auch dieser kann auf Wunsch zur Verfügung gestellt werden (Größe 82 MB).
+
+
+
+
+

@@ -1,0 +1,129 @@
+# Method
+
+I begin with a simple theoretical derivation of the supply of housing on a fixed plot of land and a simple aggregation to the district level. Then, the empirical implementation section discusses how the housing supply elasticity is estimated using the @bartik1991 shocks as an instrument for housing demand.
+
+## Model
+
+This section demonstrates the derivation of the local housing supply function, following the housing production function literature. Importantly, the model demonstrates how the local housing supply and housing supply elasticity can be written as a function of supply determinants, in particular geographical or physical constraints.
+
+### Housing supply
+
+#### A simple model of district housing supply {.unnumbered}
+
+A competitive developer combines a fixed amount of land $\overline{T}$ and non-land inputs $K$, which I simply call capital, to produce housing $H$ via a Cobb-Douglas technology:\begin{equation}
+    H = H(A, \overline{T}, K) = A \overline{T}^{\alpha} K^{1-\alpha}
+    (\#eq:cobb),
+\end{equation} where $\alpha \in (0, 1)$. $A$ captures supply heterogeneity across parcels due to local labor costs, productivity, geography, or ease of construction differences.[^03-method-1]
+
+[^03-method-1]: $K$ captures a composite of all inputs for housing production other than land, which can broadly be labor and materials.
+
+A representative builder maximizes profit by choosing capital $K$ over a fixed parcel of land $\overline{T}$ $$\begin{aligned}
+\Pi &= P(x) \cdot H - R - P^K\cdot K,
+\end{aligned}$$where $R$ denotes the endogenous price of land of size $\overline{T}$, and $P^K$ is the price of capital which is assumed to be invariant across parcels and locations and normalized to unity. The price of a unit of housing developed on a parcel of size $\overline{T}$ is given by $P$ and depends on $x$, a vector of observed or unobserved parcel or location characteristics that reflect the housing demand on the parcel.[^03-method-2]
+
+[^03-method-2]: The full detail of this section is delegated to the Appendix; see Section \@ref(supplyapp).
+
+Builder's profit maximization delivers the factor demand for capital $K$.[^03-method-3] $$\begin{aligned}
+ K^* = \Bigl((1-\alpha)AP(x)\Bigr)^{\frac{1}{\alpha}}\overline{T}\equiv K^*(P(x), \overline{T}, A) \end{aligned}$$
+
+[^03-method-3]: Since land is fixed, the builder chooses capital to maximize profit.
+
+By substituting the factor demand equation for capital back into the housing production function \@ref(eq:cobb), the per parcel supply function can be written as $$
+\begin{aligned}
+H(A, \overline{T}, K^*(P(x), \overline{T}, A))=\mu A^{\frac{1}{\alpha}}{P(x)}^{\frac{1-\alpha}{\alpha}}\overline{T} \equiv H^S(P(x), A)\,,\quad \text{with } \mu = (1-\alpha)^{\frac{1-\alpha}{\alpha}}.\end{aligned}\,$$ In log-linear form, \begin{align}
+\ln H^S(P(x), A, \overline{T}) &= \ln \mu + \frac{1}{\alpha}\ln A + \underbrace{\Bigl(\frac{1-\alpha}{\alpha}\Bigr)}_{\varepsilon}\ln P(x) + \ln \overline{T}.
+(\#eq:hs)
+\end{align} This shows that the supply of housing developed on a parcel depends on local supply heterogeneity $A$, local housing demand conditions captured by $P(x)$, and on the size of the parcel $\overline{T}$.
+
+Following @baumsnow-han2019, aggregation of the housing supply on a parcel in \@ref(eq:hs) over all developed parcels in the district delivers the total supply of housing in the district. Let $\mathcal{L}_{i}$ denote the total (developable) land endowment of district $i$ and $\Lambda_i (P_i)$ the fraction of partitioned parcels that are developed in $i$, then the stock of developed land in $i$ is defined as $\mathcal{T}(P_i) = \Lambda_i(P_i) \cdot \mathcal{L}_{i}$. The implicit district-level aggregate housing supply function $S_i(P_i(x))$ can then be defined as the product of the (average) housing supply per parcel and the stock of developed land: \begin{align}
+S_i(P_i) = H_i^S(P_i, A_i)\cdot \mathcal{T}_{i}(P_i)\\ 
+\ln S_i(P_i) = \Bigl[\ln \mu_i + \frac{1}{\alpha}\ln A_i + \varepsilon\ln P_i \Bigr]+ \Bigl[\ln\Lambda_i(P_i) + \ln\mathcal{L}_i\Bigr]
+(\#eq:agg-hs)
+\end{align}
+
+Differentiating \@ref(eq:agg-hs) with respect to $\ln P$ delivers the housing supply elasticity, \begin{equation}
+\varepsilon^S_{i} \equiv \varepsilon + \frac{\partial \ln\Lambda_i(P_i)}{\partial \ln P_i},
+(\#eq:elasticity)
+\end{equation} where the first term captures the intensive margin of development (floorspace per parcel) and the second reflects the extensive margin (parcel development).
+
+Districts with more developable (more flat or less rugged) land, low initial level of development density, and unrestrictive regulation may respond more along the extensive margin, increasing the level of land development. In contrast, districts that have a high level of existing development (high built-up) or are restricted by their geography or by restrictive land regulation may respond along the intensive margin, increasing floorspace per parcel.
+
+### Housing demand
+
+The canonical housing demand is derived from a utility maximization problem of a representative household living in district $i$ who consumes final goods $C$ priced at 1 and a unit of housing $H_i$ priced at $P_i(x)$.$$\begin{aligned}
+\underset{C,H}{\max}\, U(C, H) = \theta H_i^\beta C_i^{1-\beta}\\
+\text{s.t.}\quad w_i = C_i+P_i(x)\cdot H_i\,,
+\end{aligned}$$
+
+where $w_i$ denotes average wage or productivity in $i$.[^03-method-4] The first order condition for utility maximization with respect to $H$ delivers the housing demand function $$
+\begin{aligned}
+H^{*}_i(P_i(x), w_i) &= \beta\frac{w_i}{P_i(x)} \equiv H^d_i(P_i(x), w_i).
+\end{aligned}
+$$
+
+[^03-method-4]: For simplicity, I assume that market imperfections are minimal such that workers earn wages equal or proportional to their productivity.
+
+Assuming that locations within district $i$ are perfect demand substitutes for given values of parcel characteristics, then $P_{i}$ representing the average price of housing in the district, summing up over the housing consumption of all the residents $N$ of $i$, the log aggregate housing demand function for district $i$ can be written as \begin{equation}
+\ln P_{i}=\ln \beta + \ln w_{i}-\ln H_{i}^{d} + ln N_{i} (\#eq:agg-hd).
+\end{equation}
+
+The housing demand equation in \@ref(eq:agg-hd) shows how exogenous productivity ($w_i$) changes can be used as demand shifters for identifying the housing supply elasticity.[^03-method-5]
+
+[^03-method-5]: Higher levels of productivity are associated with higher levels of economic development and income, which can lead to increased demand for housing by attracting more people to an area [@glaesergottlieb2009; @glaeser2008]. This increased demand can drive up local house prices, as people are willing to pay more for housing in areas with strong job market opportunities and higher wages. Home builders will react to the increased demand and higher prices by building new houses, other things held constant.
+
+## Empirical implementation
+
+Fundamental to recovering the housing supply elasticity $\varepsilon$ is finding an exogenous shifter that comes from the housing demand function \@ref(eq:agg-hd). This shifter can be used as an instrument for house prices provided it is uncorrelated with supply shifters (such as construction costs or productivity).
+
+The main estimation equation is the housing supply equation \@ref(eq:agg-hs) in discrete changes \begin{equation}
+\Delta\ln H_i^S =  a^S_i + \varepsilon^S_i\Delta\ln P_i + \boldsymbol{\beta}\mathbf{X}^S_i + u^S_i
+(\#eq:main),
+\end{equation}where $i$ indexes districts across Germany and changes are computed from long (log) differences between 2008-2019, and $\mathbf{X}$ includes a set of district controls.[^03-method-6] The parameter vector of interest is $\varepsilon^S_i=\mathbf{Y}_i\varepsilon$. Following @saiz2010 and @baumsnow-han2019, such a setup allows us to compute an elasticity estimate for each district $i$. For doing so, $\varepsilon^S_i$ can be defined as a function of observed district supply characteristics $\mathbf{Y}_i$ such as undevelopable fraction of land, level of existing land development (developed fraction), and regulation. First, as a baseline specification, and following @saiz2010, I start with a common price elasticity of housing supply across all districts, i.e., $\varepsilon^S_i=\varepsilon^S \;\forall i$, which corresponds to $\varepsilon$ in the aggregate housing supply function in equation \@ref(eq:agg-hs). Then, I consider estimating the housing supply elasticities that vary across districts as a function of these observed district supply conditions.
+
+[^03-method-6]: The control variables include construction and labor costs, housing supply constraints, and dummy variables for whether the district is urban and in West Germany. Depending on the variable type, controls are either in levels or logarithms.
+
+### The housing supply elasticity as a function of supply constraints {#decompose}
+
+In this section, I demonstrate how land unavailability (due to geographical constraints), the level of existing land development, and restrictive land use regulations impact the housing supply elasticity. I follow the reasoning by @saiz2010 and @baumsnow-han2019 as to why these constraints mediate the impact of growth in house prices on housing supply.
+
+As districts are inherently different, they will respond differently if they receive the same amount of housing demand shock. More precisely, the same level of demand shock will produce different results in housing supply growth because of differences in factors that affect housing supply. For instance, districts that are more flat, growing, and less regulated are expected to react more to a given change in housing demand, other things held constant. Therefore, the extent to which changes in housing demand translate into more construction rather than higher prices depends on physical and regulatory factors. More land availability (for instance, through rezoning) shifts the supply curve outward. The question is whether land and regulatory constraints also impact the housing supply elasticity, i.e., whether $\varepsilon^S_i$ is a function of land availability, regulation, and development intensity.
+
+The first hypothesis I test is whether districts that have a high level of existing development, measured by the fraction of land that is already developed (*Developed*), have more inelastic housing supply than newer or physically growing districts, i.e., $\varepsilon^S_i$ is a function of development intensity: \begin{align}
+\Delta\ln H_i^s = \varepsilon^S\Delta\ln P_i + \beta^{Developed} \Delta \ln P_i\times\text{Developed}_i + \boldsymbol{\beta}\boldsymbol{X}_i^S + u^S_i\,, (\#eq:case-2)
+\end{align} where $\beta^{\text{Developed}} \le 0$. Then, we have district-specific housing supply elasticities that incorporate development intensity: $\varepsilon^S_i = \varepsilon^S + \beta^{\text{Developed}}\times\text{Developed}_i$.
+
+Second, I test whether districts that are land-constrained due to geography (measured by *Unavail*) have more inelastic housing supply than relatively unconstrained districts, i.e., $\varepsilon^S_i$ is a function of land unavailability: \begin{align}
+\Delta\ln H_i^s = \varepsilon^S\Delta\ln P_i + \beta^{\text{Unavail}} \Delta \ln P_i\times\text{Unavail}_i + \boldsymbol{\beta}\boldsymbol{X}_i^S + u^S_i\,, (\#eq:case-3)
+\end{align} where $\beta^{\text{Unavail}} \le 0$. Then, the elasticity is given by $\varepsilon^S_i = \varepsilon^S + \beta^{\text{Unavail}}\text{Unavail}_i$.
+
+Third, I combine the above two cases and test the importance of both variables (developed and unavailable land fractions) in affecting the response of supply growth to price growth, i.e., $\varepsilon^S_i$ is a function of both developed land and land unavailability: \begin{equation}
+\begin{split}
+\Delta\ln H_i^s = \varepsilon^S\Delta\ln P_i + \beta^{\text{Developed}} \Delta \ln P_i\times\text{Developed}_i + \\
+\beta^{\text{Unavail}} \Delta \ln P_i\times\text{Unavail}_i + \boldsymbol{\beta}\boldsymbol{X}_i^S + u^S_i\,, (\#eq:case-4)
+\end{split}
+\end{equation} where $\beta^{\text{Developed}} \le 0\,, \beta^{\text{Unvail}}\le0$.Then, the elasticity is given by $\varepsilon^S_i = \varepsilon^S + \beta^{\text{Developed}}\text{Developed}_i + \beta^{\text{Unavail}}\text{Unavail}_i$.
+
+### Constructing the Bartik instrument
+
+Since, in equilibrium, housing quantity and price are jointly determined, the classic endogeneity problem needs to be addressed to correctly identify $\varepsilon^S_i$ in \@ref(eq:main). Solving this problem requires an exogenous shifter, sourced from the demand equation in \@ref(eq:agg-hd), that generates exogenous housing demand changes across locations. Ideally, this shock then causes a shift in the housing demand curve so the housing supply curve can be traced out and the parameter $\varepsilon^S_i$ is identified. The @bartik1991 instrument, also known as the shift-share instrument, has been widely used in the literature for identification (see, for example, @saiz2010, @hilber-vermeulen2016, @baumsnow-han2019), as a proxy for or source of variation in housing demand. Below I explain how the Bartik instrument has been constructed and used for identification in this study.
+
+The Bartik instrument or shock is a labor demand shock that is constructed from predicted industry employment growth [@gpss2020; @blanchard-katz1992; @bartik1991]. By construction, local employment growth is the weighted mean of local industry growth rates, where the weights are local employment shares of the industries, \begin{equation}
+ g_{it} = \sum_k z_{ikt}\cdot g_{ikt},
+\end{equation}where the subscripts $i$, $k$, and $t$ index district, industry, and time (year), respectively. $z_{ikt}$ denotes industry $k$'s employment share in district $i$'s total employment $L_{it}$, and $g_{ikt}$ denotes industry $k$'s employment growth in $i$ from $t-1$ to $t$.
+
+The local industry growth rate $g_{ikt}$ can be decomposed into a national industry growth rate $g_{kt}$ and an idiosyncratic local industry growth rate $\widetilde{g}_{ikt}$ components: $$g_{ikt} = g_{kt} + \widetilde{g}_{ikt}.$$
+
+The Bartik instrument uses the national industry growth rate $g_{kt}$ and local industry composition at some base or initial time period to predict the local industry employment growth $g_{ikt}$. Following @bartik1991, "predicted employment growth" can be written as $$
+\begin{aligned}
+\widehat{g_{it}} &=\sum_{k=1}^K z_{ikb}\cdot g_{kt}\\
+&\quad\quad\text{with }\;g_{kt} = \frac{L_{kt} - L_{kt-1}}{L_{kb}}\,,
+\end{aligned}
+$$
+
+where $L$ represents the actual level of employment, $b$ denotes some initial time period, variables without index $i$ represent values at the national level, and variables without index $k$ are aggregates over industries. $g$ denotes the growth rate of employment from $t-1$ to $t$ as a proportion of the base year value. $L_{kt}$ can be calculated for each $i$ from leave-one-out aggregate of $L_{ikt}$, denoted $L_{(i^\prime)kt}$.
+
+From the data, I constructed seven (hence $K=7$) broad industry classes.[^03-method-7] Moreover, following the Bartik instrument convention, I take the first period of the study as the initial period (i.e., $b=2008$).
+
+[^03-method-7]: The industry classification follows the [German Classification of Economic Activities, Edition 2008 (WZ2008)](https://www.destatis.de/DE/Methoden/Klassifikationen/Gueter-Wirtschaftsklassifikationen/klassifikation-wz-2008.html). I aggregate the district and national industry employment data that I used for constructing the Bartik instrument to 7 broad industry classes: (1) agriculture, forestry, and fishing, (2) mining and quarrying, energy, and water, sewage, and waste, (3) manufacturing, (4) construction, (5) trade, transport, hospitality, and information and communication, (6) finance and insurance, and real estate, (7) public and other services, education, and health.
+
+The Bartik instrument used in the estimation is the predicted change in the logarithm of employment between the base period (2008) and the last (2019), $\widehat{\Delta\ln L_i} = \sum_k{z_{ik2008} \left(\ln L_{(i^\prime)k2019}-\ln L_{(i^\prime)k2008}\right)}$.
