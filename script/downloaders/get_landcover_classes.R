@@ -219,10 +219,9 @@ colorcodes_3 <- data.table(
 colorcodes_3[, c("r", "g", "b") := lapply(tstrsplit(rgb3, ","), as.integer)]
 colorcodes_3[, cols3 := rgb(r / 255, g / 255, b / 255)]
 
-classes <- DT(classes,
-  colorcodes_3[, .(classname3, cols3)],
-  on = "classname3"
-)
+classes <- classes[,
+  colorcodes_3[, .(classname3, cols3)], on = "classname3"
+]
 
 fwrite(classes, "data/raw/geodata/corine-land-cover/clc-classification.csv")
 rm(colorcodes, classes2, colorcodes_3)

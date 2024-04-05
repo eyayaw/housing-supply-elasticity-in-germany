@@ -105,7 +105,7 @@ cat(readLines("output/iv-results_single-family_checked.tex"))
 .scale = 1e-3
 agg_de[, .(year, `all` = buildings, `single-family` = single_fam)] |>
   melt(measure.vars = c("all", "single-family"), id.vars = "year") |>
-  DT(, .(year, value = value - shift(value)), variable) |>
+  _[, .(year, value = value - shift(value)), variable] |>
   subset(year != 2011) |>
   ggplot(aes(year, .scale * value, color = variable)) +
   geom_line(lwd = 1.05, lty = "dotted") +

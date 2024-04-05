@@ -1,7 +1,7 @@
 # Why this function? [GitHub link](https://github.com/rstudio/bookdown/issues/1403)
 
 # When `biblio-style: "aer"` and `citation_package: "natbib"`, bookdown places `References` after `Appendix`.
-# The solution is to manipulate the tex file using regex and then render it with `tinytex::xelatex`.
+# A solution involves manipulating the tex file to rearrange parts and then rendering it using `tinytex::xelatex`.
 
 ## Steps
 # 1. Update the bibliography style.

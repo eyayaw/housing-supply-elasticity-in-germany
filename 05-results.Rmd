@@ -233,8 +233,8 @@ growth = in_levels[, .(did, year,
   `h.single-family` = log(`1-apart-building`)
 )] |>
   reshape(direction = "long", varying = -c(1, 2), idvar = 1:2, timevar = "house_type") |>
-  DT(, .(lnp = mean(p), lnh = mean(h)), .(year, house_type)) |>
-  DT(, .(year, glnp = lnp / shift(lnp) - 1, glnh = lnh / shift(lnh) - 1), house_type) |>
+  _[, .(lnp = mean(p), lnh = mean(h)), .(year, house_type)] |>
+  _[, .(year, glnp = lnp / shift(lnp) - 1, glnh = lnh / shift(lnh) - 1), house_type] |>
   melt(id.vars = c("year", "house_type"), measure.vars = c("glnp", "glnh"))
 
 #growth[year == 2011, value := NA] # sharp jumps (data issues b/c of Census 2011?)
@@ -608,7 +608,7 @@ In this step, I examine the impact of restrictive geography on the housing suppl
 
 [^05-results-7]: This is computed as $\widehat{\varepsilon_i} =\widehat{\varepsilon} + \widehat{\beta}^{\text{Unavail}}\cdot\text{Unavail}_i = `r round2(est.fs.3[['vareps']])`$, because $\widehat{\beta}^{\text{Unavail}}$ is insignificant.
 
-Finally, the above two steps are combined, corresponding to estimating $\varepsilon_i$ in \@ref(eq:case-4) and amplifying both constraints' impact on the housing supply elasticity. As shown in column (4) of Table \@ref(tab:iv-main-results-checked), at the mean value of $\text{Developed}$, the estimate for the housing supply elasticity is `r round3(est.fs.4$vareps + est.fs.4$b_dev * pars$ave.dev)`[^05-results-8], which is not statistically different from the estimates in the above three cases (`r round3(eps.fs.1)`, `r round3(eps.fs.2)`, and `r round3(eps.fs.3)`, respectively), which reaffirms the insignificance of land unavailability in impacting the housing supply elasticity.
+Finally, the above two steps are combined, corresponding to estimating $\varepsilon_i$ in \@ref(eq:case-4) and amplifying both constraints' impact on the housing supply elasticity. As shown in column (4) of Table \@ref(tab:iv-main-results-checked), at the mean value of $\text{Developed}$, the estimate for the housing supply elasticity is `r round3(est.fs.4$vareps + est.fs.4$b_dev * pars$ave.dev)`[^05-results-8], which is not quantitatively different from the estimates in the above three cases (`r round3(eps.fs.1)`, `r round3(eps.fs.2)`, and `r round3(eps.fs.3)`, respectively), which reaffirms the insignificance of land unavailability in impacting the housing supply elasticity.
 
 [^05-results-8]: Since $\widehat{\beta}^{\text{Unavail}}$ is insignificant, the coefficient on $\Delta\ln P\cdot\text{Unavail}$ is ignored and the housing supply elasticity estimate is computed as ($\widehat{\varepsilon_i} = \widehat{\varepsilon} + \widehat{\beta}^{\text{Developed}}\cdot\text{Developed}_i = `r round(est.fs.4[['vareps']], 2)` `r sprintf('%.2f', est.fs.4[['b_dev']])` \cdot\text{Developed}_i = `r round(est.fs.4[["vareps"]] + est.fs.4[["b_dev"]] * pars[["ave.dev"]][1], 2)`$).
 
