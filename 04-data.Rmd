@@ -1,8 +1,8 @@
-# Data
+## Data
 
-I construct a house price index from a granular and rich set of house price data. Housing stock and floorspace, population, and employment data are all obtained from the German Regional Statistical Offices Database.
+I construct a house price index from a granular and rich set of house price data. Housing stock and floorspace, population, and the employment data are all obtained from the German Regional Statistical Offices Database.
 
-## House prices {#hedonic}
+### House prices {#hedonic}
 
 I use the RWI-GEO-Real Estate Data of the FDZ Ruhr at RWI [@rwi2020] to construct quality-adjusted house prices.[^04-data-1] The data are highly detailed (at a scale of 1km^2^ grid), cover all of Germany, and are available since 2007. Moreover, the data come with a rich set of property characteristics, enabling us to compute a hedonic price index to quality-adjust house prices.
 
@@ -15,13 +15,13 @@ I construct a mix-adjusted house price index from the following panel hedonic re
 
 [^04-data-2]: House attributes included in the hedonic regression are: floorspace, plot area, number of rooms, number of floors, number of bedrooms, number of bathrooms, type of the house, type of heating, years of construction and renovation, condition and facilities of the property, whether the property has a basement, a guest washroom, is or in a protected building, and is usable as a holiday house. The mix-adjusted house price index computation is based on the method described by @abrs2020.
 
-## Housing quantity
+### Housing quantity
 
 Housing quantity is measured by housing units (stock) and housing services proxied by total residential floorspace. As houses vary in both observable and unobservable characteristics, they need to be standardized to account for these differences. In fact, the housing production literature views houses as only differing in the housing services they provide, which are homogeneous and perfectly divisible [@epple-etal2010; @combes-etal2021].
 
 In light of that, this paper uses total residential floorspace as the main measure of housing quantity, as a stock count of houses or buildings may not accurately reflect the true level of housing supply in a city or region. Moreover, using housing units as a measure of housing supply does not account for differences in size or other attributes. For example, newly built or renovated houses are often larger and better equipped with features than older houses, which units may not capture. Data on housing quantity variables such as residential units, floorspace, and construction activities (i.e., permits and completions) were obtained from the Regional Atlas of Germany.
 
-## Geographic data
+### Geographic data
 
 I use geographical data to construct land development intensity, land unavailability, and terrain ruggedness index (TRI) measures.[^04-data-3]
 
@@ -33,7 +33,7 @@ From the Digital Elevation Model (DEM) of Germany at $200\times200$ meter resolu
 
 From the Corine Land Cover (CLC) Germany, compiled by the [German Remote Sensing Data Center (DFD) of DLR](https://www.dlr.de/eoc/en/desktopdefault.aspx/tabid-11882/20871_read-48836) and the [Federal Agency for Cartography and Geodesy (BKG)](https://www.bkg.bund.de), I calculated the exact share of land covered with wetlands and water bodies to measure land unavailability. More, development intensity is constructed from the exact share of "artificial surfaces", a comprehensive land cover class that includes continuous and discontinuous urban fabric, defined by CLC.
 
-### Undevelopable and developed land {#constraints}
+#### Undevelopable and developed land {#constraints}
 
 I define undevelopable or unavailable land as land covered by wetlands and water bodies or as potentially developable land with an average slope greater than 15%. Undevelopable land may also include already developed land (an area covered by "artificial surfaces" such as buildings) if we rule out redevelopment through renovation or demolition as a development option. In other words, land already developed may not be regarded as undevelopable as it can be redeveloped. In this paper, already-developed land is not part of the undevelopable land. I use the land cover classes defined by [Corine Land Cover (CLC)](https://land.copernicus.eu/user-corner/technical-library/corine-land-cover-nomenclature-guidelines/html/index.html) that are relevant to Germany.
 
@@ -55,7 +55,7 @@ $$ Then, the share of undevelopable land (out of the total land), $r^{\text{unde
 
 Undevelopable share is this paper's main measure of geographical constraint, with TRI and simple slope as alternative measures. Finally, the developed share measures the existing level of development intensity.
 
-## Bartik shocks: Predicted employment growth
+### Bartik shocks: Predicted employment growth
 
 In the main regression analysis, the fundamental source of variation in changes in housing demand is predicted employment, also known as Bartik or local labor demand shock. I use employment data decomposed by seven industries to construct this shock using the 2008 industry employment levels in German districts and the national industry-specific employment growth rates from 2008 to 2019. Labor demand shock is local employment growth in each district that would have resulted, given the district's industry composition in the initial period (2008), had employment in each industry developed over time (2008-2019) in the same way as at the national (Germany) level.
 

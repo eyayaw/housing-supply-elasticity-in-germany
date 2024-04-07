@@ -1,14 +1,14 @@
-# Method
+## Method
 
 I begin with a simple theoretical derivation of the supply of housing on a fixed plot of land and a simple aggregation to the district level. Then, the empirical implementation section discusses how the housing supply elasticity is estimated using the @bartik1991 shocks as an instrument for housing demand.
 
-## Model
+### Model
 
 This section demonstrates the derivation of the local housing supply function, following the housing production function literature. Importantly, the model demonstrates how the local housing supply and housing supply elasticity can be written as a function of supply determinants, in particular geographical or physical constraints.
 
-### Housing supply
+#### Housing supply
 
-#### A simple model of district housing supply {.unnumbered}
+##### A simple model of district housing supply {.unnumbered}
 
 A competitive developer combines a fixed amount of land $\overline{T}$ and non-land inputs $K$, which I simply call capital, to produce housing $H$ via a Cobb-Douglas technology:\begin{equation}
     H = H(A, \overline{T}, K) = A \overline{T}^{\alpha} K^{1-\alpha}
@@ -48,7 +48,7 @@ Differentiating \@ref(eq:agg-hs) with respect to $\ln P$ delivers the housing su
 
 Districts with more developable (more flat or less rugged) land, low initial level of development density, and unrestrictive regulation may respond more along the extensive margin, increasing the level of land development. In contrast, districts that have a high level of existing development (high built-up) or are restricted by their geography or by restrictive land regulation may respond along the intensive margin, increasing floorspace per parcel.
 
-### Housing demand
+#### Housing demand
 
 The canonical housing demand is derived from a utility maximization problem of a representative household living in district $i$ who consumes final goods $C$ priced at 1 and a unit of housing $H_i$ priced at $P_i(x)$.$$\begin{aligned}
 \underset{C,H}{\max}\, U(C, H) = \theta H_i^\beta C_i^{1-\beta}\\
@@ -71,7 +71,7 @@ The housing demand equation in \@ref(eq:agg-hd) shows how exogenous productivity
 
 [^03-method-5]: Higher levels of productivity are associated with higher levels of economic development and income, which can lead to increased demand for housing by attracting more people to an area [@glaesergottlieb2009; @glaeser2008]. This increased demand can drive up local house prices, as people are willing to pay more for housing in areas with strong job market opportunities and higher wages. Home builders will react to the increased demand and higher prices by building new houses, other things held constant.
 
-## Empirical implementation
+### Empirical implementation
 
 Fundamental to recovering the housing supply elasticity $\varepsilon$ is finding an exogenous shifter that comes from the housing demand function \@ref(eq:agg-hd). This shifter can be used as an instrument for house prices provided it is uncorrelated with supply shifters (such as construction costs or productivity).
 
@@ -82,7 +82,7 @@ The main estimation equation is the housing supply equation \@ref(eq:agg-hs) in 
 
 [^03-method-6]: The control variables include construction and labor costs, housing supply constraints, and dummy variables for whether the district is urban and in West Germany. Depending on the variable type, controls are either in levels or logarithms.
 
-### The housing supply elasticity as a function of supply constraints {#decompose}
+#### The housing supply elasticity as a function of supply constraints {#decompose}
 
 In this section, I demonstrate how land unavailability (due to geographical constraints), the level of existing land development, and restrictive land use regulations impact the housing supply elasticity. I follow the reasoning by @saiz2010 and @baumsnow-han2019 as to why these constraints mediate the impact of growth in house prices on housing supply.
 
@@ -103,7 +103,7 @@ Third, I combine the above two cases and test the importance of both variables (
 \end{split}
 \end{equation} where $\beta^{\text{Developed}} \le 0\,, \beta^{\text{Unvail}}\le0$.Then, the elasticity is given by $\varepsilon^S_i = \varepsilon^S + \beta^{\text{Developed}}\text{Developed}_i + \beta^{\text{Unavail}}\text{Unavail}_i$.
 
-### Constructing the Bartik instrument
+#### Constructing the Bartik instrument
 
 Since, in equilibrium, housing quantity and price are jointly determined, the classic endogeneity problem needs to be addressed to correctly identify $\varepsilon^S_i$ in \@ref(eq:main). Solving this problem requires an exogenous shifter, sourced from the demand equation in \@ref(eq:agg-hd), that generates exogenous housing demand changes across locations. Ideally, this shock then causes a shift in the housing demand curve so the housing supply curve can be traced out and the parameter $\varepsilon^S_i$ is identified. The @bartik1991 instrument, also known as the shift-share instrument, has been widely used in the literature for identification (see, for example, @saiz2010, @hilber-vermeulen2016, @baumsnow-han2019), as a proxy for or source of variation in housing demand. Below I explain how the Bartik instrument has been constructed and used for identification in this study.
 

@@ -1,4 +1,4 @@
-# Results
+## Results
 
 ```{r results-setup, include=FALSE}
 library(sf)
@@ -116,7 +116,7 @@ group_data[year %in% c(2008, 2019), .(
 
 ```
 
-## Descriptive analysis
+### Descriptive analysis
 
 As shown in Figure \@ref(fig:price-growth), average prices of houses in Germany have significantly increased over the 2008-2019 time period across districts. In level terms, the average price of houses (of all types) was about €`r formatNum(agg_de[year == 2008, hpi])` per square meters (m^2^) in 2008, which rose by about `r with(agg_de, round1((hpi[year == 2019] / hpi[year == 2008] - 1)*100))`% to about €`r formatNum(agg_de[year == 2019, hpi])` per m^2^ in 2019. Single-family homes followed the same trend; the average price of single-family homes increased by about `r with(agg_de, round1((hpi_single_fam[year == 2019] / hpi_single_fam[year == 2008] - 1)*100))`%.[^05-results-1] Variation in average house prices (measured by the standard deviation) across districts has significantly risen over this period. For all homes, the standard deviation of prices in €/m^2^ has increased by `r round1(100 * grate(agg_de[year %in% c(2008, 2019), sd_p])[2])`%, from about `r formatNum(agg_de[year == 2008, sd_p])` in 2008 to about `r formatNum(agg_de[year == 2019, sd_p])` in 2019. For single-family homes, price variation has gone up by `r round(100 * grate(agg_de[year %in% c(2008, 2019), sd_p_single_fam])[2])`%, from `r formatNum(agg_de[year == 2008, sd_p_single_fam])` in 2008 to `r formatNum(agg_de[year == 2019, sd_p_single_fam])` in 2019.
 
@@ -161,8 +161,6 @@ agg_de[, .(year, ln_hpi, ln_hpi_single_fam)] |>
 \end{minipage}
 \end{figure}
 ```
-
-
 
 
 ```{=latex}
@@ -267,7 +265,7 @@ for (i in seq_along(.vars)) {
 \medskip
 \begin{minipage}{0.9\textwidth}
 \footnotesize
-\textit{Notes:} This figure compares the annual growth of average log house prices against of average log housing supply (measured by residential buildings) in Germany by house type. Panel A displays growth rates (\%) for all types of residential buildings, including single-family buildings, and Panel B displays single-family buildings. The 2011 data points appear incorrect due to data inconsistency in connection to the 2011 German Census. House prices data are obtained from (ref:rwigeored), and data for housing quantity measures are extracted from (ref:atlas-germany).
+\textit{Notes:} This figure compares the annual growth of average log house prices against of average log housing supply (measured by residential buildings) in Germany by house type. Panel A displays growth rates (\%) for all types of residential buildings, including single-family buildings, and Panel B displays single-family buildings. The 2011 data points appear incorrect due to data inconsistency in connection to the 2011 German Census. The house prices data are obtained from (ref:rwigeored), and data for housing quantity measures are extracted from (ref:atlas-germany).
 \end{minipage}
 \end{figure}
 ```
@@ -311,7 +309,7 @@ since95 |>
 \end{minipage}
 \end{figure}
 ```
-## Empirical analysis
+### Empirical analysis
 
 ```{r ols-estimates}
 ols_est = fread("output/elasticity-estimates-ols_checked.csv")
@@ -373,7 +371,7 @@ for (i in seq_along(.vars)) {
 \medskip
 \begin{minipage}{0.9\textwidth}
 \footnotesize
-\textit{Notes:} This figure shows the correlation between the endogenous variable ($\Delta\ln P$) and the instrument ($\widehat{\Delta\ln L_i}$), i.e., the relevance condition of the instrument, by house type. Each dot represents a value pair for a district. House prices data are obtained from (ref:rwigeored), and employment data from (ref:atlas-germany).
+\textit{Notes:} This figure shows the correlation between the endogenous variable ($\Delta\ln P$) and the instrument ($\widehat{\Delta\ln L_i}$), i.e., the relevance condition of the instrument, by house type. Each dot represents a value pair for a district. The house prices data are obtained from (ref:rwigeored), and the employment data from (ref:atlas-germany).
 \end{minipage}
 \end{figure}
 ```
@@ -424,13 +422,13 @@ main[, .(H, urban_rural, Phat)] |>
 \medskip
 \begin{minipage}{0.9\textwidth}
 \footnotesize
-\textit{Notes:} This figure depicts the housing supply growth against the predicted growth of house prices. $\widehat{\Delta\ln P}$ represents the fitted values from this regression: $\Delta\ln P = \beta_0 + \beta_1\widehat{\Delta\ln L_i}$. Doing so keeps the variation in $\Delta\ln P$ due to only changes in housing demand. The dotted lines denote the means of the respective variables. Each dot represents a value pair for a district. House prices data are obtained from (ref:rwigeored), and data for housing quantity measures are extracted from (ref:atlas-germany).
+\textit{Notes:} This figure depicts the housing supply growth against the predicted growth of house prices. $\widehat{\Delta\ln P}$ represents the fitted values from this regression: $\Delta\ln P = \beta_0 + \beta_1\widehat{\Delta\ln L_i}$. Doing so keeps the variation in $\Delta\ln P$ due to only changes in housing demand. The dotted lines denote the means of the respective variables. Each dot represents a value pair for a district. The house prices data are obtained from (ref:rwigeored), and data for housing quantity measures are extracted from (ref:atlas-germany).
 \end{minipage}
 \end{figure}
 ```
 Figure \@ref(fig:quantity-vs-price-netted-out) illustrates the response of housing supply growth to demand-induced price growth. This helps us to inspect the housing supply elasticity visually. First, I regress $\Delta \ln P_i$ on the instrument (and a constant) to net out its importance, i.e., this retains the house price growth caused by demand change. Then, I plot housing supply growth ($\Delta\ln H_i$) against (the netted) price growth $\widehat{\Delta\ln P_i}$. There is a higher variation in price growth than in supply growth. On average, supply growth has been less responsive to price growth; the slope coefficient is `r round2(simple.eps)`. That means, on average, a 1% price growth is associated with a `r round2(simple.eps)`% growth in the housing supply, which implies that the housing supply has been inelastic in Germany. This study aims to explore the disparities in the responsiveness of housing supply among districts. The data shows varying growth rates in housing supply and prices among districts. By examining the reasons for this heterogeneity, we can better understand the variation in the housing supply elasticity across districts.
 
-## Main results: Housing supply heterogeneity {#district-heterogeneity}
+### Main results: Housing supply heterogeneity {#district-heterogeneity}
 
 It is evident that by restricting housing supply, physical or geographical constraints affect the housing supply elasticity. For instance, urban districts or cities have high existing built-ups, i.e., a larger fraction of their land is already developed. This creates a physical constraint for new development or redevelopment. As a result, highly developed or dense cities may not respond, to a certain change in housing demand, as much as growing and scarcely populated rural districts---which usually have relatively lower levels of existing land development (thus have more land for new construction). This is what the data, as well as the empirical results, show. In 2006, the data available close to the initial period of the study (i.e., 2008), the average level of development intensity, measured by the fraction of land that is already developed, was `r round2(main[, mean(dev_frac_2006)])` (see Section \@ref(constraints)). Urban districts had a higher level of land development (`r round2(main[urban_rural=="Urban", mean(dev_frac_2006)])`), on average, as compared to the rural districts' (`r round2(main[urban_rural=="Rural", mean(dev_frac_2006)])`) (see Figure \@ref(fig:developed-fraction-histogram)). Thus, this development intensity heterogeneity might explain the variation in the housing supply elasticity across districts.
 
@@ -534,7 +532,7 @@ cat(readLines("output/iv-main-results_checked.tex"))
 
 The first column in Table \@ref(tab:iv-main-results-checked) presents the baseline floorspace elasticity estimate for $\varepsilon^S$. It is highly statistically significant and equals `r round2(eps.fs.1)`. This estimate indicates that, on average, the responsiveness of housing supply to a 1% change in house prices across districts in Germany between 2008 and 2019,  is `r round2(eps.fs.1)`%, holding other factors constant. However, this average estimate masks potential variations across districts, which will be accounted for in subsequent steps.
 
-### Land development intensity {.unnumbered}
+#### Land development intensity {.unnumbered}
 
 In this step, I examine how development intensity, measured by the fraction of developed land in the initial period, affects the housing supply elasticity. As discussed in Section \@ref(district-heterogeneity), districts differ in their development intensities; while some are already highly built-up, some others are growing. A high level of existing land development may limit new development or make redevelopment difficult or costly. Thus, highly built-up districts may have low supply responses as they do not have vacant land for constructing new houses, regardless of the size of the demand shock, keeping other things constant. In this case, we may expect demand growth to create price growth instead of quantity growth. In Figure \@ref(fig:supply-constraints-elasticity), we can see that the slope of the supply curve gets flatter for higher quartiles of development intensity. In the second column of Table \@ref(tab:iv-main-results-checked), I control for districts' levels of development intensity in 2006 by interacting it with $\Delta\ln P$. For the average development intensity of `r round(100 * pars$ave.dev, 2)`%, the housing supply elasticity is `r round(with(est.fs.2, vareps + b_dev  * pars$ave.dev), 2)`. Moving within the interquartile range of development intensity (`r paste(sprintf("%.1f%%", 100 * iqr$dev), collapse = "-")`), lowers the floorspace elasticity from `r round(est.fs.2$vareps + est.fs.2$b_dev * iqr$dev[1], 2)` to `r round(est.fs.2$vareps + est.fs.2$b_dev * iqr$dev[2], 2)`[^05-results-6], that is a `r 100 * round((est.fs.2$vareps + est.fs.2[["b_dev"]] * iqr[["dev"]][1]) / (est.fs.2[["vareps"]] + est.fs.2[["b_dev"]] * iqr$dev[2]) - 1, 2)`% difference in the housing supply elasticity.
 
@@ -602,7 +600,7 @@ main[, .(
 \end{minipage}
 \end{figure}
 ```
-### Land unavailability {.unnumbered}
+#### Land unavailability {.unnumbered}
 
 In this step, I examine the impact of restrictive geography on the housing supply elasticity, measured by the fraction of unavailable land. The housing supply elasticity should be lower in districts where land unavailability is relatively high. According to the results, the housing supply elasticity in Germany is not significantly impacted by land unavailability. This is shown by the statistically insignificant coefficient $\widehat{\beta}^{\text{Unavail}}$ (see column (3) of Table \@ref(tab:iv-main-results-checked) and Figure \@ref(fig:supply-constraints-elasticity)). Controlling for the level of land unavailability ($\text{Unavail}$), the estimated floorspace elasticity does not change, `r round3(est.fs.3$vareps)`.[^05-results-7] As compared to the constant elasticity case ($\widehat{\varepsilon}=`r round3(eps.fs.1)`$), the difference is negligible (`r round3(eps.fs.1 - est.fs.3$vareps)`). This may imply that land unavailability does not lower the housing supply elasticity. This is consistent with the low variation in land unavailability across districts; the average land unavailability (`r round2(pars$ave.unavail)`) is small. Thus, there is no clear pattern that land unavailability lowers the housing supply elasticity in Germany.
 

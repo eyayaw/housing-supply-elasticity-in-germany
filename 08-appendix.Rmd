@@ -1,8 +1,8 @@
 \newpage
 
-# Appendix {.unnumbered}
+## Appendix {.unnumbered}
 
-# (APPENDIX) Appendix {.unnumbered}
+## (APPENDIX) Appendix {.unnumbered}
 
 ```{=tex}
 \renewcommand\theequation{\thesection.\arabic{equation}}    
@@ -14,7 +14,7 @@
 \renewcommand\thetable{\thesection.\arabic{table}}    
 \setcounter{table}{0}
 ```
-# Derivation of the housing supply function {#supplyapp}
+### Derivation of the housing supply function {#supplyapp}
 
 A competitive developer combines a fixed amount of land $\overline{T}$ and non-land inputs $K$, which I simply call capital, to produce housing $H$ via a Cobb-Douglas technology: \begin{equation}
   H = H(A, \overline{T}, K) = A \overline{T}^{\alpha} K^{1-\alpha}(\#eq:app-cobb),
@@ -71,9 +71,9 @@ Now I can derive the housing supply elasticity, \begin{equation}
 knitr::opts_chunk$set(cache = FALSE)
 ```
 
-# Tables and Figures
+### Tables and Figures
 
-## Tables
+#### Tables
 
 ```{r first-stage-results-checked, results='asis'}
 cat(readLines('output/first-stage-results_checked.tex'))
@@ -94,7 +94,7 @@ cat(readLines("output/iv-results_single-family_checked.tex"))
 # cat(readLines("output/iv-results_Completions--single-family_checked.tex"))
 ```
 
-## Figures
+#### Figures
 
 ```{=latex}
 \begin{figure}[H]

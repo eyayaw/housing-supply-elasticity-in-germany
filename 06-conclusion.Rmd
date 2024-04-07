@@ -1,4 +1,4 @@
-# Conclusion
+## Conclusion
 
 While the existing literature presents strong evidence about the impact of housing supply constraints on house prices and housing supply elasticities in the US housing markets, the literature needs to be more comprehensive about other markets. Therefore, this paper attempts to highlight the unique characteristics of the German housing markets concerning housing supply constraints and elasticity.
 

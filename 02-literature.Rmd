@@ -1,4 +1,4 @@
-# Literature
+## Literature
 
 <!-- > [*Prepare a table that summarizes the existing literature: indicate what housing supply measure used, time period, intervals of estimates, spatial scale, and so on*] -->
 

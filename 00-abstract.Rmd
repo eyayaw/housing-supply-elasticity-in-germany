@@ -1,4 +1,4 @@
-# Abstract {.unnumbered}
+## Abstract {.unnumbered}
 
 The study estimates the housing supply elasticity and the impact of geographic constraints in Germany from 2008-2019 using the Bartik instrument. The results show that the housing supply is, on average, inelastic, with a floorspace elasticity of `r round(eps.fs.1,2)` and a units elasticity of `r round(eps.u.1,2)`. The study also reveals that geographical constraints partially affect the housing supply elasticity across districts. Notably, high development intensity decreases the elasticity, while the unavailability of land for development due to restrictive geography has no significant impact on the housing supply elasticity. The housing supply elasticity estimates may prove useful for calibrating quantitative urban models in Germany.
 
@@ -7,5 +7,5 @@ Keywords: House prices, housing supply, housing supply elasticity
 
 ```{=tex}
 \pagenumbering{gobble} % Remove page numbers (and reset to 1)
-\pagebreak
+\newpage
 ```

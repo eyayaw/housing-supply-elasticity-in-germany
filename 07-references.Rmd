@@ -1,6 +1,6 @@
 \newpage
 
-# References {.unnumbered}
+## References {.unnumbered}
 
 ::: {#refs}
 :::
