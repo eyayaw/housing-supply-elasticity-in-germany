@@ -14,9 +14,9 @@ het <- function(obj, type = "HC1", ...) {
   list(se = se, pval = pval)
 }
 
-my_texreg <- function(l, ..., caption = NULL, digits = 3, fontsize = "normalsize", float.pos = "H") {
+my_texreg <- function(l, ..., caption = NULL, digits = 3, fontsize = "normalsize", float.pos = "") {
   texreg(l,
-    caption = sprintf("\\textbf{%s}", caption),
+    caption = caption,
     caption.above = TRUE,
     stars = c(1, 5, 10) / 100,
     include.adjrs = FALSE,
@@ -151,6 +151,7 @@ for (i in seq_along(deps)) {
     ),
     caption = sprintf("IV Results: Housing Supply Elasticity Estimates (%s)", names(deps)[[i]]),
     custom.note = custom.note,
+    label = sprintf("tbl-iv-main-results-%s-checked", names(deps)[[i]]),
     no.margin = TRUE
   ) -> out[[i]]
   write(out[[i]], sprintf("output/iv-main-results_%s_checked.tex", names(deps)[[i]]))
@@ -168,11 +169,10 @@ tab_main_results = my_texreg(main_results,
   custom.header = setNames(list(seq_len(nmods/2), (nmods/2 + 1):nmods), bold(c("Floorspace", "Units"))),
   custom.model.names = paste0("(", rep(seq_len(nmods/2), 2), ")"),
   caption = "IV Results: Housing Supply Elasticity Estimates",
-  label = "tab:iv-main-results-checked",
+  label = "tbl-iv-main-results-checked",
   custom.note = custom.note,
   fontsize = "footnotesize",
   no.margin = TRUE
-  # sideways = TRUE,float.pos = "hbtp!"
 )
 
 write(tab_main_results, "output/iv-main-results_checked.tex")
@@ -230,12 +230,12 @@ for (i in seq_along(deps_single)) {
     ),
     caption = "IV Results: Housing Supply Elasticity Estimates",
     custom.note = custom.note,
-    label = sprintf("tab:iv-results-%s--single-family-checked", names(deps_single)[[i]]),
-    fontsize = "scriptsize"
+    label = sprintf("tbl-iv-results-%s-single-family-checked", names(deps_single)[[i]]),
+    fontsize = "footnotesize"
   ) -> out_single[[i]]
   write(
     out_single[[i]],
-    sprintf("output/iv-results_%s--single-family_checked.tex", names(deps_single)[[i]])
+    sprintf("output/iv-results_%s_single-family_checked.tex", names(deps_single)[[i]])
   )
 }
 
@@ -247,7 +247,7 @@ coefs_single = mods_single |>
   rbindlist(use.names = TRUE, idcol = "qmeasure")
 coefs_single[, case := paste0("case.", case)]
 
-fwrite(coefs_single, "output/elasticity-estimates-single-family_checked.csv")
+fwrite(coefs_single, "output/elasticity-estimates_single-family_checked.csv")
 
 ### wide table showing floorspace and units results ----
 results = with(mods_single, c(Floorspace, Units))
@@ -260,7 +260,7 @@ tab_results = my_texreg(results,
   custom.header = setNames(list(seq_len(nmods/2L), (nmods/2+1):nmods), bold(c("Floorspace", "Units"))),
   custom.model.names = paste0("(", rep(seq_len(nmods/2), 2), ")"),
   caption = "IV Results: Housing Supply Elasticity Estimates (single-family homes)",
-  label = "tab:iv-results-single-family-checked",
+  label = "tbl-iv-results-single-family-checked",
   custom.note = custom.note,
   fontsize = "footnotesize",
   no.margin = TRUE
@@ -288,7 +288,7 @@ if ("(Intercept)" %in% names(coef.nms)) {
   coef.nms = c(coef.nms[-loc], coef.nms[loc])
 }
 
-custom.note = "The dependent variable is change in the log of house prices (of all-type, including single-family homes) in the first column, and of only single-family homes in the second column. Regressions include urban vs. rural and west vs. east district classifications as defined by BBSR (2021), the log of population and household income in 2008. Robust standard errors are in parentheses."
+custom.note = "The dependent variable is the change in the log of house prices (of all-type, including single-family homes) in the first column, and of only single-family homes in the second column. Regressions include urban vs. rural and west vs. east district classifications as defined by BBSR (2021), the log of population and household income in 2008. Robust standard errors are in parentheses."
 custom.note = sprintf("\\item %%stars. \\\\ \\textit{Notes:} %s", custom.note)
 
 my_texreg(fstage,
@@ -298,12 +298,10 @@ my_texreg(fstage,
   custom.header = setNames(list(1, 2), bold(c("All homes", "Single-family homes"))),
   custom.model.names = paste0("(", seq_along(fstage), ")"),
   caption = "First-stage Results",
-  label = "tab:first-stage-results-checked",
+  label = "tbl-first-stage-results-checked",
   include.fstatistic = TRUE,
   custom.note = custom.note,
   fontsize = "footnotesize"
-  # no.margin = TRUE
-  # sideways = TRUE
 ) -> tab_fs_results
 
 write(tab_fs_results, "output/first-stage-results_checked.tex")
@@ -360,7 +358,7 @@ for (i in seq_along(ols_out)) {
     custom.header = setNames(as.list(seq_along(ols[[i]])), names(ols[[i]])),
     caption = "OLS Results: Housing Supply Elasticity Estimates",
     custom.note = if (names(ols_out)[[i]]=="single-family") sub("completions", "completions, all for single-family homes", custom.note) else custom.note,
-    label = sprintf("tab:ols-results--%s-checked", names(ols)[[i]]),
+    label = sprintf("tbl-ols-results-%s-checked", names(ols)[[i]]),
     fontsize = "footnotesize"
   ) -> ols_out[[i]]
   write(ols_out[[i]], sprintf("output/OLS-results_%s_checked.tex", names(ols)[[i]]))

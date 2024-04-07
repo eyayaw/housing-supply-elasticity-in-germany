@@ -1,0 +1,10 @@
+```{r}
+#| label: tbl-iv-main-results-Completions-checked
+#| tbl-cap: 'IV Results: Housing Supply Elasticity Estimates (Completions)'
+#| output: asis
+
+source('output/create_tbl_chunk.R')
+
+lines = get_tbl_body('output//iv-main-results_Completions_checked.tex', rm_caption=TRUE, rm_label=TRUE)
+cat(lines)
+```

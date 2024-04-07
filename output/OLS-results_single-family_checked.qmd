@@ -1,0 +1,10 @@
+```{r}
+#| label: tbl-ols-results-single-family-checked
+#| tbl-cap: 'OLS Results: Housing Supply Elasticity Estimates'
+#| output: asis
+
+source('output/create_tbl_chunk.R')
+
+lines = get_tbl_body('output//OLS-results_single-family_checked.tex', rm_caption=TRUE, rm_label=TRUE)
+cat(lines)
+```
