@@ -118,7 +118,7 @@ group_data[year %in% c(2008, 2019), .(
 
 ### Descriptive analysis
 
-As shown in Figure \ref{fig-price-growth}, average prices of houses in Germany have significantly increased over the 2008-2019 time period across districts. In level terms, the average price of houses (of all types) was about €`r formatNum(agg_de[year == 2008, hpi])` per square meters (m^2^) in 2008, which rose by about `r with(agg_de, round1((hpi[year == 2019] / hpi[year == 2008] - 1)*100))`% to about €`r formatNum(agg_de[year == 2019, hpi])` per m^2^ in 2019. Single-family homes followed the same trend; the average price of single-family homes increased by about `r with(agg_de, round1((hpi_single_fam[year == 2019] / hpi_single_fam[year == 2008] - 1)*100))`%.[^05-results-1] Variation in average house prices (measured by the standard deviation) across districts has significantly risen over this period. For all homes, the standard deviation of prices in €/m^2^ has increased by `r round1(100 * grate(agg_de[year %in% c(2008, 2019), sd_p])[2])`%, from about `r formatNum(agg_de[year == 2008, sd_p])` in 2008 to about `r formatNum(agg_de[year == 2019, sd_p])` in 2019. For single-family homes, price variation has gone up by `r round(100 * grate(agg_de[year %in% c(2008, 2019), sd_p_single_fam])[2])`%, from `r formatNum(agg_de[year == 2008, sd_p_single_fam])` in 2008 to `r formatNum(agg_de[year == 2019, sd_p_single_fam])` in 2019.
+As shown in Figure \ref{fig-price-growth}, average prices of houses in Germany have significantly increased over the 2008-2019 time period across districts. In level terms, the average price of houses (of all types) was about €`r formatNum(agg_de[year == 2008, hpi])` per m^2^ in 2008, which rose by about `r with(agg_de, round1((hpi[year == 2019] / hpi[year == 2008] - 1)*100))`% to about €`r formatNum(agg_de[year == 2019, hpi])` per m^2^ in 2019. Single-family homes followed the same trend; the average price of single-family homes increased by about `r with(agg_de, round1((hpi_single_fam[year == 2019] / hpi_single_fam[year == 2008] - 1)*100))`%.[^05-results-1] Variation in average house prices (measured by the standard deviation) across districts has significantly risen over this period. For all homes, the standard deviation of prices in €/m^2^ has increased by `r round1(100 * grate(agg_de[year %in% c(2008, 2019), sd_p])[2])`%, from about `r formatNum(agg_de[year == 2008, sd_p])` in 2008 to about `r formatNum(agg_de[year == 2019, sd_p])` in 2019. For single-family homes, price variation has gone up by `r round(100 * grate(agg_de[year %in% c(2008, 2019), sd_p_single_fam])[2])`%, from `r formatNum(agg_de[year == 2008, sd_p_single_fam])` in 2008 to `r formatNum(agg_de[year == 2019, sd_p_single_fam])` in 2019.
 
 [^05-results-1]: These house prices are quality-adjusted, i.e., these are the hedonic values (as discussed in @sec-hedonic-hse). Additionally, prices are adjusted for inflation using Germany's 2015 general Consumer Price Index.
 
@@ -126,7 +126,7 @@ As shown in Figure \ref{fig-price-growth}, average prices of houses in Germany h
 Across space, as shown in Figure \ref{fig-spatial-pattern}, there has been high variation in the level and the growth of house prices, especially in and around big "city-districts". High-price places in 2008, such as Berlin, Munich, and Hamburg, remained expensive also in 2019 and experienced a higher house value appreciation. Urban districts have experienced relatively higher growth than their rural counterparts. Price levels have risen by about `r round1(urban_rural_gap[urban_rural=='Urban', p])`% in urban and by `r round1(urban_rural_gap[urban_rural=='Rural', p])`% in rural districts, on average, over the 2008-2019 time period. Prices of single-family homes have grown by about `r round1(urban_rural_gap[urban_rural=='Urban', p_single_fam])`% and `r round1(urban_rural_gap[urban_rural=='Rural', p_single_fam])`%, in urban and rural districts, respectively. In contrast, there has been little disparity along the West-East divide; house prices have risen by about `r round1(west_east_gap[west_east=='West', p])`% in the West and `r round1(west_east_gap[west_east=='East', p])`% in the East districts. However, the growth of prices of single-family homes has been higher in the East German districts, by `r round1(west_east_gap[west_east=='East', p_single_fam])`%, while in the West districts by `r round1(west_east_gap[west_east=='West', p_single_fam])`%.
 
 ```{=latex}
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 ```
 ```{r price-growth,fig.dim=c(6,4)}
@@ -153,18 +153,18 @@ agg_de[, .(year, ln_hpi, ln_hpi_single_fam)] |>
 ```
 
 ```{=latex}
-\caption{Development of house prices in Germany}\label{fig-price-growth}
+\caption{The development of house prices in Germany}\label{fig-price-growth}
 \medskip
 \begin{minipage}{0.95\textwidth}
 \footnotesize
-\textit{Notes:} $\ln P$ is the average of log house prices across districts each year. The house type category ``all" captures all house types, including ``single-family" homes. House prices are in 2015 prices. Data obtained from (ref:rwigeored).
+\textit{Notes:} $\ln P$ is the average of log house prices across districts each year. The house type category ``all" captures all house types, including ``single-family" homes. House prices are in 2015 prices. Data obtained from \citet{rwi_redhk_2020}.
 \end{minipage}
 \end{figure}
 ```
 
 
 ```{=latex}
-\begin{figure}[h]
+\begin{figure}[!htbp]
 \centering
 ```
 ```{r spatial-pattern, fig.dim=c(8,4)}
@@ -210,16 +210,16 @@ shapes[, c("did", "geometry")] |>
 \medskip
 \begin{minipage}{0.95\textwidth}
 \footnotesize
-\textit{Notes:} This figure shows the spatial dynamics of house prices in Germany in 2008 and 2019. $\ln P$ denotes the log of house prices in $\text{\texteuro}/m^2$. Darker colors represent higher house values. House prices are in 2015 prices. Data obtained from (ref:rwigeored).
+\textit{Notes:} This figure shows the spatial dynamics of house prices in Germany in 2008 and 2019. $\ln P$ denotes the log of house prices in $\text{\texteuro}/m^2$. Darker colors represent higher house values. House prices are in 2015 prices. Data obtained from \citet{rwi_redhk_2020}.
 \end{minipage}
 \end{figure}
 ```
-In contrast, the growth of the residential housing supply has not been strong in Germany. In the 2008-2019 time period, in the average district, housing supply, measured by the stock of residential buildings, has grown by `r round2(100 * (d$h_2019/d$h_2008 - 1))`%, and about twice higher growth has been recorded for single-family residential homes, `r round2(100 * (d$h_single_fam_2019/d$h_single_fam_2008 - 1))`%. Urban districts have experienced relatively higher growth in housing supply, too, about `r round1(urban_rural_gap[urban_rural=='Urban', h])`% in urban and `r round1(urban_rural_gap[urban_rural=='Rural', h])`% in rural districts. For the supply of single-family homes, `r round1(urban_rural_gap[urban_rural=='Urban', h_single_fam])`% and `r round1(urban_rural_gap[urban_rural=='Rural', h_single_fam])`% growth have been seen in urban and rural districts, respectively. On average, the housing supply in West German districts has grown by `r round1(west_east_gap[west_east=='West', h])`%, whereas in East German districts it has grown by `r round1(west_east_gap[west_east=='East', h])`%. The supply of single-family homes in West German districts has grown by `r round1(west_east_gap[west_east=='West', h_single_fam])`%, while in east districts by `r round1(west_east_gap[west_east=='East', h_single_fam])`%.
+In contrast, the growth of the residential housing supply has not been strong in Germany. In the 2008-2019 time period, in the average district, housing supply, measured by the stock of residential buildings, has grown by `r round2(100 * (d$h2019/d$h2008 - 1))`%, and about twice higher growth has been recorded for single-family residential homes, `r round2(100 * (d$h_single_fam_2019/d$h_single_fam_2008 - 1))`%. Urban districts have experienced relatively higher growth in housing supply, too, about `r round1(urban_rural_gap[urban_rural=='Urban', h])`% in urban and `r round1(urban_rural_gap[urban_rural=='Rural', h])`% in rural districts. For the supply of single-family homes, `r round1(urban_rural_gap[urban_rural=='Urban', h_single_fam])`% and `r round1(urban_rural_gap[urban_rural=='Rural', h_single_fam])`% growth have been seen in urban and rural districts, respectively. On average, the housing supply in West German districts has grown by `r round1(west_east_gap[west_east=='West', h])`%, whereas in East German districts it has grown by `r round1(west_east_gap[west_east=='East', h])`%. The supply of single-family homes in West German districts has grown by `r round1(west_east_gap[west_east=='West', h_single_fam])`%, while in east districts by `r round1(west_east_gap[west_east=='East', h_single_fam])`%.
 
 Figure \ref{fig-price-quantity-growth} compares average log house prices and quantity growth over time. Growth in housing supply has not been stronger than the growth of house prices. Permits and completions data support the slow development of the housing supply. New construction, in terms of permits and completions of residential buildings, as shown in Figure \ref{fig-construction-activities}, has taken a gradual uptick since 2009. However, the levels of this period are far below the 1995-2005 levels. On average, a district in 1995 permitted the construction of `r round(since95[year==1995 & house_type == 'all', permits])` residential buildings, of which `r round(since95[year==1995 & house_type == 'all', completions])` were completed in the following year. The net addition to housing stock, housing flow---level change in housing stock, was `r round(since95[year==1996 & house_type == 'all', flow])`. <!-- All three series have moved closely over time, indicating a minimal gap among them. --> The continuous decline of new building permits and completions from the late 1990s until 2009 might show the increasing difficulty of building new houses in Germany over the decades.
 
 ```{=latex}
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 ```
 ```{r price-quantity-growth, fig.dim=c(6,5), out.width="49%", fig.show='hold'}
@@ -265,12 +265,12 @@ for (i in seq_along(.vars)) {
 \medskip
 \begin{minipage}{0.95\textwidth}
 \footnotesize
-\textit{Notes:} This figure compares the annual growth of average log house prices against of average log housing supply (measured by residential buildings) in Germany by house type. Panel A displays growth rates (\%) for all types of residential buildings, including single-family buildings, and Panel B displays single-family buildings. The 2011 data points appear incorrect due to data inconsistency in connection to the 2011 German Census. The house prices data are obtained from (ref:rwigeored), and data for housing quantity measures are extracted from (ref:atlas-germany).
+\textit{Notes:} This figure compares the annual growth of average log house prices against of average log housing supply (measured by residential buildings) in Germany by house type. Panel A displays growth rates (\%) for all types of residential buildings, including single-family buildings, and Panel B displays single-family buildings. The 2011 data points appear incorrect due to data inconsistency in connection to the 2011 German Census. The house prices data are obtained from \citet{rwi_redhk_2020}, and data for housing quantity measures are extracted from \citet{atlasde_2022}.
 \end{minipage}
 \end{figure}
 ```
 ```{=latex}
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 ```
 ```{r construction-activities, fig.dim=c(6,4)}
@@ -305,7 +305,7 @@ since95 |>
 \medskip
 \begin{minipage}{0.95\textwidth}
 \footnotesize
-\textit{Notes:} This figure shows construction activities in residential buildings in the average district. \textit{Flow} is defined as the annual change in the stock of residential buildings. The construction statistics of the 1995-2008 period reveal important details about the growth of new construction in Germany compared to the recent data points this study examines. The 2011 value for flow is discarded due to data issues. The data are obtained from (ref:atlas-germany).
+\textit{Notes:} This figure shows construction activities in residential buildings in the average district. \textit{Flow} is defined as the annual change in the stock of residential buildings. The construction statistics of the 1995-2008 period reveal important details about the growth of new construction in Germany compared to the recent data points this study examines. The 2011 value for flow is discarded due to data issues. The data are obtained from \citet{atlasde_2022}.
 \end{minipage}
 \end{figure}
 ```
@@ -331,7 +331,7 @@ cat(readLines('output/OLS-results_all_checked.tex'))
 The identification challenge in estimating the housing supply elasticity is isolating the demand-induced change in the housing supply. The Bartik instrument utilized to handle the endogeneity ($\widehat{\Delta\ln L_i}$) meets the relevance requirement very well. The partial correlation between $\Delta \ln P_i$ and $\widehat{\Delta\ln L_i}$ is strong, with an F-statistic well above 10 in the first stage, as shown in the first-stage results in the Appendix in @tbl-first-stage-results-checked. Note that other observable important housing demand predictors are controlled for. Figure \ref{fig-first-stage} shows a strong correlation between the instrument and the growth of house prices.
 
 ```{=latex}
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 ```
 ```{r first-stage, fig.dim=c(6,5), fig.show='hold', out.width="49%"}
@@ -376,7 +376,7 @@ for (i in seq_along(.vars)) {
 \medskip
 \begin{minipage}{0.95\textwidth}
 \footnotesize
-\textit{Notes:} This figure shows the correlation between the endogenous variable ($\Delta\ln P$) and the instrument ($\widehat{\Delta\ln L_i}$), i.e., the relevance condition of the instrument, by house type. Each dot represents a value pair for a district. The house prices data are obtained from (ref:rwigeored), and the employment data from (ref:atlas-germany).
+\textit{Notes:} This figure shows the correlation between the endogenous variable ($\Delta\ln P$) and the instrument ($\widehat{\Delta\ln L_i}$), i.e., the relevance condition of the instrument, by house type. Each dot represents a value pair for a district. The house prices data are obtained from \citet{rwi_redhk_2020}, and the employment data from \citet{atlasde_2022}.
 \end{minipage}
 \end{figure}
 ```
@@ -393,7 +393,7 @@ Of these `r main[bartik>0, .N]` districts with positive employment growth, `r ma
 [^05-results-4]: However, of all `r main[, .N]` districts, `r main[dln_hpi>0, .N]` of them have seen positive growth in house prices, and `r main[dln_total_buildings>0, .N]` in housing supply.
 
 ```{=latex}
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 ```
 ```{r quantity-vs-price-netted-out,fig.dim=c(6,4)}
@@ -427,7 +427,7 @@ main[, .(H, urban_rural, Phat)] |>
 \medskip
 \begin{minipage}{0.95\textwidth}
 \footnotesize
-\textit{Notes:} This figure depicts the housing supply growth against the predicted growth of house prices. $\widehat{\Delta\ln P}$ represents the fitted values from this regression: $\Delta\ln P = \beta_0 + \beta_1\widehat{\Delta\ln L_i}$. Doing so keeps the variation in $\Delta\ln P$ due to only changes in housing demand. The dotted lines denote the means of the respective variables. Each dot represents a value pair for a district. The house prices data are obtained from (ref:rwigeored), and data for housing quantity measures are extracted from (ref:atlas-germany).
+\textit{Notes:} This figure depicts the housing supply growth against the predicted growth of house prices. $\widehat{\Delta\ln P}$ represents the fitted values from this regression: $\Delta\ln P = \beta_0 + \beta_1\widehat{\Delta\ln L_i}$. Doing so keeps the variation in $\Delta\ln P$ due to only changes in housing demand. The dotted lines denote the means of the respective variables. Each dot represents a value pair for a district. The house prices data are obtained from \citet{rwi_redhk_2020}, and data for housing quantity measures are extracted from \citet{atlasde_2022}.
 \end{minipage}
 \end{figure}
 ```
@@ -460,7 +460,7 @@ setnames(constraints_long, sub("_$", "", names(constraints_long)))
 ```
 
 ```{=latex}
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 ```
 ```{r scatter-supply-constraints, fig.dim=c(6,5), fig.show='hold', out.width='49%'}
@@ -546,7 +546,7 @@ In this step, I examine how development intensity, measured by the fraction of d
 [^05-results-6]: That is computed as ($\widehat{\varepsilon_i} = \widehat{\varepsilon} + \widehat{\beta}^{\text{Developed}}\cdot\text{Developed}_i = `r round(est.fs.2[['vareps']], 2)` `r sprintf('%.2f', est.fs.2[['b_dev']])` \cdot\text{Developed}_i = (`r round(est.fs.2[["vareps"]] + est.fs.2[["b_dev"]] * iqr[["dev"]][1], 2)`, `r round(est.fs.2[["vareps"]] + est.fs.2[["b_dev"]] * iqr[["dev"]][2], 2)`)$).
 
 ```{=latex}
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 ```
 ```{r supply-constraints-elasticity, fig.dim=c(6,5), fig.show='hold', out.width="49.5%"}
@@ -620,7 +620,7 @@ Finally, the above two steps are combined, corresponding to estimating $\varepsi
 The above cases show that only land development intensity significantly constrains the housing supply elasticity, while land undevelopability due to restrictive geography has no significant impact. Comparing the estimated coefficients on the respective interaction terms (see @tbl-iv-main-results-checked) shows that development intensity has an about `r round2(abs(est.fs.4$b_dev))` negative impact in mediating the response of housing supply growth to price growth ($\widehat{\beta}^{\text{Developed}} = `r round2(est.fs.2[['b_dev']])`$). Land development intensity ranges between (`r paste(round2(range(main$dev_frac)), collapse=', ')`), as a result, the housing supply elasticity estimate ranges between (`r paste(round2(est.fs.4$vareps + est.fs.4$b_dev * range(main$dev_frac)), collapse=', ')`). As the left panel in Figure \ref{fig-distributions-elasticity-constraints} shows, the higher variation in the share of developed land (with a standard deviation of `r sprintf('%.2f', constraints_long[year == 2006, .(var(dev_frac)^.5)])`) translates into variations in the housing supply elasticity.
 
 ```{=latex}
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 ```
 ```{r distributions-elasticity-constraints, fig.dim=c(6,5), fig.show='hold', out.width="49.5%"}

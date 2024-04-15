@@ -1,10 +1,10 @@
 ## Data
 
-I construct a house price index from a granular and rich set of house price data. Housing stock and floorspace, population, and the employment data are all obtained from the German Regional Statistical Offices Database.
+I construct a house price index from a granular and rich set of house price data. The housing stock and floorspace, population, and employment data are all obtained from the German Regional Statistical Offices Database.
 
 ### House prices {#sec-hedonic-hse}
 
-I use the RWI-GEO-Real Estate Data of the FDZ Ruhr at RWI [@@rwi_immobilienscout24_2020] to construct quality-adjusted house prices.[^04-data-1] The data are highly detailed (at a scale of 1km^2^ grid), cover all of Germany, and are available since 2007. Moreover, the data come with a rich set of property characteristics, enabling us to compute a hedonic price index to quality-adjust house prices.
+I use the RWI-GEO-Real Estate Data of the FDZ Ruhr at RWI [@rwi_redhk_2020] to construct quality-adjusted house prices.[^04-data-1] The data are highly detailed (at a scale of 1km^2^ grid), cover all of Germany, and have been available since 2007. Moreover, the data come with a rich set of property characteristics, enabling us to compute a hedonic price index to quality-adjust house prices.
 
 [^04-data-1]: The original data is provided by *ImmobilienScout24*, Germany's largest online platform for listing real estate (for both selling and renting houses and apartments). The house prices are self-reported offer prices by the respective home seller or agent and may therefore differ from the actual transaction prices.
 
@@ -53,7 +53,7 @@ T^{\text{undevelopable}} = T^{steep} + T^{\text{wetland}} + T^{\text{water}}.
 $$ 
 Then, the share of undevelopable land (out of the total land), $r^{\text{undevelopable}} = \frac{T^{\text{undevelopable}}}{T}$. Similarly, the share of "developed land" is $r^{\text{developed}} = \frac{T^{\text{artificial}}}{T}$.
 
-Undevelopable share is this paper's main measure of geographical constraint, with TRI and simple slope as alternative measures. Finally, the developed share measures the existing level of development intensity.
+Undevelopable share is this paper's main measure of geographical constraint, with TRI and slope as alternative measures. Finally, the developed share measures the existing level of development intensity.
 
 ### Bartik shocks: Predicted employment growth
 

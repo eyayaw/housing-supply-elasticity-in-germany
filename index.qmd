@@ -1,36 +1,35 @@
 ---
-title: "Geographic Constraints and the Housing Supply Elasticity in Germany"
-author: |
-  Eyayaw Beze^[Eyayaw Beze, University of Duisburg-Essen. -- I am grateful to my advisor, Tobias Seidel, for his insightful comments and guidance. I also thank Thomas Bauer, Nadine Riedel, Andreas Mense, and members of the Research Training Group (RTG) Regional Disparities \& Economic Policy, the Ruhr Graduate School in Economics (RGS Econ), and the Mercator School of Management, University of Duisburg-Essen, for helpful comments and discussions. Finally, I am highly grateful for the financial support from the Stiftung Mercator via the RGS Econ. -- All correspondence to: Eyayaw Beze, University of Duisburg-Essen, Lotharstr. 65, 47057 Duisburg, Germany, e-mail: eyayaw.beze\@uni-due.de]
-date: date-modified
-bibliography: references.bib
-biblio-style: apalike
-link-citations: true
-colorlinks: true
-linkcolor: blue
-fontsize: 12pt
-geometry: a4paper
-format:
-  pdf:
-    latex_engine: xelatex
-    include-in-header: preamble.tex
-    cite-method: natbib
-    toc: false
-    keep-tex: true
-natbiboptions: round
-documentclass: article
-nocite: |
-  [@bbsr_2021]
-subtitle: |
-  \begin{center}
-  \href{https://uni-duisburg-essen.sciebo.de/s/km7tQzcygRQjwp6}{Click here for the latest version.}
-  \end{center}
+title: "Geographic Constraints and the Housing Supply Elasticity in Germany {#sec-chapter1}"
+# author: |
+#   Eyayaw Beze^[Eyayaw Beze, University of Duisburg-Essen. -- I am grateful to my advisor, Tobias Seidel, for his insightful comments and guidance. I also thank Thomas Bauer, Nadine Riedel, Andreas Mense, and members of the Research Training Group (RTG) Regional Disparities \& Economic Policy, the Ruhr Graduate School in Economics (RGS Econ), and the Mercator School of Management, University of Duisburg-Essen, for helpful comments and discussions. Finally, I am highly grateful for the financial support from the Stiftung Mercator via the RGS Econ. -- All correspondence to: Eyayaw Beze, University of Duisburg-Essen, Lotharstr. 65, 47057 Duisburg, Germany, e-mail: eyayaw.beze\@uni-due.de]
+# date: date-modified
+# bibliography: references.bib
+# biblio-style: apalike
+# link-citations: true
+# colorlinks: true
+# linkcolor: blue
+# fontsize: 12pt
+# geometry: a4paper
+# format:
+#   pdf:
+#     latex_engine: xelatex
+#     include-in-header: preamble.tex
+#     cite-method: natbib
+#     toc: false
+#     keep-tex: true
+# natbiboptions: round
+# documentclass: article
+# nocite: |
+#   [@bbsr_2021]
+# subtitle: |
+#   \begin{center}
+#   \href{https://uni-duisburg-essen.sciebo.de/s/km7tQzcygRQjwp6}{Click here for the latest version.}
+#   \end{center}
 ---
 
-
-(ref:atlas-germany) the @atlasde_2022
-
-(ref:rwigeored) @@rwi_immobilienscout24_2020
+```{=tex}
+% \begin{bibunit}
+```
 
 ```{r global-opts, include=FALSE}
 library(knitr)

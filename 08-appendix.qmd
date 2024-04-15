@@ -1,14 +1,7 @@
-## Appendix {.unnumbered}
+## Appendix {#sec-appendix-hse .unnumbered .appendix}
 
 ```{=tex}
-\renewcommand\theequation{\thesection.\arabic{equation}}    
-\setcounter{equation}{0}
-
-\renewcommand\thefigure{\thesection.\arabic{figure}}    
-\setcounter{figure}{0}
-
-\renewcommand\thetable{\thesection.\arabic{table}}    
-\setcounter{table}{0}
+\setupappendix
 ```
 
 ### Derivation of the housing supply function {#sec-hs-appendix}
@@ -131,7 +124,7 @@ cat(readLines("output/iv-results_Completions_single-family_checked.tex"))
 <!-- #### Figures -->
 
 ```{=latex}
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 ```
 ```{r quantity-growth, fig.dim=c(6,4)}
@@ -156,12 +149,12 @@ agg_de[, .(year, `all` = buildings, `single-family` = single_fam)] |>
 \medskip
 \begin{minipage}{0.9\textwidth}
 \footnotesize
-\textit{Notes:} This figure shows the total building flow (annual change in stock) in Germany in the 2008-2019 period. The house type category ``all" captures all house types, including ``single-family" homes. The data are obtained from (ref:atlas-germany). 
+\textit{Notes:} This figure shows the total building flow (annual change in stock) in Germany in the 2008-2019 period. The house type category ``all" captures all house types, including ``single-family" homes. The data are obtained from \citet{atlasde_2022}. 
 \end{minipage}
 \end{figure}
 ```
 ```{=latex}
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 ```
 ```{r price-variation, fig.dim=c(6,4)}
@@ -192,12 +185,12 @@ reshape(in_levels[, .(did, year, ln_hpi, ln_hpi_single_fam)],
 \medskip
 \begin{minipage}{0.95\textwidth}
 \footnotesize
-\textit{Notes:} This figure shows the house price variation across districts in Germany over time. The house price variation is measured by the standard deviation of $\ln P$ across districts yearly. The house type category ``all" captures all house types, including ``single-family" homes. The data are obtained from (ref:rwigeored). 
+\textit{Notes:} This figure shows the house price variation across districts in Germany over time. The house price variation is measured by the standard deviation of $\ln P$ across districts yearly. The house type category ``all" captures all house types, including ``single-family" homes. The data are obtained from \citet{rwi_redhk_2020}. 
 \end{minipage}
 \end{figure}
 ```
 ```{=latex}
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 ```
 ```{r developed-fraction-histogram, fig.dim=c(6,3)}
@@ -232,7 +225,7 @@ constraints_long |>
 \end{figure}
 ```
 ```{=latex}
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 ```
 ```{r developed-fraction-growth,fig.dim=c(6,3)}
@@ -267,7 +260,7 @@ main[, .(did, urban_rural, west_east,
 \end{figure}
 ```
 ```{=latex}
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 ```
 ```{r predicted-vs-actual-labor-demand-shock,fig.dim=c(6,4)}
@@ -285,12 +278,12 @@ main[, .(x = bartik, y = dln_emp_act)] |>
 \medskip
 \begin{minipage}{0.95\textwidth}
 \footnotesize
-\textit{Notes:} The figure compares the labor demand shock predicted from local employment (Bartik instrument) to the actual employment growth. The labor demand shock on the x-axis helps identify the price elasticity of housing supply in the study. Employment data are sourced from (ref:atlas-germany).
+\textit{Notes:} The figure compares the labor demand shock predicted from local employment (Bartik instrument) to the actual employment growth. The labor demand shock on the x-axis helps identify the price elasticity of housing supply in the study. Employment data are sourced from \citet{atlasde_2022}.
 \end{minipage}
 \end{figure}
 ```
 ```{=latex}
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 ```
 ```{r land-cover-classes-I, out.width="100%", fig.width=8, fig.height=6}
@@ -303,12 +296,12 @@ include_graphics("output/figs/developable-land.png")
 \medskip
 \begin{minipage}{0.95\textwidth}
 \footnotesize
-\textit{Notes:} This figure shows the distribution of developable land in Germany. The developable land includes an area covered by agriculture, forests, or artificial surfaces (see section \ref{constraints}). Areas covered with artificial surfaces are part of the developable stock as they can be redeveloped through renovation or demolition. The data are extracted from Corine Land Cover (CLC) Germany, compiled by the \hyperlink{https://www.dlr.de/eoc/en/desktopdefault.aspx/tabid-11882/20871_read-48836}{German Remote Sensing Data Center (DFD) of DLR} and the \hyperlink{https://www.bkg.bund.de}{Federal Agency for Cartography and Geodesy (BKG)}.
+\textit{Notes:} This figure shows the distribution of developable land in Germany. The developable land comprises the area covered by agriculture, forests, or artificial surfaces (see Section \ref{sec-constraints}). Areas covered with artificial surfaces are part of the developable stock as they can be redeveloped through renovation or demolition. The data are extracted from Corine Land Cover (CLC) Germany, compiled by the \hyperlink{https://www.dlr.de/eoc/en/desktopdefault.aspx/tabid-11882/20871_read-48836}{German Remote Sensing Data Center (DFD) of DLR} and the \hyperlink{https://www.bkg.bund.de}{Federal Agency for Cartography and Geodesy (BKG)}.
 \end{minipage}
 \end{figure}
 ```
 ```{=latex}
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 ```
 ```{r land-cover-classes-II, fig.show='hold', out.height="100%", out.width="100%"}
@@ -318,12 +311,18 @@ include_graphics(c(
 ```
 
 ```{=latex}
-\caption{Undevelopable land (top) and developed (bottom) land in Germany}
+\caption{Undevelopable (top) and developed (bottom) land}
 \medskip
-\begin{minipage}{0.95\textwidth}
+\begin{minipage}{0.975\textwidth}
 \footnotesize
-\textit{Notes:} This figure shows the distribution of undevelopable land and already developed land in Germany. The undevelopable land includes an area covered by wetlands and water bodies (see Section \ref{sec-constraints}). Developed land is for areas already covered with artificial surfaces such as buildings. 
-The data are extracted from Corine Land Cover (CLC) Germany, compiled by the \hyperlink{https://www.dlr.de/eoc/en/desktopdefault.aspx/tabid-11882/20871_read-48836}{German Remote Sensing Data Center (DFD) of DLR} and the \hyperlink{https://www.bkg.bund.de}{Federal Agency for Cartography and Geodesy (BKG)}.
+\textit{Notes:} This figure shows the distribution of undevelopable land and developed land in Germany. The undevelopable land comprises wetlands and water bodies (see Section \ref{sec-constraints}). The developed land is for areas already covered with artificial surfaces such as buildings. The data are extracted from Corine Land Cover (CLC) Germany, compiled by the \hyperlink{https://www.dlr.de/eoc/en/desktopdefault.aspx/tabid-11882/20871_read-48836}{German Remote Sensing Data Center (DFD) of DLR} and the \hyperlink{https://www.bkg.bund.de}{Federal Agency for Cartography and Geodesy (BKG)}.
 \end{minipage}
 \end{figure}
+```
+
+```{=tex}
+%%%---end-of-chapter1---%%%
+```
+```{=tex}
+\end{bibunit}
 ```
