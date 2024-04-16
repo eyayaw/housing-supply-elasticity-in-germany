@@ -246,12 +246,19 @@ elasticity <- data.frame(
 {{< include 00-abstract.qmd >}}
 \newpage
 {{< include 01-intro.qmd >}}
+
 {{< include 02-literature.qmd >}}
+
 {{< include 03-method.qmd >}}
+
 {{< include 04-data.qmd >}}
+
 {{< include 05-results.qmd >}}
+
 {{< include 06-conclusion.qmd >}}
 \newpage
+
 {{< include 07-references.qmd >}}
 \newpage
+
 {{< include 08-appendix.qmd >}}

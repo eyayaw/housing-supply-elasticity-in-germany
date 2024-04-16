@@ -123,11 +123,13 @@ cat(readLines("output/iv-results_Completions_single-family_checked.tex"))
 
 <!-- #### Figures -->
 
-```{=latex}
-\begin{figure}[!htbp]
-\centering
-```
-```{r quantity-growth, fig.dim=c(6,4)}
+
+```{r}
+#| label: fig-quantity-growth
+#| fig-cap: "The total building stock in Germany (annual change).<<<*Notes:* This figure shows the total building flow (annual change in stock) in Germany in the 2008-2019 period. The house type category \"all\" captures all house types, including \"single-family\" homes. The data are obtained from @atlasde_2022.>>>"
+#| fig-width: 6
+#| fig-height: 4
+
 ## "total building stock in Germany (annual change)"
 .scale = 1e-3
 agg_de[, .(year, `all` = buildings, `single-family` = single_fam)] |>
@@ -144,20 +146,13 @@ agg_de[, .(year, `all` = buildings, `single-family` = single_fam)] |>
   theme(legend.position = c(0.03, 0.9), axis.text.y = element_text(angle = 90))
 ```
 
-```{=latex}
-\caption{The total building stock in Germany (annual change)}
-\medskip
-\begin{minipage}{0.9\textwidth}
-\footnotesize
-\textit{Notes:} This figure shows the total building flow (annual change in stock) in Germany in the 2008-2019 period. The house type category ``all" captures all house types, including ``single-family" homes. The data are obtained from \citet{atlasde_2022}. 
-\end{minipage}
-\end{figure}
-```
-```{=latex}
-\begin{figure}[!htbp]
-\centering
-```
+
 ```{r price-variation, fig.dim=c(6,4)}
+#| label: fig-price-variation
+#| fig-width: 6
+#| fig-height: 4
+#| fig-cap: "The house price variability across districts in Germany.<<<*Notes:* This figure shows the house price variation across districts in Germany over time. The house price variation is measured by the standard deviation of $\\ln P$ across districts yearly. The house type category \"all\" captures all house types, including \"single-family\" homes. The data are obtained from @rwi_redhk_2020.>>>"
+
 ## "Price variation across districts over time"
 reshape(in_levels[, .(did, year, ln_hpi, ln_hpi_single_fam)],
   dir = "long", idvar = c("did", "year"),
@@ -180,20 +175,14 @@ reshape(in_levels[, .(did, year, ln_hpi, ln_hpi_single_fam)],
   theme(legend.position = c(.6, .3))
 ```
 
-```{=latex}
-\caption{The house price variability across districts in Germany}
-\medskip
-\begin{minipage}{0.95\textwidth}
-\footnotesize
-\textit{Notes:} This figure shows the house price variation across districts in Germany over time. The house price variation is measured by the standard deviation of $\ln P$ across districts yearly. The house type category ``all" captures all house types, including ``single-family" homes. The data are obtained from \citet{rwi_redhk_2020}. 
-\end{minipage}
-\end{figure}
-```
-```{=latex}
-\begin{figure}[!htbp]
-\centering
-```
-```{r developed-fraction-histogram, fig.dim=c(6,3)}
+
+
+```{r}
+#| label: fig-developed-fraction-histogram
+#| fig-width: 6
+#| fig-height: 3
+#| fig-cap: "Land development in rural vs urban districts.<<<*Notes:* This figure shows the difference in the land development intensity between the urban and rural districts for 2006 and 2018. The land development is higher in the urban districts, as expected, as they have a higher population density and more developed land.>>>"
+
 ## "Land development in rural vs urban districts"
 constraints_long |>
   ggplot() +
@@ -215,20 +204,14 @@ constraints_long |>
   guides(fill = guide_legend(nrow = 1L))
 ```
 
-```{=latex}
-\caption{Land development in rural vs urban districts}\label{fig-developed-fraction-histogram}
-\medskip
-\begin{minipage}{0.95\textwidth}
-\footnotesize
-\textit{Notes:} This figure shows the difference in the land development intensity between the urban and rural districts for 2006 and 2018. The land development is higher in the urban districts, unsurprisingly, as they have a higher population density and more developed land.
-\end{minipage}
-\end{figure}
-```
-```{=latex}
-\begin{figure}[!htbp]
-\centering
-```
-```{r developed-fraction-growth,fig.dim=c(6,3)}
+
+
+```{r}
+#| label: fig-developed-fraction-growth
+#| fig-width: 6
+#| fig-height: 3
+#| fig-cap: "The distribution of land development growth: 2006-2018.<<<*Notes:* This figure shows the distribution of the growth of land development for urban and rural districts over the 2006-2018 period. Land development growth is higher in rural districts, partly because the rural districts had lower land development and more developable land in 2006 than the urban districts.>>>"
+
 ## "Distribution of land development growth: 2006-2018"
 
 main[, .(did, urban_rural, west_east,
@@ -248,22 +231,16 @@ main[, .(did, urban_rural, west_east,
     strip.background = element_blank()
   ) + 
   guides(color=guide_legend(nrow=1))
+
 ```
 
-```{=latex}
-\caption{The distribution of land development growth: 2006-2018}
-\medskip
-\begin{minipage}{0.95\textwidth}
-\footnotesize
-\textit{Notes:} This figure shows the distribution of the growth of land development for urban and rural districts over the 2006-2018 period. Land development growth is higher in rural districts, partly because the rural districts had lower land development and more developable land in 2006 than the urban districts.
-\end{minipage}
-\end{figure}
-```
-```{=latex}
-\begin{figure}[!htbp]
-\centering
-```
-```{r predicted-vs-actual-labor-demand-shock,fig.dim=c(6,4)}
+
+```{r}
+#| label: fig-predicted-vs-actual-labor-demand-shock
+#| fig-width: 6
+#| fig-height: 4
+#| fig-cap: "Correlation between the predicted and the actual employment growth.<<<*Notes:* The figure compares the labor demand shock predicted from local employment (the Bartik instrument) to the actual employment growth. The labor demand shock on the x-axis helps identify the price elasticity of housing supply in the study. Employment data are sourced from @atlasde_2022.>>>"
+
 ## "Predicted (i.e. the Bartik instrument) vs actual employment growth"
 main[, .(x = bartik, y = dln_emp_act)] |>
   ggplot(aes(x, y)) +
@@ -273,52 +250,33 @@ main[, .(x = bartik, y = dln_emp_act)] |>
   theme_cowplot(font_size - 2)
 ```
 
-```{=latex}
-\caption{Correlation between the predicted and the actual employment growth}
-\medskip
-\begin{minipage}{0.95\textwidth}
-\footnotesize
-\textit{Notes:} The figure compares the labor demand shock predicted from local employment (Bartik instrument) to the actual employment growth. The labor demand shock on the x-axis helps identify the price elasticity of housing supply in the study. Employment data are sourced from \citet{atlasde_2022}.
-\end{minipage}
-\end{figure}
-```
-```{=latex}
-\begin{figure}[!htbp]
-\centering
-```
-```{r land-cover-classes-I, out.width="100%", fig.width=8, fig.height=6}
+
+
+```{r}
+#| label: fig-developable-land
+#| out-width: 95%
+#| fig-cap: "Developable land in Germany.<<<*Notes:* This figure shows the distribution of developable land in Germany. The developable land comprises the area covered by agriculture, forests, or artificial surfaces (see @sec-constraints). Areas covered with artificial surfaces are part of the developable stock as they can be redeveloped through renovation or demolition. The data are extracted from Corine Land Cover (CLC) Germany, compiled by the [German Remote Sensing Data Center (DFD) of DLR](https://www.dlr.de/eoc/en/desktopdefault.aspx/tabid-11882/20871_read-48836) and the [Federal Agency for Cartography and Geodesy (BKG)](https://www.bkg.bund.de).>>>"
+
 # source('script/visualization/viz_elev-slope-undev.R')
 include_graphics("output/figs/developable-land.png")
 ```
 
-```{=latex}
-\caption{Developable land in Germany}
-\medskip
-\begin{minipage}{0.95\textwidth}
-\footnotesize
-\textit{Notes:} This figure shows the distribution of developable land in Germany. The developable land comprises the area covered by agriculture, forests, or artificial surfaces (see Section \ref{sec-constraints}). Areas covered with artificial surfaces are part of the developable stock as they can be redeveloped through renovation or demolition. The data are extracted from Corine Land Cover (CLC) Germany, compiled by the \hyperlink{https://www.dlr.de/eoc/en/desktopdefault.aspx/tabid-11882/20871_read-48836}{German Remote Sensing Data Center (DFD) of DLR} and the \hyperlink{https://www.bkg.bund.de}{Federal Agency for Cartography and Geodesy (BKG)}.
-\end{minipage}
-\end{figure}
-```
-```{=latex}
-\begin{figure}[!htbp]
-\centering
-```
-```{r land-cover-classes-II, fig.show='hold', out.height="100%", out.width="100%"}
-include_graphics(c(
-  "output/figs/undevelopable-land.png",  "output/figs/developed-land.png")
-  )
+```{r}
+#| label: fig-undevelopable-land
+#| fig-cap: "Undevelopable land.<<<*Notes:* This figure shows the distribution of undevelopable land in Germany. The undevelopable land comprises wetlands and water bodies (see @sec-constraints). The data are extracted from Corine Land Cover (CLC) Germany, compiled by the [German Remote Sensing Data Center (DFD) of DLR](https://www.dlr.de/eoc/en/desktopdefault.aspx/tabid-11882/20871_read-48836) and the [Federal Agency for Cartography and Geodesy (BKG)](https://www.bkg.bund.de).>>>"
+
+include_graphics("output/figs/undevelopable-land.png")
 ```
 
-```{=latex}
-\caption{Undevelopable (top) and developed (bottom) land}
-\medskip
-\begin{minipage}{0.975\textwidth}
-\footnotesize
-\textit{Notes:} This figure shows the distribution of undevelopable land and developed land in Germany. The undevelopable land comprises wetlands and water bodies (see Section \ref{sec-constraints}). The developed land is for areas already covered with artificial surfaces such as buildings. The data are extracted from Corine Land Cover (CLC) Germany, compiled by the \hyperlink{https://www.dlr.de/eoc/en/desktopdefault.aspx/tabid-11882/20871_read-48836}{German Remote Sensing Data Center (DFD) of DLR} and the \hyperlink{https://www.bkg.bund.de}{Federal Agency for Cartography and Geodesy (BKG)}.
-\end{minipage}
-\end{figure}
+```{r}
+#| label: fig-developed-land
+#| out-width: 95%
+#| fig-cap: "Developed land.<<<*Notes:* This figure shows the distribution of developed land in Germany. The developed land comprises areas already covered with artificial surfaces such as buildings. The data are extracted from Corine Land Cover (CLC) Germany, compiled by the [German Remote Sensing Data Center (DFD) of DLR](https://www.dlr.de/eoc/en/desktopdefault.aspx/tabid-11882/20871_read-48836) and the [Federal Agency for Cartography and Geodesy (BKG)](https://www.bkg.bund.de).>>>"
+
+include_graphics("output/figs/developed-land.png")
 ```
+
+
 
 ```{=tex}
 %%%---end-of-chapter1---%%%
