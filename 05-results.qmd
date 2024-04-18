@@ -1,0 +1,637 @@
+## Results
+
+```{r results-setup, include=FALSE}
+library(sf)
+library(ivreg)
+
+year_breaks = seq.int(2008, 2019, 2L)
+mycols = c("midnightblue", "firebrick4") # c('#0077b6', '#f4a261')
+panel_label = function(string) {
+  sprintf("Panel %s: %s", LETTERS[seq_along(string)], string)
+}
+```
+
+```{r results-imports-data}
+districts = fread_utf8("data/processed/admin-areas/districts_destasis.csv",
+  select = c("did", "name", "state"), keepLeadingZeros = TRUE
+)
+shapes = st_read(
+  "data/processed/admin-areas/admin-shapes/districts_shape.shp",
+  quiet = TRUE
+)
+
+in_levels = fread_utf8("data/processed/main/main_in-levels.csv",
+  keepLeadingZeros = TRUE
+)
+in_changes = fread_utf8("data/processed/main/main_wide.csv",
+  keepLeadingZeros = TRUE
+)
+main = fread_utf8("data/processed/main/model-data.csv", keepLeadingZeros = TRUE)
+setnames(main, "urban_rural_area", "urban_rural")
+main[, unavail_frac := unavail_frac_2006][, dev_frac := dev_frac_2006]
+constraints = fread_utf8("data/processed/geodata/constraints.csv",
+  keepLeadingZeros = TRUE
+)
+
+in_levels[, `:=`(ln_hpi = log(hpi), ln_hpi_single_fam = log(hpi_single_fam))]
+
+```
+
+```{r aggregated-germany}
+# plot price and quantity trends ----
+# aggregate by year -> data for the country as a whole Germany (de)
+agg_de = in_levels[, .(
+  hpi = mean(hpi), # price index (in levels)
+  ln_hpi = mean(ln_hpi), # .. ..       (in logs)
+  hpi_single_fam = mean(hpi_single_fam), # .. .. single-family (in levels)
+  ln_hpi_single_fam = mean(ln_hpi_single_fam), # .. .. ..            (in logs)
+
+  sd_p = sd(hpi),
+  sd_lnp = sd(ln_hpi),
+  sd_p_single_fam = sd(hpi_single_fam),
+  sd_lnp_single_fam = sd(ln_hpi_single_fam),
+  buildings = sum(total_buildings, na.rm = TRUE), # housing units count
+  floorspace = sum(floorspace, na.rm = TRUE),
+  single_fam = sum(`1-apart-building`, na.rm = TRUE),
+  single_fam_floorspace = sum(floorspace * `1-apart-building` / total_buildings, na.rm = TRUE),
+  permits_total_apartments = sum(permits_total_apartments, na.rm = TRUE),
+  completions_total_apartments = sum(completions_total_apartments, na.rm = TRUE),
+  permits_total_buildings = sum(permits_total_buildings, na.rm = TRUE),
+  completions_total_buildings = sum(completions_total_buildings, na.rm = TRUE),
+  single_fam_permits = sum(`permits_1-apart-building`, na.rm = TRUE),
+  single_fam_completions = sum(`completions_1-apart-building`, na.rm = TRUE),
+  single_fam_permits_floorspace = sum(permits_floorspace * `permits_1-apart-building` / permits_total_buildings, na.rm = TRUE),
+  single_fam_completions_floorspace = sum(completions_floorspace * `completions_1-apart-building` / completions_total_buildings, na.rm = TRUE)
+), by = year]
+
+```
+
+```{r results-constants-1}
+# average house prices
+# ave.prices = agg_de[year %in% c(2008, 2019), .(year, hpi, hpi_single_fam)]
+
+d = agg_de[
+  year %in% c(2008, 2019),
+  .(year, p = hpi, h = buildings, p_single_fam = hpi_single_fam, h_single_fam = single_fam)
+] |>
+  dcast(. ~ year, value.var = c("p", "h", "p_single_fam", "h_single_fam"), sep = "")
+
+# by city type
+fread_keepzeros(
+  "data/processed/admin-areas/districts_inkar_ 31.12.2019.csv",
+  select = c("did", "west_east", "urban_rural_area")
+) |>
+  transform(
+    west_east = fifelse(west_east == "Ost", "East", west_east),
+    urban_rural_area = fcase(
+      urban_rural_area == "Städtischer Raum", "Urban",
+      urban_rural_area == "Ländlicher Raum", "Rural"
+    )
+  ) |>
+  setnames("urban_rural_area", "urban_rural") |>
+  merge(
+    in_levels[, .(did, year, hpi, buildings = total_buildings, hpi_single_fam, single_fam = `1-apart-building`)], "did"
+  ) -> group_data
+
+## urban vs rural dynamics
+
+group_data[year %in% c(2008, 2019), .(
+  p = mean(hpi, na.rm = T),
+  h = sum(buildings, na.rm = T),
+  p_single_fam = mean(hpi_single_fam, na.rm = TRUE),
+  h_single_fam = sum(single_fam, na.rm = TRUE)
+), .(urban_rural, year)
+][, lapply(.SD, \(x) 100 * (x[year==2019]/x[year==2008] - 1)),
+  urban_rural, .SDcols = !"year"] -> urban_rural_gap
+
+# west vs east dynamics
+group_data[year %in% c(2008, 2019), .(
+  p = mean(hpi, na.rm = T),
+  h = sum(buildings, na.rm = T),
+  p_single_fam = mean(hpi_single_fam, na.rm = TRUE),
+  h_single_fam = sum(single_fam, na.rm = TRUE)
+), .(west_east, year)
+][, lapply(.SD, \(x) 100 * (x[year==2019]/x[year==2008] - 1)),
+  west_east, .SDcols = !"year"] -> west_east_gap
+
+```
+
+
+### Descriptive analysis
+
+As shown in @fig-price-growth, average prices of houses in Germany have significantly increased over the 2008-2019 time period across districts. In level terms, the average price of houses (of all types) was about €`r formatNum(agg_de[year == 2008, hpi])` per m^2^ in 2008, which rose by about `r with(agg_de, round1((hpi[year == 2019] / hpi[year == 2008] - 1)*100))`% to about €`r formatNum(agg_de[year == 2019, hpi])` per m^2^ in 2019. Single-family homes followed the same trend; the average price of single-family homes increased by about `r with(agg_de, round1((hpi_single_fam[year == 2019] / hpi_single_fam[year == 2008] - 1)*100))`%.[^05-results-1] Variation in average house prices (measured by the standard deviation) across districts has significantly risen over this period. For all homes, the standard deviation of prices in €$/m^2$ has increased by `r round1(100 * grate(agg_de[year %in% c(2008, 2019), sd_p])[2])`%, from about `r formatNum(agg_de[year == 2008, sd_p])` in 2008 to about `r formatNum(agg_de[year == 2019, sd_p])` in 2019. For single-family homes, price variation has gone up by `r round(100 * grate(agg_de[year %in% c(2008, 2019), sd_p_single_fam])[2])`%, from `r formatNum(agg_de[year == 2008, sd_p_single_fam])` in 2008 to `r formatNum(agg_de[year == 2019, sd_p_single_fam])` in 2019.
+
+[^05-results-1]: These house prices are quality-adjusted, i.e., these are the hedonic values (as discussed in @sec-hedonic-hse). Additionally, prices are adjusted for inflation using Germany's 2015 general Consumer Price Index.
+
+
+Across space, as shown in @fig-spatial-pattern, there has been high variation in the level and the growth of house prices, especially in and around big "city-districts". High-price places in 2008, such as Berlin, Munich, and Hamburg, remained expensive also in 2019 and experienced a higher house value appreciation. Urban districts have experienced relatively higher growth than their rural counterparts. Price levels have risen by about `r round1(urban_rural_gap[urban_rural=='Urban', p])`% in urban and by `r round1(urban_rural_gap[urban_rural=='Rural', p])`% in rural districts, on average, over the 2008-2019 time period. Prices of single-family homes have grown by about `r round1(urban_rural_gap[urban_rural=='Urban', p_single_fam])`% and `r round1(urban_rural_gap[urban_rural=='Rural', p_single_fam])`%, in urban and rural districts, respectively. In contrast, there has been little disparity along the West-East divide; house prices have risen by about `r round1(west_east_gap[west_east=='West', p])`% in the West and `r round1(west_east_gap[west_east=='East', p])`% in the East districts. However, the growth of prices of single-family homes has been higher in the East German districts, by `r round1(west_east_gap[west_east=='East', p_single_fam])`%, while in the West districts by `r round1(west_east_gap[west_east=='West', p_single_fam])`%.
+
+
+```{r}
+#| label: fig-price-growth
+#| fig-width: 6
+#| fig-height: 4
+#| fig-cap: "The development of house prices in Germany.<<<*Notes:* $\\ln P$ is the log of average house prices across districts each year. The house type category \"all\" captures all house types, including \"single-family\" homes. House prices are in 2015 prices. Data obtained from @rwi_redhk_2020.>>>"
+
+agg_de[, .(year, ln_hpi, ln_hpi_single_fam)] |>
+  reshape(
+    direction = 'long',
+    idvar = 'year',
+    varying = c('ln_hpi', 'ln_hpi_single_fam'),
+    timevar = 'house_type',
+    times = c('all', 'single-family'),
+    v.names = "ln_hpi",
+    sep = ""
+  )  |>
+  ggplot(aes(year, ln_hpi, color = house_type)) +
+  geom_line() +
+  geom_point() +
+  scale_color_manual(values = mycols) +
+  scale_x_continuous(breaks = year_breaks) +
+  labs(color = "House types", y = expression(ln~P)) +
+  # theme_cowplot(font_size) +
+  theme(legend.position=c(.04, 0.9)) +
+  guides(color=guide_legend(nrow = 2L))
+```
+
+
+```{r}
+#| label: fig-spatial-pattern
+#| fig-cap: "Spatial trends: house prices across districts in Germany.<<<*Notes:* This figure shows the spatial dynamics of house prices in Germany in 2008 and 2019. $\\ln P$ denotes the log of house prices in Euro per $m^2$. Darker colors represent higher house values. House prices are in 2015 prices. Data obtained from @rwi_redhk_2020.>>>"
+#| fig-width: 8
+#| fig-height: 4
+
+shapes[, c("did", "geometry")] |>
+  merge(reshape(
+    main[, .(did, lnhpi_2008 = log(hpi_2008), lnhpi_2019 = log(hpi_2019))],
+    direction = "long",
+    varying = c("lnhpi_2008", "lnhpi_2019"),
+    idvar = "did",
+    sep = "_",
+    timevar = "year"
+  )) |>
+  ggplot(aes(fill = lnhpi)) +
+  geom_sf(lwd = 0, color = NA) +
+  scale_fill_viridis_c(
+    option = "viridis", direction = -1,
+    guide = guide_colorbar(
+      direction = "horizontal",
+      barheight = unit(.4, "cm"),
+      barwidth = unit(3, "cm"),
+      label.theme = element_text(size = 7),
+      label.vjust = 2,
+      title.position = "left",
+      title.vjust = .75,
+      title.theme = element_text(size = 9)
+    )
+  ) +
+  labs(fill = expression(ln ~ P)) +
+  facet_wrap(~year, labeller = labeller(year=panel_label)) +
+  theme_map(font_size) +
+  theme(
+    legend.position = c(0.1, 0),
+    strip.text = element_text(size = 10, hjust = .5, vjust = -0.5),
+    strip.background = element_rect(fill = NA, color = NA),
+    plot.margin = margin(0, 0, .35, 0, unit = "cm")
+  )
+
+```
+
+
+In contrast, the growth of the residential housing supply has not been strong in Germany. In the 2008-2019 time period, in the average district, housing supply, measured by the stock of residential buildings, has grown by `r round2(100 * (d$h2019/d$h2008 - 1))`%, and about twice higher growth has been recorded for single-family residential homes, `r round2(100 * (d$h_single_fam2019/d$h_single_fam2008 - 1))`%. Urban districts have experienced relatively higher growth in housing supply, too, about `r round1(urban_rural_gap[urban_rural=='Urban', h])`% in urban and `r round1(urban_rural_gap[urban_rural=='Rural', h])`% in rural districts. For the supply of single-family homes, `r round1(urban_rural_gap[urban_rural=='Urban', h_single_fam])`% and `r round1(urban_rural_gap[urban_rural=='Rural', h_single_fam])`% growth have been seen in urban and rural districts, respectively. On average, the housing supply in West German districts has grown by `r round1(west_east_gap[west_east=='West', h])`%, whereas in East German districts it has grown by `r round1(west_east_gap[west_east=='East', h])`%. The supply of single-family homes in West German districts has grown by `r round1(west_east_gap[west_east=='West', h_single_fam])`%, while in east districts by `r round1(west_east_gap[west_east=='East', h_single_fam])`%.
+
+@fig-price-quantity-growth compares average log house prices and quantity growth over time. Growth in housing supply has not been stronger than the growth of house prices. Permits and completions data support the slow development of the housing supply. New construction, in terms of permits and completions of residential buildings, as shown in @fig-construction-activities, has taken a gradual uptick since 2009. However, the levels of this period are far below the 1995-2005 levels. On average, a district in 1995 permitted the construction of `r round(since95[year==1995 & house_type == 'all', permits])` residential buildings, of which `r round(since95[year==1995 & house_type == 'all', completions])` were completed in the following year. The net addition to housing stock, housing flow---level change in housing stock, was `r round(since95[year==1996 & house_type == 'all', flow])`. <!-- All three series have moved closely over time, indicating a minimal gap among them. --> The continuous decline of new building permits and completions from the late 1990s until 2009 might show the increasing difficulty of building new houses in Germany over the decades.
+
+
+```{r}
+#| label: fig-price-quantity-growth
+#| layout-ncol: 2
+#| fig-width: 6
+#| fig-height: 4
+#| fig-cap: "The growth of house prices vs housing supply.<<<*Notes:* This figure compares the annual growth of the log of average house prices against the log of average housing supply (measured by residential buildings) in Germany by house type. Panel (A) displays growth rates (%) for all types of residential buildings, including single-family buildings, and Panel (B) displays single-family buildings. The 2011 data points appear incorrect due to data inconsistency in connection to the 2011 German Census. The house price data are obtained from @rwi_redhk_2020, and data for housing quantity measures are extracted from @atlasde_2022.>>>"
+#| fig-subcap: 
+#|  - "All residential buildings"
+#|  - "Single-family buildings"
+
+growth = in_levels[, .(did, year,
+  p.all = ln_hpi,
+  `p.single-family` = ln_hpi_single_fam,
+  h.all = log(total_buildings),
+  `h.single-family` = log(`1-apart-building`)
+)] |>
+  reshape(direction = "long", varying = -c(1, 2), idvar = 1:2, timevar = "house_type") |>
+  _[, .(lnp = mean(p), lnh = mean(h)), .(year, house_type)] |>
+  _[, .(year, glnp = lnp / shift(lnp) - 1, glnh = lnh / shift(lnh) - 1), house_type] |>
+  melt(id.vars = c("year", "house_type"), measure.vars = c("glnp", "glnh"))
+
+#growth[year == 2011, value := NA] # sharp jumps (data issues b/c of Census 2011?)
+.vars = c("all", "single-family")
+.title = panel_label(.vars)
+for (i in seq_along(.vars)) {
+  (
+    ggplot(growth[house_type == (.vars[[i]]), ], aes(year, 100 * value, color = variable)) +
+      geom_line() +
+      geom_point(size=2) +
+      scale_x_continuous(breaks = year_breaks) +
+      scale_color_manual(
+        values = setNames(mycols, c("glnp", "glnh")),
+        labels = c("Price", "Quantity")
+      ) +
+      labs(
+        y = "growth rate (%)", color = NULL#, title = .title[[i]]
+        ) +
+      # theme_cowplot(font_size + 4) +
+      theme(
+        legend.position = c(0.05, 0.9),
+        axis.text.y = element_text(angle = 90)
+      ) +
+      guides(color = guide_legend(ncol = 2L))
+  ) |>
+    print()
+}
+```
+
+
+```{r}
+#| label: fig-construction-activities
+#| fig-width: 6
+#| fig-height: 4
+#| fig-cap: "Construction activities, residential buildings.<<<*Notes:* This figure shows construction activities in residential buildings in the average district. \"Flow\" is defined as the annual change in the stock of residential buildings. The construction statistics of the 1995-2008 period reveal important details about the growth of new construction in Germany compared to the recent data points this study examines. The 2011 value for flow is discarded due to data issues. The data are obtained from @atlasde_2022.>>>"
+
+since95 |> 
+  melt(measure.vars = c("permits", "completions", "flow"), idvar = "year") |>
+  subset(house_type == "all") |>
+  ggplot(aes(year, value, color = variable)) +
+  geom_line(alpha = .65) +
+  geom_point(size = 2, alpha = .65) +
+  scale_x_continuous(breaks = c(seq(1995, 2020, by = 5)[-6], 2019)) +
+  labs(y = "buildings", color = NULL) +
+  scale_color_manual(
+    values = c(mycols, "forestgreen"),
+    labels = c("Permits", "Completions", "Flow")
+  ) +
+  theme_cowplot(font_size) +
+  theme(
+    axis.text.y = element_text(angle = 90, hjust = .5),
+    plot.margin = margin(.3, 0.01, 0.01, 0.01, "cm"),
+    legend.position = c(.801, .9),
+    legend.margin = margin(0,4,0,4),
+    legend.background = element_blank(),
+    legend.text = element_text(size = .75 * font_size)
+  ) + 
+  background_grid(color.major = 'gray90', colour.major = 'gray90')
+```
+
+
+
+### Empirical analysis
+
+```{r}
+#| label: ols-estimates
+ols_est = fread("output/elasticity-estimates-ols_checked.csv")
+```
+
+@tbl-ols-results-all-checked displays the OLS estimates for the housing supply elasticity. These estimates represent equilibrium relationships and appear small due to the endogeneity between house prices and quantity through the housing demand function.[^05-results-2]
+
+[^05-results-2]: According to the OLS results, on average, a 10% growth in house prices over the 2008-2019 time period is associated with a `r 10 * round(ols_est[home_type == "all" & dep_var == "Floorspace", dln_hpi], 2)`% increase in floorspace supply. For single-family homes, the estimates are not even statistically significant, see @tbl-ols-results-single-family-checked in the Appendix.
+
+<!-- ```{r} 
+#| label: tbl-ols-results-all-checked
+#| output: asis
+cat(readLines('output/OLS-results_all_checked.tex'))
+``` -->
+{{< include output/OLS-results_all_checked.qmd >}}
+
+The identification challenge in estimating the housing supply elasticity is isolating the demand-induced change in the housing supply. The Bartik instrument utilized to handle the endogeneity ($\widehat{\Delta\ln L_i}$) meets the relevance requirement very well. The partial correlation between $\Delta \ln P_i$ and $\widehat{\Delta\ln L_i}$ is strong, with an F-statistic well above 10 in the first stage, as shown in the first-stage results in the Appendix in @tbl-first-stage-results-checked. Note that other observable important housing demand predictors are controlled for. @fig-first-stage shows a strong correlation between the instrument and the growth of house prices.
+
+
+```{r}
+#| label: fig-first-stage
+#| layout-ncol: 2
+#| fig-width: 6
+#| fig-height: 5
+#| fig-cap: "The relevance of the Bartik instrument.<<<*Notes:* This figure shows the correlation between the endogenous variable ($\\Delta \\ln P$) and the instrument ($\\widehat{\\Delta \\ln L_i}$), i.e., the relevance condition of the instrument, by house type. Each dot represents a value pair for a district. The house prices data are obtained from @rwi_redhk_2020, and the employment data from @atlasde_2022.>>>"
+#| fig-subcap:
+#|  - "All residential buildings"
+#|  - "Single-family buildings"
+
+.fs = 
+  main[, .(did, x = bartik, y.all = dln_hpi, `y.single-family` = dln_hpi_single_fam)] |>
+  subset(!(is.outlier(y.all) | is.outlier(`y.single-family`))) |>
+  reshape(
+    direction = "long",
+    varying = c("y.all", "y.single-family"),
+    idvar = "did",
+    timevar = "house_type"
+  ) |>
+  transform(house_type = as.factor(house_type))
+
+.vars = c("all", "single-family")
+.title = panel_label(.vars)
+for (i in seq_along(.vars)) {
+  (
+    ggplot(.fs[house_type == (.vars[[i]])], aes(x, y, color = house_type)) +
+      geom_point(size = 2, alpha = 0.45) +
+      geom_smooth(formula = y ~ x, method = "lm", size = 1.25, fill = "#caf0f8") +
+      scale_color_manual("House types", values = mycols[[i]]) +
+      labs(
+        x = expression(widehat(Delta * ln ~ L)),
+        y = expression(Delta * ln ~ P),
+        title = .title[[i]]
+      ) +
+      # theme_cowplot(font_size + 2) +
+      theme(
+        legend.position = "none",
+        axis.text.y = element_text(angle = 90)
+      )
+  ) |>
+    print()
+}
+```
+
+```{r}
+#| label: adjective
+adj = if (main[bartik>0, .N] == nrow(main)) "all" else "most"
+```
+
+The instrument indicates that in the 2008-2019 time period, `r adj` of the districts would have experienced positive overall industry employment growth and hence housing demand had employment in each industry grown the same as at the national level.[^05-results-3]
+Of these `r main[bartik>0, .N]` districts with positive employment growth, `r main[bartik > 0 & dln_hpi > 0, .N]` of them have seen positive growth in house prices, and `r main[bartik > 0 & dln_total_buildings>0, .N]` in housing supply, and only `r main[bartik > 0][dln_hpi > 0 & dln_total_buildings>0, .N]` have experienced positive growth in both.[^05-results-4] The fact that not all districts that have received positive growth in housing demand have experienced positive growth in housing supply may imply that changes in housing demand do not necessarily translate into a positive supply response. This demonstrates the relevance of estimating the housing supply elasticity because it helps us know whether demand growth is creating city growth or higher house prices. In other words, looking at the local housing supply conditions is essential to understand the differential outcome of demand growth. In @sec-district-heterogeneity, I discuss why a (demand-driven) change in house prices may trigger a differential (positive) growth in housing supply across districts.
+
+[^05-results-3]: In terms of the actual observed level of employment ($\Delta\ln{ L_i}$), `r main[dln_emp_act>0, .N]` out of `r main[, .N]` (`r round1(main[, 100*sum(dln_emp_act>0)/.N])`%) districts have experienced positive employment growth.
+
+[^05-results-4]: However, of all `r main[, .N]` districts, `r main[dln_hpi>0, .N]` of them have seen positive growth in house prices, and `r main[dln_total_buildings>0, .N]` in housing supply.
+
+
+```{r}
+#| label: fig-quantity-vs-price-netted-out
+#| fig-width: 6
+#| fig-height: 4
+#| fig-cap: "The growth of the housing supply vs prices.<<<*Notes:* This figure depicts the housing supply growth against the predicted growth of house prices. $\\widehat{\\Delta \\ln P}$ represents the fitted values from this regression: $\\Delta \\ln P = \\beta_0 + \\beta_1 \\widehat{\\Delta \\ln L_i}$, which keeps the variation in $\\Delta \\ln P$ due to only changes in housing demand. The dotted lines denote the means of the respective variables. Each dot represents a value pair for a district. The house price data are obtained from @rwi_redhk_2020, and data for housing quantity measures are extracted from @atlasde_2022.>>>"
+
+
+## "Growth in housing supply vs price (predicted by the instrument)"
+main[, H:=dln_total_buildings]
+main$Phat = predict(lm(dln_hpi ~ 1 + bartik, main)) # demand induced change in price
+mod.urban = lm(H ~ 1 + Phat, main, subset = urban_rural == "Urban")
+mod.rural = lm(H ~ 1 + Phat, main, subset = urban_rural == "Rural")
+simple.eps = mean(c(coef(mod.urban)[2], coef(mod.rural)[2]))
+
+main[, .(H, urban_rural, Phat)] |>
+  ggplot(aes(Phat, H)) +
+  geom_vline(xintercept = mean(main$Phat), color = "gray80", lty = 2) +
+  geom_hline(yintercept = mean(main$H), color = "gray80", lty = 2) +
+  geom_point(color = mycols[1], size=2, alpha=.5) +
+  geom_smooth(
+    color = mycols[2],
+    formula = y ~ 1 + x, method = "lm", fill = "gray85"
+  ) +
+  labs(
+    x = expression(widehat(Delta*ln~P)),
+    y = expression(Delta*ln~H),
+    color = NULL
+  ) +
+  # theme_cowplot(font_size) + 
+  theme(axis.text.y = element_text(angle=90, hjust=0.5))
+```
+
+
+@fig-quantity-vs-price-netted-out illustrates the response of housing supply growth to demand-induced price growth. This helps us to inspect the housing supply elasticity visually. First, I regress $\Delta \ln P_i$ on the instrument (and a constant) to net out its importance, i.e., this retains the house price growth caused by demand change. Then, I plot housing supply growth ($\Delta\ln H_i$) against (the netted) price growth $\widehat{\Delta\ln P_i}$. There is a higher variation in price growth than in supply growth. On average, supply growth has been less responsive to price growth; the slope coefficient is `r round2(simple.eps)`. That means, on average, a 1% price growth is associated with a `r round2(simple.eps)`% growth in the housing supply, which implies that the housing supply has been inelastic in Germany. This study aims to explore the disparities in the responsiveness of housing supply among districts. The data shows varying growth rates in housing supply and prices among districts. By examining the reasons for this heterogeneity, we can better understand the variation in the housing supply elasticity across districts.
+
+### Main results: Housing supply heterogeneity {#sec-district-heterogeneity}
+
+It is evident that by restricting housing supply, physical or geographical constraints affect the housing supply elasticity. For instance, urban districts or cities have high existing built-ups, i.e., a larger fraction of their land is already developed. This creates a physical constraint for new development or redevelopment. As a result, highly developed or dense cities may not respond, to a certain change in housing demand, as much as growing and scarcely populated rural districts---which usually have relatively lower levels of existing land development (thus have more land for new construction). This is what the data, as well as the empirical results, show. In 2006, the data available close to the initial period of the study (i.e., 2008), the average level of development intensity, measured by the fraction of land that is already developed, was `r round2(main[, mean(dev_frac_2006)])` (see @sec-constraints). Urban districts had a higher level of land development (`r round2(main[urban_rural=="Urban", mean(dev_frac_2006)])`), on average, as compared to the rural districts' (`r round2(main[urban_rural=="Rural", mean(dev_frac_2006)])`) (see @fig-developed-fraction-histogram). Thus, this development intensity heterogeneity might explain the variation in the housing supply elasticity across districts.
+
+```{r results-constants-2}
+mean.elev = fread("data/processed/geodata/elevation.csv", select="mean")$mean |>
+  mean() |>
+  round()
+mean.slope = round2(constraints[year==2018, mean(slope_mean_ww)])
+```
+
+
+On the other hand, geographical constraints, such as having a rugged terrain or the existence of wetlands, or being surrounded by water bodies, may also be relevant for examining housing supply elasticity differences across districts. As the negative correlation between supply growth and TRI shows in the right panel in @fig-scatter-supply-constraints, geographically restricted districts have lower supply growth. However, restrictive geography does not characterize most German districts. Germany is generally a low-elevation country (with an average elevation level of `r mean.elev` meters or an average slope of `r mean.slope`%). Other than a few exceptions in the south close to the Alps and the north close to the coast, land undevelopability is small in most districts. Thus, one may expect this variable to be insignificant in explaining Germany's housing supply elasticity. The average land undevelopability was less than 10% (`r round2(main[, mean(unavail_frac_2006)])`) in 2006, and about `r MASS::fractions(main[unavail_frac_2006 < mean(unavail_frac_2006), .N]/main[, .N], max.denominator=4)` of the districts have a value below it. A few extreme cases are `r knitr::combine_words(main[unavail_frac_2018 >= 0.6, name])`, Bavarian districts known for ski resorts, with over 60% of their land being undevelopable.
+
+
+```{r}
+#| label: supply-constraints
+incols = grep("(unavail|dev)_frac_20\\d{2}", names(main), value = TRUE)
+constraints_long = main[, c("did", incols, 'urban_rural'), with = FALSE] |>
+  reshape(
+    direction = "long",
+    idvar = c("did", "urban_rural"),
+    varying = incols,
+    split = list(regexp = "[_]20\\d{2}", include = TRUE),
+    timevar = "year"
+  )
+setnames(constraints_long, sub("_$", "", names(constraints_long)))
+```
+
+
+
+```{r}
+#| label: fig-scatter-supply-constraints
+#| layout-ncol: 2
+#| fig-width: 6
+#| fig-height: 5
+#| fig-cap: "Housing supply growth vs housing supply constraints.<<<*Notes:* This figure shows the correlation between housing supply constraints and housing supply growth. The left panel shows the effect of the 2006 level of land development intensity, and the right panel shows the effect of land unavailability due to terrain ruggedness. Few outliers along the x-axis are removed. Each dot represents a value pair for a district.>>>"
+#| fig-subcap:
+#|  - "Developed fraction"
+#|  - "TRI"
+
+main |>
+  transform(x = dev_frac_2006, y = dln_total_buildings) |>
+  {
+    \(.data)
+    # ggplot(subset(.data, !is.outlier(x)), aes(x, y)) +
+    ggplot(.data, aes(x, y)) +
+      geom_point(color = mycols[1], size = 2, alpha = 0.45) +
+      geom_smooth(
+        method = "lm", formula = y ~ 1 + x,
+        color = mycols[2], fill = "gray87"
+      ) +
+      labs(
+        x = "developed fraction",
+        y = expression(Delta * ln ~ H)
+        #, title = "Panel A: Land development intensity"
+        #, caption = sprintf(ngettext(
+        #   .data[is.outlier(x), .N],
+        #   "Note: %d outlier removed along the x-axis",
+        #   "Note: %d outliers removed along the x-axis are removed."
+        # ), .data[is.outlier(x), .N])
+      ) +
+      # theme_cowplot(font_size) +
+      theme(
+        axis.text.y = element_text(angle = 90, hjust = .5)
+      )
+  }()
+
+# tri terrain ruggedness index
+main |>
+  transform(x = tri, y = dln_total_buildings) |>
+  {
+    \(.data)
+    ggplot(subset(.data, !is.outlier(x)), aes(x, y)) +
+      geom_point(color = mycols[1], size = 2, alpha = .45) +
+      geom_smooth(method = "lm", color = mycols[2], fill = "gray87") +
+      labs(
+        x = "TRI",
+        y = expression(Delta * ln ~ H)
+        #, title = "Panel B: Ruggedness"
+        #, caption = sprintf(ngettext(
+        #   .data[is.outlier(x), .N],
+        #   "Note: %d outlier along the x-axis are removed",
+        #   "Note: %d outliers along the x-axis are removed."
+        # ), .data[is.outlier(x), .N])
+      ) +
+      # theme_cowplot(font_size) +
+      theme(
+        axis.text.y = element_text(angle = 90, hjust = .5)
+      )
+  }()
+```
+
+
+@tbl-iv-main-results-checked presents the main results from the IV estimation, for floorspace and units, for all houses.[^05-results-5] As mentioned above, shifts in housing demand are proxied by predicted employment growth. As discussed in @sec-decompose, I run the estimation in iterative steps. First, I estimate the elasticity that does not vary across districts; this can be regarded as the estimate for the average district and corresponds to $\varepsilon^S$ (without index $i$) in @eq-main. The controls included in the first or second stages are log population, construction costs, household income, and dummy variables for West German and urban districts.
+
+[^05-results-5]: Results for single-family houses are provided in the Appendix, see @tbl-iv-results-single-family-checked.
+
+```{r}
+#| label: iv-main-results-checked
+#| output: asis
+cat(readLines('output/iv-main-results_checked.tex'))
+```
+
+The first column in @tbl-iv-main-results-checked presents the baseline floorspace elasticity estimate for $\varepsilon^S$. It is highly statistically significant and equals `r round2(eps.fs.1)`. This estimate indicates that, on average, the responsiveness of housing supply to a 1% change in house prices across districts in Germany between 2008 and 2019, is `r round2(eps.fs.1)`%, holding other factors constant. However, this average estimate masks potential variations across districts, which will be accounted for in subsequent steps.
+
+#### Land development intensity {.unnumbered}
+
+In this step, I examine how development intensity, measured by the fraction of developed land in the initial period, affects the housing supply elasticity. As discussed in @sec-district-heterogeneity, districts differ in their development intensities; while some are already highly built-up, some others are growing. A high level of existing land development may limit new development or make redevelopment difficult or costly. Thus, highly built-up districts may have low supply responses as they do not have vacant land for constructing new houses, regardless of the size of the demand shock, keeping other things constant. In this case, we may expect demand growth to create price growth instead of quantity growth. In @fig-supply-constraints-elasticity, we can see that the slope of the supply curve gets flatter for higher quartiles of development intensity. In the second column of @tbl-iv-main-results-checked, I control for districts' levels of development intensity in 2006 by interacting it with $\Delta\ln P$. For the average development intensity of `r round(100 * pars$ave.dev, 2)`%, the housing supply elasticity is `r round(with(est.fs.2, vareps + b_dev  * pars$ave.dev), 2)`. Moving within the interquartile range of development intensity (`r paste(sprintf("%.1f%%", 100 * iqr$dev), collapse = "-")`), lowers the floorspace elasticity from `r round(est.fs.2$vareps + est.fs.2$b_dev * iqr$dev[1], 2)` to `r round(est.fs.2$vareps + est.fs.2$b_dev * iqr$dev[2], 2)`[^05-results-6], that is a `r 100 * round((est.fs.2$vareps + est.fs.2[["b_dev"]] * iqr[["dev"]][1]) / (est.fs.2[["vareps"]] + est.fs.2[["b_dev"]] * iqr$dev[2]) - 1, 2)`% difference in the housing supply elasticity.
+
+[^05-results-6]: That is computed as ($\widehat{\varepsilon_i} = \widehat{\varepsilon} + \widehat{\beta}^{\text{Developed}}\cdot\text{Developed}_i = `r round(est.fs.2[['vareps']], 2)` `r sprintf('%.2f', est.fs.2[['b_dev']])` \cdot\text{Developed}_i = (`r round(est.fs.2[["vareps"]] + est.fs.2[["b_dev"]] * iqr[["dev"]][1], 2)`, `r round(est.fs.2[["vareps"]] + est.fs.2[["b_dev"]] * iqr[["dev"]][2], 2)`)$).
+
+
+```{r}
+#| label: fig-supply-constraints-elasticity
+#| layout-ncol: 2
+#| fig-width: 6
+#| fig-height: 5
+#| fig-cap: "Housing supply constraints and housing supply elasticity.<<<*Notes:* This figure shows the relationship between housing supply growth and prices for the quartiles of the supply constraints. The left panel shows the effect of the 2006 level of land development intensity, and the right panel shows the effect of land unavailability due to terrain ruggedness. Each dot represents a value pair for a district.>>>"
+#| fig-subcap: 
+#|   - "Developed land"
+#|   - "Undevelopable land"
+
+## "Supply constraints lower the housing supply elasticity"
+main[, .(
+  x = Phat,
+  y = dln_total_buildings,
+  dev_frac = my_cut(100 * dev_frac_2006, 100 * quantile(dev_frac_2006))
+)] |>
+  # subset(!(is.outlier(y, 5))) |>
+  ggplot() +
+  geom_point(aes(x, y, color = dev_frac), size = 2, alpha = 0.5) +
+  geom_smooth(aes(x, y, color = dev_frac), formula = y ~ x, method = "lm", se = FALSE) +
+  labs(
+    # title = "Panel A: Developed land",
+    x = expression(widehat(Delta * ln ~ P)),
+    y = expression(Delta * ln ~ H),
+    color = "Quartiles (%)"
+  ) +
+  scale_color_manual(values = c("#03045e", "#0b6e4f", "#f0a202", "#880d1e")) +
+  theme_cowplot(font_size) +
+  theme(
+    legend.position = c(0.1, 0.8),
+    axis.text.y = element_text(angle = 90, hjust = .5)
+  )
+
+## Restrictive geography lowers the housing supply elasticity
+main[, .(
+  x = Phat,
+  y = dln_total_buildings,
+  frac = my_cut(100 * unavail_frac_2006, 100 * quantile(unavail_frac_2006))
+)] |>
+  # subset(!(is.outlier(y, 5))) |>
+  ggplot() +
+  geom_point(aes(x, y, color = frac), size = 2, alpha = .5) +
+  geom_smooth(aes(x, y, color = frac), formula = y ~ x, method = "lm", se = FALSE) +
+  labs(
+    # title = "Panel B: Undevelopable land",
+    x = expression(widehat(Delta * ln ~ P)),
+    y = expression(Delta * ln ~ H),
+    color = "Quartiles (%)"
+  ) +
+  scale_color_manual(values = c("#03045e", "#0b6e4f", "#f0a202", "#880d1e")) +
+  # theme_cowplot(font_size) +
+  theme(
+    legend.position = c(0.1, 0.8),
+    axis.text.y = element_text(angle = 90, hjust = 0.5)
+  )
+```
+
+
+#### Land unavailability {.unnumbered}
+
+In this step, I examine the impact of restrictive geography on the housing supply elasticity, measured by the fraction of unavailable land. The housing supply elasticity should be lower in districts where land unavailability is relatively high. According to the results, the housing supply elasticity in Germany is not significantly impacted by land unavailability. This is shown by the statistically insignificant coefficient $\widehat{\beta}^{\text{Unavail}}$ (see column (3) of @tbl-iv-main-results-checked and @fig-supply-constraints-elasticity). Controlling for the level of land unavailability ($\text{Unavail}$), the estimated floorspace elasticity does not change, `r round3(est.fs.3$vareps)`.[^05-results-7] As compared to the constant elasticity case ($\widehat{\varepsilon}=`r round3(eps.fs.1)`$), the difference is negligible (`r round3(eps.fs.1 - est.fs.3$vareps)`). This may imply that land unavailability does not lower the housing supply elasticity. This is consistent with the low variation in land unavailability across districts; the average land unavailability (`r round2(pars$ave.unavail)`) is small. Thus, there is no clear pattern that land unavailability lowers the housing supply elasticity in Germany.
+
+[^05-results-7]: This is computed as $\widehat{\varepsilon_i} =\widehat{\varepsilon} + \widehat{\beta}^{\text{Unavail}}\cdot\text{Unavail}_i = `r round2(est.fs.3[['vareps']])`$, because $\widehat{\beta}^{\text{Unavail}}$ is insignificant.
+
+Finally, the above two steps are combined, corresponding to estimating $\varepsilon_i$ in @eq-case-4 and amplifying both constraints' impact on the housing supply elasticity. As shown in column (4) of @tbl-iv-main-results-checked, at the mean value of $\text{Developed}$, the estimate for the housing supply elasticity is `r round3(est.fs.4$vareps + est.fs.4$b_dev * pars$ave.dev)`[^05-results-8], which is not quantitatively different from the estimates in the above three cases (`r round3(eps.fs.1)`, `r round3(eps.fs.2)`, and `r round3(eps.fs.3)`, respectively), which reaffirms the insignificance of land unavailability in impacting the housing supply elasticity.
+
+[^05-results-8]: Since $\widehat{\beta}^{\text{Unavail}}$ is insignificant, the coefficient on $\Delta\ln P\cdot\text{Unavail}$ is ignored and the housing supply elasticity estimate is computed as ($\widehat{\varepsilon_i} = \widehat{\varepsilon} + \widehat{\beta}^{\text{Developed}}\cdot\text{Developed}_i = `r round(est.fs.4[['vareps']], 2)` `r sprintf('%.2f', est.fs.4[['b_dev']])` \cdot\text{Developed}_i = `r round(est.fs.4[["vareps"]] + est.fs.4[["b_dev"]] * pars[["ave.dev"]][1], 2)`$).
+
+The above cases show that only land development intensity significantly constrains the housing supply elasticity, while land undevelopability due to restrictive geography has no significant impact. Comparing the estimated coefficients on the respective interaction terms (see @tbl-iv-main-results-checked) shows that development intensity has an about `r round2(abs(est.fs.4$b_dev))` negative impact in mediating the response of housing supply growth to price growth ($\widehat{\beta}^{\text{Developed}} = `r round2(est.fs.2[['b_dev']])`$). Land development intensity ranges between (`r paste(round2(range(main$dev_frac)), collapse=', ')`), as a result, the housing supply elasticity estimate ranges between (`r paste(round2(est.fs.4$vareps + est.fs.4$b_dev * range(main$dev_frac)), collapse=', ')`). As the left panel in @fig-distributions-elasticity-constraints shows, the higher variation in the share of developed land (with a standard deviation of `r sprintf('%.2f', constraints_long[year == 2006, .(var(dev_frac)^.5)])`) translates into variations in the housing supply elasticity.
+
+
+```{r}
+#| label: fig-distributions-elasticity-constraints
+#| layout-ncol: 2
+#| fig-width: 6
+#| fig-height: 5
+#| fig-cap: "Housing supply constraints and elasticity heterogeneities.<<<*Notes:* This figure shows the distributions of the housing supply constraints (left panel) and the housing supply elasticity estimates (right panel) across districts. The cases in the right panel correspond to the estimation equations @eq-case-2, @eq-case-3, and @eq-case-4) in @sec-decompose and the respective results in @tbl-iv-main-results-checked.>>>"
+#| fig-subcap:
+#|  - "Housing supply constraints"
+#|  - "Housing supply elasticity"
+
+constraints_long[year == 2006, ] |>
+  {
+    \(.x)
+    ggplot(.x) +
+      geom_vline(xintercept = c(mean(.x$dev_frac), mean(.x$unavail_frac)), lty = 3, color = "gray85") +
+      stat_density(aes(dev_frac, color = "dev_frac"), geom = "line") +
+      stat_density(aes(unavail_frac, color = "unavail_frac"), geom = "line") +
+      scale_color_manual(values = mycols, labels = c("Developed", "Unavail")) +
+      labs(
+        x = "land fraction", color = NULL#,title = "Panel A: Housing supply constraints"
+      ) +
+      theme_cowplot(font_size + 2) +
+      theme(
+        legend.position = c(0.7, 0.3),
+        axis.text.y = element_text(angle = 90, hjust = 0.5)
+      )
+  }()
+
+## Heterogeneity in the housing supply elasticity
+elasticity |>
+  as.data.table() |>
+  melt(measure.vars = paste0('case', 2:4)) |>
+  ggplot(aes(value, color = variable)) +
+  stat_density(geom = "line", position = "identity") +
+  scale_color_manual(
+    values = c(mycols, "darkgreen"),
+    labels = c(
+      expression(hat(epsilon) + hat(beta)^Developed %.% Developed),
+      expression(hat(epsilon) + hat(beta)^Unavail %.% Unavail),
+      expression(hat(epsilon) + hat(beta)^Developed %.% Developed + hat(beta)^Unavail %.% Unavail)
+    )
+  ) +
+  labs(
+    x = expression(epsilon), color = "Cases"#,title = "Panel B: Housing supply elasticity"
+  ) +
+  theme_cowplot(font_size + 2) +
+  theme(
+    legend.position = c(0.03, 0.8),
+    legend.text = element_text(hjust = 0),
+    legend.title = element_text(face = "bold"),
+    legend.background = element_rect(color = "black", linetype = 2, size = 0.1),
+    legend.margin = margin(1, 1, 1, 1, "mm")
+  )
+```

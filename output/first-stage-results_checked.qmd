@@ -1,0 +1,10 @@
+```{r}
+#| label: tbl-first-stage-results-checked
+#| tbl-cap: 'First-stage Results'
+#| output: asis
+
+source('output/create_tbl_chunk.R')
+
+lines = get_tbl_body('output//first-stage-results_checked.tex', rm_caption=TRUE, rm_label=TRUE)
+cat(lines)
+```

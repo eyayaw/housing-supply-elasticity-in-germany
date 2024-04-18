@@ -1,0 +1,10 @@
+```{r}
+#| label: tbl-iv-main-results-Units-checked
+#| tbl-cap: 'IV Results: Housing Supply Elasticity Estimates (Units)'
+#| output: asis
+
+source('output/create_tbl_chunk.R')
+
+lines = get_tbl_body('output//iv-main-results_Units_checked.tex', rm_caption=TRUE, rm_label=TRUE)
+cat(lines)
+```
