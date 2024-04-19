@@ -1,6 +1,8 @@
 ## Introduction
 
-<!-- \pagenumbering{arabic} -->
+```{=tex}
+\pagenumbering{arabic}
+```
 
 The price elasticity of housing supply is a key parameter in urban economics because it drives the congestion externalities and governs urban growth dynamics. An inelastic supply of land or housing means that any positive change in housing demand or location due to a positive productivity or amenity shock translates into higher prices---a major source of urban disutility---rather than higher quantities. On the contrary, if housing is supplied more elastically, we might expect smaller price changes and larger adjustments in city sizes. Moreover, inelastic supply aggravates house price differences across regions, affecting inter-regional labor mobility, and may constrain housing affordability in cities and regions, particularly in the big and growing ones. Thus, the housing supply elasticity is central to understanding the long-term development of cities and regions [@combes_etal_2019; @glaeser_etal_2006; @saks_2008; @lerbs_2014].
 

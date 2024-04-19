@@ -1,0 +1,296 @@
+\newpage
+
+## Appendix {.unnumbered}
+
+## (APPENDIX) Appendix {.unnumbered}
+
+```{=tex}
+\renewcommand\theequation{\thesection.\arabic{equation}}    
+\setcounter{equation}{0}
+
+\renewcommand\thefigure{\thesection.\arabic{figure}}    
+\setcounter{figure}{0}
+
+\renewcommand\thetable{\thesection.\arabic{table}}    
+\setcounter{table}{0}
+```
+### Derivation of the housing supply function {#supplyapp}
+
+A competitive developer combines a fixed amount of land $\overline{T}$ and non-land inputs $K$, which I simply call capital, to produce housing $H$ via a Cobb-Douglas technology: \begin{equation}
+  H = H(A, \overline{T}, K) = A \overline{T}^{\alpha} K^{1-\alpha}(\#eq:app-cobb),
+\end{equation} where $\alpha \in (0, 1)$. $A$ captures supply heterogeneity across parcels due to local labor costs, productivity, geography, or ease of construction differences. For simplicity, the district index $i$ and parcel identifier $l$ are dropped. Note that $K$ captures a composite of all inputs for housing production other than land, which can broadly be labor and materials.
+
+A representative builder maximizes profit by choosing capital $K$ over a fixed parcel of land $\overline{T}$ $$\begin{aligned}
+\Pi &= P(x) \cdot H - P^T \cdot \overline{T} - P^K\cdot K\\
+&=P(x)\cdot H - R - K,
+\end{aligned}$$where $R$ denotes the endogenous price of land of size $\overline{T}$, and $P^K$ is the price of capital assumed to be invariant across parcels and locations and normalized to unity. Note that although capital $K$ is the only variable factor, hence the total capital cost is given by $C(H(K)) = P^K\cdot K = K$ represents the total variable cost. I assume that the total capital cost also includes labor costs and fixed development costs such as development permits and land preparation costs. Thus it captures more than just the variable cost of capital, i.e., all other non-land costs.
+
+The price of a unit of housing developed on a parcel of size $\overline{T}$ is given by $P$ and depends on $x$, a vector of observed or unobserved parcel or location characteristics that reflect the demand for housing on the parcel, and may for example include measures of accessibility to public goods and local amenities. However, these characteristics are assumed to be uncorrelated with the level of capital investment $K$ [@combes-etal2021].
+
+Since land is fixed, the builder chooses capital to maximize profit. Therefore, the builder's profit maximization delivers the factor demand for capital $K$.
+
+$$\begin{aligned}
+&\frac{\partial \Pi}{\partial K} = P(x) \frac{\partial H}{\partial K} - 1 = 0\\
+&\implies P(x) \frac{(1-\alpha) A \overline{T}^\alpha}{K^\alpha} = 1 \\
+ &\implies K^* = \Bigl((1-\alpha)AP(x)\Bigr)^{\frac{1}{\alpha}}\overline{T}\equiv K^*(P(x), \overline{T}, A) \end{aligned}$$
+
+By substituting the factor demand equation for capital back into the housing production function, I can then define the per parcel supply function as follows: $$
+\begin{aligned}
+H(K^*(P(x), \overline{T}, A)) &= A \overline{T}^\alpha_i \left(K^*(P(x), \overline{T}, A)\right)^{1-\alpha}\\
+&= A \overline{T}^\alpha \left(\Bigl((1-\alpha)AP(x)\Bigr)^{\frac{1}{\alpha}}\overline{T}\right)^{1-\alpha}\\
+&=\underbrace{(1-\alpha)^{\frac{1-\alpha}{\alpha}}}_{\mu}A^{\frac{1}{\alpha}}{P(x)}^{\frac{1-\alpha}{\alpha}}\overline{T}\\
+&=\mu A^{\frac{1}{\alpha}}{P(x)}^{\frac{1-\alpha}{\alpha}}\overline{T} \equiv H^S(P(x), A)
+\end{aligned}
+$$ In log-linear form, \begin{equation}
+\begin{aligned}
+\ln H^S(P(x), A, \overline{T}) &= \ln \mu + \frac{1}{\alpha}\ln A + \underbrace{\Bigl(\frac{1-\alpha}{\alpha}\Bigr)}_{\varepsilon}\ln P(x) + \ln \overline{T}.
+\end{aligned}
+(\#eq:app-hs)
+\end{equation}
+
+Thus, the supply of housing developed on a parcel depends on local supply heterogeneity $A$, local housing demand conditions captured by $P(x)$, and the size of the parcel $\overline{T}$.
+
+Following @baumsnow-han2019, to get the total housing supply at the district level, I aggregate the housing supply on a parcel in \@ref(eq:hs) over all developed parcels in the district. Denoting the total (developable) land endowment of district $i$ by $\mathcal{L}_{i}$ and the fraction of partitioned parcels that are developed in $i$ by $\Lambda_i (P_i)$, then the stock of developed land in $i$ is defined as $\mathcal{T}(P_i) = \Lambda_i(P_i) \cdot \mathcal{L}_{i}$. Then, the implicit **district-level aggregate housing supply function** $S_i(P_i(x))$ can be defined as the product of (average) **housing supply per parcel** and the **stock of developed land:** \begin{equation}
+\begin{aligned}
+S_i(P_i) = H_i^S(P_i, A_i)\cdot \mathcal{T}_{i}(P_i)\\ 
+\ln S_i(P_i) = \Bigl[\ln \mu_i + \frac{1}{\alpha}\ln A_i + \varepsilon\ln P_i \Bigr]+ \Bigl[\ln\Lambda_i(P_i) + \ln\mathcal{L_i}\Bigr]
+\end{aligned}
+(\#eq:app-agg-hs)
+\end{equation}
+
+Now I can derive the housing supply elasticity, \begin{equation}
+\begin{aligned}
+\varepsilon^S_{i} \equiv \frac{\partial \ln S_{i}\left(P_{i}\right)}{\partial \ln P_{i}}&=\frac{d \ln H^S_{i}\left(P_{i}\right)}{\partial \ln P_{i}}+ \frac{\partial \ln \mathcal{T}_{i}\left(P_{i}\right)}{\partial \ln P_{i}} \\
+&= \varepsilon + \frac{\partial \ln\Lambda_i(P_i)}{\partial \ln P_i},
+\end{aligned}
+(\#eq:app-elasticity)
+\end{equation} where the first term captures the intensive margin of development (floorspace per parcel) and the second reflects the extensive margin (parcel development).
+
+```{r, setup-Appendix, ref.label=c("results-setup", "global-opts", "results-imports-data")}
+# reusing code with the same chunk labels
+knitr::opts_chunk$set(cache = FALSE)
+```
+
+### Tables and Figures
+
+#### Tables
+
+```{r first-stage-results-checked, results='asis'}
+cat(readLines('output/first-stage-results_checked.tex'))
+```
+
+```{r 2sls-results permits-completions, results='asis', eval=FALSE}
+cat(readLines('output/iv-main-results_Permits_checked.tex'))
+cat(readLines("output/iv-main-results_Completions_checked.tex"))
+```
+
+```{r ols-results-single-family-homes, results='asis'}
+cat(readLines('output/OLS-results_single-family_checked.tex'))
+```
+
+```{r 2sls-results single-family-homes, results='asis'}
+cat(readLines("output/iv-results_single-family_checked.tex"))
+# cat(readLines("output/iv-results_Permits--single-family_checked.tex"))
+# cat(readLines("output/iv-results_Completions--single-family_checked.tex"))
+```
+
+#### Figures
+
+```{=latex}
+\begin{figure}[H]
+\centering
+```
+```{r quantity-growth, fig.dim=c(4,3)}
+##| fig.cap = "total building stock in Germany (annual change)"
+.scale = 1e-3
+agg_de[, .(year, `all` = buildings, `single-family` = single_fam)] |>
+  melt(measure.vars = c("all", "single-family"), id.vars = "year") |>
+  _[, .(year, value = value - shift(value)), variable] |>
+  subset(year != 2011) |>
+  ggplot(aes(year, .scale * value, color = variable)) +
+  geom_line(lwd = 1.05, lty = "dotted") +
+  geom_point(size = 2) +
+  labs(x = "Year", y = bquote(plain(Delta * H) ~ ~ (.(1 / .scale)))) +
+  scale_x_continuous(breaks = year_breaks) +
+  scale_color_manual("Buildings", values = mycols) +
+  theme_cowplot(font_size - 2) +
+  theme(legend.position = c(0.03, 0.9), axis.text.y = element_text(angle = 90))
+```
+
+```{=latex}
+\caption{Total building stock in Germany (annual change)}
+\medskip
+\begin{minipage}{0.9\textwidth}
+\footnotesize
+\textit{Notes:} This figure shows the total building flow (annual change in stock) in Germany in the 2008-2019 period. The house type category ``all" captures all house types, including ``single-family" homes. The data are obtained from (ref:atlas-germany). 
+\end{minipage}
+\end{figure}
+```
+```{=latex}
+\begin{figure}[H]
+\centering
+```
+```{r price-variation, fig.dim=c(4,3)}
+##| fig.cap="Price variation across districts over time"
+reshape(in_levels[, .(did, year, ln_hpi, ln_hpi_single_fam)],
+  dir = "long", idvar = c("did", "year"),
+  varying = (c("ln_hpi", "ln_hpi_single_fam")),
+  timevar = "house_type",
+  times = c("all", "single-family"),
+  v.names = "ln_hpi",
+  sep = ""
+)[, .(sd_lnp = sd(ln_hpi)), .(year, house_type)] |>
+  ggplot(aes(year, sd_lnp, color = house_type)) +
+  geom_point(size = 2) +
+  geom_line() +
+  scale_x_continuous(breaks = year_breaks) +
+  scale_color_manual(
+    name = "House type", values = mycols,
+    labels = c("all", "single-family")
+  ) +
+  labs(x = "Year", y = expression(sd(ln~P))) +
+  theme_cowplot(font_size - 2) +
+  theme(legend.position = c(.6, .3))
+```
+
+```{=latex}
+\caption{House price variability across districts in Germany}
+\medskip
+\begin{minipage}{0.9\textwidth}
+\footnotesize
+\textit{Notes:} This figure shows the house price variation across districts in Germany over time. House price variation is measured by the district's standard deviation of $\ln P$ each year. The house type category ``all" captures all house types, including ``single-family" homes. The data are obtained from (ref:rwigeored). 
+\end{minipage}
+\end{figure}
+```
+```{=latex}
+\begin{figure}[H]
+\centering
+```
+```{r developed-fraction-histogram, fig.dim=c(6,3)}
+##| fig.cap = "Land development in rural vs urban districts"
+constraints_long |>
+  ggplot() +
+  geom_histogram(aes(dev_frac, fill = as.factor(year)),
+    binwidth = 0.1, position = "dodge2"
+  ) +
+  scale_fill_manual(values = mycols) +
+  labs(x = "developed fraction", fill = NULL) +
+  facet_wrap(~urban_rural, scales = "free", 
+             labeller = labeller(urban_rural=\(x) paste(panel_label(x),"districts"))) +
+  theme_cowplot(8) +
+  theme(
+    legend.position = c(0.8, 0.95),
+    strip.background=element_blank(),
+    strip.text = element_text(face = "bold"),
+    legend.key.size = unit(6, "pt"),
+    axis.text.y = element_text(angle = 90, hjust = 0.5)
+  ) +
+  guides(fill = guide_legend(nrow = 1L))
+```
+
+```{=latex}
+\caption{Land development in rural vs urban districts}\label{fig:developed-fraction-histogram}
+\medskip
+\begin{minipage}{0.9\textwidth}
+\footnotesize
+\textit{Notes:} This figure shows the difference in land development intensity between urban and rural districts for 2006 and 2018. Land development is higher in urban districts, as one may expect.
+\end{minipage}
+\end{figure}
+```
+```{=latex}
+\begin{figure}[H]
+\centering
+```
+```{r developed-fraction-growth,fig.dim=c(6,3)}
+##| fig.cap = "Distribution of land development growth: 2006-2018"
+
+main[, .(did, urban_rural, west_east,
+         dev_frac = dev_frac_2018 / dev_frac_2006 - 1,
+         unavail_frac = unavail_frac_2018 / unavail_frac_2006 - 1
+         )] |>
+  ggplot() +
+  geom_histogram(aes(100 * dev_frac), color='white', binwidth = 5) +
+  scale_fill_manual(values = mycols) +
+  facet_wrap(~urban_rural, scales = 'free', 
+             labeller = labeller(urban_rural=\(x) paste(panel_label(x),"districts"))) + 
+  labs(x = "Change in developed fraction (%)", color=NULL, fill = NULL) +
+  theme_cowplot(font_size - 2) +
+  theme(
+    legend.position = 'none',
+    legend.key.size = unit(5, "pt"),
+    strip.background = element_blank()
+  ) + 
+  guides(color=guide_legend(nrow=1))
+```
+
+```{=latex}
+\caption{Distribution of land development growth: 2006-2018}
+\medskip
+\begin{minipage}{0.9\textwidth}
+\footnotesize
+\textit{Notes:} This figure shows the distribution of the growth of land development for urban and rural districts over the 2006-2018 period. Land development growth is higher in rural districts, partly because the rural districts had lower land development and more developable land in 2006 than the urban districts.
+\end{minipage}
+\end{figure}
+```
+```{=latex}
+\begin{figure}[H]
+\centering
+```
+```{r predicted-vs-actual-labor-demand-shock,fig.dim=c(4,4)}
+##| fig.cap = "Predicted (i.e. the Bartik instrument) vs actual employment growth"
+main[, .(x = bartik, y = dln_emp_act)] |>
+  ggplot(aes(x, y)) +
+  geom_point(color = "blue4", alpha = 0.25) +
+  geom_smooth(method = "lm", formula = y ~ x, color = "firebrick") +
+  labs(x = expression(widehat(Delta * ln * L)), y = expression(Delta * ln * L)) +
+  theme_cowplot(font_size - 2)
+```
+
+```{=latex}
+\caption{Predicted (i.e., the Bartik instrument) vs. actual employment growth}
+\medskip
+\begin{minipage}{0.9\textwidth}
+\footnotesize
+\textit{Notes:} This figure shows the labor demand shock predicted from local employment, which is used as an instrument in this study, compared to the actual employment growth. The employment data are obtained from (ref:atlas-germany)
+\end{minipage}
+\end{figure}
+```
+```{=latex}
+\begin{figure}[H]
+\centering
+```
+```{r land-cover-classes-I, out.width="100%", fig.width=8, fig.height=6}
+# source('script/visualization/viz_elev-slope-undev.R')
+include_graphics("output/figs/developable-land.png")
+```
+
+```{=latex}
+\caption{Developable land in Germany}
+\medskip
+\begin{minipage}{0.9\textwidth}
+\footnotesize
+\textit{Notes:} This figure shows the distribution of developable land in Germany. The developable land includes an area covered by agriculture, forests, or artificial surfaces (see section \ref{constraints}). Areas covered with artificial surfaces are part of the developable stock as they can be redeveloped through renovation or demolition. 
+The data are extracted from Corine Land Cover (CLC) Germany, compiled by the \hyperlink{https://www.dlr.de/eoc/en/desktopdefault.aspx/tabid-11882/20871_read-48836}{German Remote Sensing Data Center (DFD) of DLR} and the \hyperlink{https://www.bkg.bund.de}{Federal Agency for Cartography and Geodesy (BKG)}.
+\end{minipage}
+\end{figure}
+```
+```{=latex}
+\begin{figure}[H]
+\centering
+```
+```{r land-cover-classes-II, fig.show='hold', out.height="100%", out.width="100%"}
+include_graphics(c(
+  "output/figs/undevelopable-land.png",  "output/figs/developed-land.png")
+  )
+```
+
+```{=latex}
+\caption{Undevelopable land (top) and developed (bottom) land in Germany}
+\medskip
+\begin{minipage}{0.9\textwidth}
+\footnotesize
+\textit{Notes:} This figure shows the distribution of undevelopable land and already developed land in Germany. The undevelopable land includes an area covered by wetlands and water bodies (see section \ref{constraints}). Developed land is for areas already covered with artificial surfaces such as buildings. 
+The data are extracted from Corine Land Cover (CLC) Germany, compiled by the \hyperlink{https://www.dlr.de/eoc/en/desktopdefault.aspx/tabid-11882/20871_read-48836}{German Remote Sensing Data Center (DFD) of DLR} and the \hyperlink{https://www.bkg.bund.de}{Federal Agency for Cartography and Geodesy (BKG)}.
+\end{minipage}
+\end{figure}
+```

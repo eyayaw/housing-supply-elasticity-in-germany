@@ -1,0 +1,245 @@
+---
+title: "**Geographic Constraints and the Housing Supply Elasticity in Germany**"
+author: |
+  Eyayaw Beze^[Eyayaw Beze, University of Duisburg-Essen. -- I am grateful to my advisor, Tobias Seidel, for his insightful comments and guidance. I also thank Thomas Bauer, Nadine Riedel, Andreas Mense, and members of the Research Training Group (RTG) Regional Disparities \& Economic Policy, the Ruhr Graduate School in Economics (RGS Econ), and the Mercator School of Management, University of Duisburg-Essen, for helpful comments and discussions. Finally, I am highly grateful for the financial support from the Stiftung Mercator via the RGS Econ. -- All correspondence to: Eyayaw Beze, University of Duisburg-Essen, Lotharstr. 65, 47057 Duisburg, Germany, e-mail: eyayaw.beze\@uni-due.de]
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+bibliography: references.bib
+#biblio-style: '`r source("get_csl.R");get_csl("aer", bst=T)`' #"aer"
+csl: '`r source("get_csl.R");get_csl()`' #chicago-author-date.csl
+link-citations: true
+colorlinks: true
+linkcolor: blue
+fontsize: 12pt
+geometry: a4paper
+site: bookdown::bookdown_site
+output:
+  bookdown::pdf_book:
+    includes:
+      in_header: preamble.tex
+    latex_engine: xelatex
+    #citation_package: natbib
+    keep_tex: yes
+    toc: false
+natbiboptions: round
+documentclass: article
+nocite: |
+  [@bbsr2021]
+subtitle: |
+  \begin{center}
+  \href{https://uni-duisburg-essen.sciebo.de/s/km7tQzcygRQjwp6}{Click here for the latest version.}
+  \end{center}
+---
+
+```{r global-opts, include=FALSE}
+library(knitr)
+library(data.table)
+library(ggplot2)
+library(cowplot)
+
+opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  fig.path = "output/figs/",
+  fig.align = "center",
+  dpi = 320,
+  cache = FALSE
+)
+
+## ggplot global theme setting
+font_size = 12
+theme_set(cowplot::theme_cowplot(font_size))
+theme_update(
+  strip.background = element_rect(fill = NA),
+  strip.text = element_text(face = "bold"),
+  plot.title = element_text(hjust = .5, size = rel(1.1))
+)
+
+source("script/helpers/base_helpers.R")
+source("script/helpers/helpers.R")
+source("script/helpers/estimation_helpers.R")
+
+dirMain <- function(path = NULL) {
+  paste0("data/processed/main/", path)
+}
+```
+
+```{r global-imports}
+in_levels = fread_utf8("data/processed/main/main_in-levels.csv", keepLeadingZeros = TRUE)
+in_changes = fread_utf8("data/processed/main/main_wide.csv", keepLeadingZeros = TRUE)
+main = fread_utf8("data/processed/main/model-data.csv", keepLeadingZeros = TRUE)
+setnames(main, "urban_rural_area", "urban_rural")
+main[, unavail_frac := unavail_frac_2006][, dev_frac := dev_frac_2006]
+constraints = fread_utf8(
+  "data/processed/geodata/constraints.csv",
+  keepLeadingZeros = TRUE
+)
+
+in_levels[, `:=`(ln_hpi = log(hpi), ln_hpi_single_fam = log(hpi_single_fam))]
+```
+
+```{r global-constants}
+d1 = in_levels[
+  year %in% c(2008, 2019),
+  .(
+    p = mean(exp(ln_hpi), na.rm = TRUE),
+    h = sum(total_buildings, na.rm = TRUE)
+  ), year
+] |>
+  dcast(. ~ year, value.var = c("p", "h"), sep = "")
+```
+
+```{r construction-stats-since-1995}
+# construction completions and permits,  buildings & apartments
+vs = c("permits_", "completions_")
+complet_permit = paste0(dirMain(),
+                        "total_apartments-buildings_completions-permits.csv") |>
+  fread_keepzeros(select = c(
+    "did", "year",
+    paste0(vs, "total_buildings"),
+    paste0(vs, "floorspace"),
+    paste0(vs, "1-apart-building")
+  ))
+
+stock = fread_keepzeros(paste0(dirMain(), "residential_stock-floorspace.csv"),
+  drop = "name"
+)[, .(did, year, total_buildings, `1-apart-building`, floorspace)]
+
+since95 <-
+  merge(complet_permit, stock, c("did", "year"))[year < 2020, .(
+    did, year,
+    # all-homes
+    buildings = total_buildings,
+    floorspace,
+    permits = permits_total_buildings,
+    completions = completions_total_buildings,
+    # single-family homes
+    single_fam = `1-apart-building`,
+    single_fam_floorspace = floorspace * `1-apart-building` / total_buildings,
+    single_fam_permits = `permits_1-apart-building`,
+    single_fam_completions = `completions_1-apart-building`
+  )] |>
+  reshape(
+    varying = list(
+      c("buildings", "single_fam"),
+      c("floorspace", "single_fam_floorspace"),
+      c("permits", "single_fam_permits"),
+      c("completions", "single_fam_completions")
+    ),
+    idvar = c("did", "year"),
+    direction = "long",
+    times = c("all", "single-family"),
+    timevar = "house_type"
+  ) |> 
+  {
+  \(.x) .x[, lapply(.SD, mean, na.rm = TRUE), .(house_type, year), .SDcols = !"did"]
+  }()
+since95[
+  order(house_type, year),
+  `:=`(
+    flow = buildings - shift(buildings, fill = NA),
+    # t's completions are t-1's permits
+    completions = shift(completions, -1L, fill = NA)
+  ), .(house_type)
+]
+
+since95[year == 2011, flow := NA] # removing an outlier (because of Census 2011)
+
+since95_tot = complet_permit[, .(did, year,
+  permits = permits_total_buildings, completions = completions_total_buildings
+)][stock[, .(did, year, buildings = total_buildings)], on = c("did", "year")][
+  ,
+  I(.(
+    year = year, buildings = buildings, flow = buildings - shift(buildings),
+    permits = permits, completions = shift(completions, -1)
+  )), .(did)
+][, lapply(.SD, sum, na.rm = TRUE), year, .SDcols = !"did"] 
+since95_tot[flow==0, flow:=NA]
+```
+
+```{r before-after-comparison}
+# construction outlook before after the study period
+ba_study = since95[year <= 2019,
+  .(permits = mean(permits, na.rm = TRUE), completions = mean(completions, na.rm = TRUE)),
+  .(period = fcase(
+    year %between% c(2008, 2019), "2008-2019", year %between% c(1995, 2007), "1995-2007"
+  ))
+]
+```
+
+```{r verification, results='asis'}
+# in_dir("", source("script/model/verify-estimation.R"))
+coefs = fread('output/elasticity-estimates_checked.csv')
+coefs_single = fread('output/elasticity-estimates-single-family_checked.csv')
+```
+
+```{r global-imports-estimates}
+## pars
+iqr = list()
+iqr$dev = quantile(main$dev_frac_2006, c(1/4, 3/4), names = FALSE)
+iqr$unavail = quantile(main$unavail_frac_2006, c(1/4, 3/4), names = FALSE)
+
+pars = main[, .(ave.dev = mean(dev_frac_2006), ave.unavail = mean(unavail_frac_2006))]
+
+# floorspace elasticity ----
+
+## case 1 ----
+eps.fs.1 = coefs[.("Floorspace", "case.1"), on = c("qmeasure", "case"), dln_hpi]
+eps.u.1 = coefs[.("Units", "case.1"), on = c("qmeasure", "case"), dln_hpi]
+
+## case 2 ----
+est.fs.2 = coefs[.("Floorspace", "case.2"), on = c("qmeasure", "case"), 
+                 .(dln_hpi, `dln_hpi:dev_frac`)]
+est.fs.2 = setNames(as.list(est.fs.2), c('vareps', 'b_dev'))
+eps.fs.2 = with(est.fs.2, vareps + b_dev * pars$ave.dev)
+
+## case 3 ----
+est.fs.3 = coefs[.("Floorspace", "case.3"), on = c("qmeasure", "case"), 
+                 .(dln_hpi, `dln_hpi:unavail_frac`)]
+est.fs.3 = setNames(as.list(est.fs.3), c('vareps', 'b_unavail'))
+eps.fs.3 = with(est.fs.3, vareps + b_unavail * pars$ave.unavail)
+
+## case 4 ----
+est.fs.4 = coefs[.("Floorspace", "case.4"), on = c("qmeasure", "case"), 
+                 .(dln_hpi, `dln_hpi:dev_frac`, `dln_hpi:unavail_frac`)]
+est.fs.4 = setNames(as.list(est.fs.4), c('vareps', 'b_dev', 'b_unavail'))
+
+eps.fs.4 = with(est.fs.4, 
+                vareps + b_dev * pars$ave.dev + b_unavail * pars$ave.unavail)
+eps.fs.4.dev.q1 = with(est.fs.4, 
+                       vareps + b_dev * iqr$dev[1] + b_unavail * pars$ave.unavail)
+eps.fs.4.dev.q3 = with(est.fs.4, 
+                       vareps + b_dev * iqr$dev[2] + b_unavail * pars$ave.unavail)
+
+eps.fs.4.unavail.q1 = with(est.fs.4, 
+                           vareps + b_dev * pars$ave.dev + b_unavail * iqr$unavail[1])
+eps.fs.4.unavail.q3 = with(est.fs.4, 
+                           vareps + b_dev * pars$ave.dev + b_unavail * iqr$unavail[2])
+
+# units elasticity ----
+est.u.4 = coefs[.("Units", "case.4"), on = c("qmeasure", "case"),
+  .(vareps = dln_hpi, b_dev = `dln_hpi:dev_frac`, b_unavail = `dln_hpi:unavail_frac`)
+]
+
+```
+
+```{r district-elasticity}
+elasticity <- data.frame(
+  case2 = with(coefs[.("Floorspace", "case.2"),
+    on = c("qmeasure", "case"),
+    .(e = dln_hpi, e1 = `dln_hpi:dev_frac`)
+  ], e + e1 * main$dev_frac),
+  case3 = with(coefs[.("Floorspace", "case.3"),
+    on = c("qmeasure", "case"),
+    .(e = dln_hpi, e1 = `dln_hpi:unavail_frac`)
+  ], e + e1 * main$unavail_frac),
+  case4 = with(coefs[.("Floorspace", "case.4"),
+    on = c("qmeasure", "case"),
+    .(e = dln_hpi, e1 = `dln_hpi:dev_frac`, e2 = `dln_hpi:unavail_frac`)
+  ], e + e1 * main$dev_frac + e2 * main$unavail_frac)
+)
+```
+
+(ref:atlas-germany) the @atlasde2022
+
+(ref:rwigeored) @rwi2020

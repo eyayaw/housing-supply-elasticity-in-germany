@@ -3,4 +3,6 @@
 ::: {#refs}
 :::
 
-\putbib[urban-economics]
+```{=tex}
+% \putbib[urban-economics]
+```

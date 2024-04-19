@@ -1,4 +1,5 @@
 
+
 <!-- README.md is generated from README.qmd. Please edit that file -->
 
 # Replication code for my paper:
@@ -8,24 +9,20 @@
 \#1003](https://www.rwi-essen.de/en/publications/scientific/ruhr-economic-papers/detail/geographic-constraints-and-the-housing-supply-elasticity-germany)
 
 > You can find the latest version
-> [here](https://uni-duisburg-essen.sciebo.de/s/km7tQzcygRQjwp6).
+> [here](https://docs.google.com/viewer?url=https://github.com/eyayaw/housing-supply-elasticity-in-germany/raw/main/Beze_2023_the-Price-Elasticity-of-Housing-Supply-in-Germany.pdf).
 
-<div>
-
-> **Warning**
+> [!WARNING]
 >
 > `RWI-GEO-RED` data is not included in this repository. Thus, you need
 > access to the data to reproduce this project.
 
-</div>
-
 # Requirements
 
-- `R` 4.3.2
+- `R` 4.3.3
 
 - `R packages`:
 
-  - `data.table` devel 1.14.9
+  - `data.table` devel 1.15.99
   - more packages listed in [`renv.lock`](./renv.lock) file
 
   <details>
@@ -33,22 +30,20 @@
   This project depends heavily on the awesome
   [`data.table`](https://github.com/Rdatatable/data.table) package.
 
-  <div id="tbl-top-packages">
+  <div class="cell-output-display">
 
   | pkg          | num_files |
   |:-------------|----------:|
-  | `data.table` |        29 |
-  | `rmarkdown`  |        15 |
-  | `knitr`      |        10 |
+  | `rmarkdown`  |        31 |
+  | `data.table` |        30 |
+  | `knitr`      |        13 |
+  | `sf`         |        10 |
   | `readxl`     |        10 |
-  | `sf`         |         9 |
-  | `tools`      |         8 |
+  | `tools`      |         9 |
   | `bookdown`   |         5 |
   | `tibble`     |         5 |
-  | `terra`      |         4 |
-  | `ivreg`      |         3 |
-
-  Table 1: Dependencies - Top packages
+  | `ivreg`      |         4 |
+  | `ggplot2`    |         4 |
 
   </div>
 
@@ -83,13 +78,15 @@
 2.  R scripts: The order in which the scripts should be run is provided
     in [`main.R`](main.R).
 
-3.  The `.Rmd` files generate the manuscript.
+3.  The `index.qmd` file generates the manuscript.
 
-    - Render it with `Cmd+Shift+B` in RStudio. Or, run the following
-      code in `R` console:
+    - Render it with `Cmd+Shift+K` in RStudio/VS Code. Or, run the
+      following code in the terminal:
 
-      ``` r
-      rmarkdown::render_site(encoding = "UTF-8")
+      ``` bash
+      quarto render index.qmd
+      # move figure notes out of the caption
+      python3 tidy_figure_notes.py index.tex Beze_2023_the-Price-Elasticity-of-Housing-Supply-in-Germany.pdf
       ```
 
 ## The price elasticity of housing supply estimates

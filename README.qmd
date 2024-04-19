@@ -12,7 +12,7 @@ engine: knitr
 
 [**Geographic Constraints and the Housing Supply Elasticity in Germany** — Ruhr Economic Papers #1003](https://www.rwi-essen.de/en/publications/scientific/ruhr-economic-papers/detail/geographic-constraints-and-the-housing-supply-elasticity-germany)
 
-> You can find the latest version [here](https://uni-duisburg-essen.sciebo.de/s/km7tQzcygRQjwp6).
+> You can find the latest version [here](https://docs.google.com/viewer?url=https://github.com/eyayaw/housing-supply-elasticity-in-germany/raw/main/Beze_2023_the-Price-Elasticity-of-Housing-Supply-in-Germany.pdf).
 
 ::: callout-warning
 `RWI-GEO-RED` data is not included in this repository. Thus, you need access to the data to reproduce this project.
@@ -63,12 +63,14 @@ engine: knitr
 
 2.  R scripts: The order in which the scripts should be run is provided in [`main.R`](main.R).
 
-3.  The `.Rmd` files generate the manuscript.
+3.  The `index.qmd` file generates the manuscript.
 
-    -   Render it with `Cmd+Shift+B` in RStudio. Or, run the following code in `R` console:
+    -   Render it with `Cmd+Shift+K` in RStudio/VS Code. Or, run the following code in the terminal:
 
-        ``` r
-        rmarkdown::render_site(encoding = "UTF-8")
+        ```bash
+        quarto render index.qmd
+        # move figure notes out of the caption
+        python3 tidy_figure_notes.py index.tex Beze_2023_the-Price-Elasticity-of-Housing-Supply-in-Germany.pdf
         ```
 
 ## The price elasticity of housing supply estimates
@@ -97,7 +99,7 @@ Please look at the [`script/constraints/compute_supply_constraints.R`](./script/
 
 BibTeX entry:
 
-``` tex
+```tex
 @book{beze_2023,
     address = {DE},
     title = {Geographic {Constraints} and the {Housing} {Supply} {Elasticity} in {Germany}},

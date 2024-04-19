@@ -1,7 +1,7 @@
 ## Appendix {#sec-appendix-hse .unnumbered .appendix}
 
 ```{=tex}
-\setupappendix
+% \setupappendix
 ```
 
 ### Derivation of the housing supply function {#sec-hs-appendix}
@@ -282,5 +282,5 @@ include_graphics("output/figs/developed-land.png")
 %%%---end-of-chapter1---%%%
 ```
 ```{=tex}
-\end{bibunit}
+% \end{bibunit}
 ```
