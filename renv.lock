@@ -577,12 +577,17 @@
     "data.table": {
       "Package": "data.table",
       "Version": "1.15.99",
-      "Source": "unknown",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "Rdatatable",
+      "RemoteRepo": "data.table",
+      "RemoteRef": "master",
       "Requirements": [
         "R",
         "methods"
       ],
-      "Hash": "de349bafc2b4495cae78009f6812d13d"
+      "Hash": "e89795ed420686517ecf8664172737ce"
     },
     "desc": {
       "Package": "desc",

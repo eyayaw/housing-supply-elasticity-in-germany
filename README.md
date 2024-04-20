@@ -8,7 +8,9 @@
 — Ruhr Economic Papers
 \#1003](https://www.rwi-essen.de/en/publications/scientific/ruhr-economic-papers/detail/geographic-constraints-and-the-housing-supply-elasticity-germany)
 
-> You can find the latest version
+> You can find the latest version in this repo
+> [Beze_2023_the-Price-Elasticity-of-Housing-Supply-in-Germany.pdf](Beze_2023_the-Price-Elasticity-of-Housing-Supply-in-Germany.pdf).
+> View it
 > [here](https://docs.google.com/viewer?url=https://github.com/eyayaw/housing-supply-elasticity-in-germany/raw/main/Beze_2023_the-Price-Elasticity-of-Housing-Supply-in-Germany.pdf).
 
 > [!WARNING]
@@ -48,6 +50,8 @@
   </div>
 
   </details>
+
+- [quarto](https://quarto.org) to render the manuscript
 
 # Usage
 

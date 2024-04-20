@@ -12,7 +12,7 @@ engine: knitr
 
 [**Geographic Constraints and the Housing Supply Elasticity in Germany** — Ruhr Economic Papers #1003](https://www.rwi-essen.de/en/publications/scientific/ruhr-economic-papers/detail/geographic-constraints-and-the-housing-supply-elasticity-germany)
 
-> You can find the latest version [here](https://docs.google.com/viewer?url=https://github.com/eyayaw/housing-supply-elasticity-in-germany/raw/main/Beze_2023_the-Price-Elasticity-of-Housing-Supply-in-Germany.pdf).
+> You can find the latest version in this repo [Beze_2023_the-Price-Elasticity-of-Housing-Supply-in-Germany.pdf](Beze_2023_the-Price-Elasticity-of-Housing-Supply-in-Germany.pdf). View it [here](https://docs.google.com/viewer?url=https://github.com/eyayaw/housing-supply-elasticity-in-germany/raw/main/Beze_2023_the-Price-Elasticity-of-Housing-Supply-in-Germany.pdf).
 
 ::: callout-warning
 `RWI-GEO-RED` data is not included in this repository. Thus, you need access to the data to reproduce this project.
@@ -37,13 +37,14 @@ engine: knitr
     #| message: false
     deps = data.table::as.data.table(renv::dependencies(quiet = T))
 
-    deps[, .("num_files" = .N), .(pkg = paste0("`", Package, "`")),
+    deps[, .(num_files = .N), .(pkg = paste0("`", Package, "`")),
         ][order(-num_files)
          ][1:10, ] |>
             knitr::kable()
     ```
 
     </details>
+-  [quarto](https://quarto.org) to render the manuscript
 
 # Usage
 
@@ -67,7 +68,7 @@ engine: knitr
 
     -   Render it with `Cmd+Shift+K` in RStudio/VS Code. Or, run the following code in the terminal:
 
-        ```bash
+        ``` bash
         quarto render index.qmd
         # move figure notes out of the caption
         python3 tidy_figure_notes.py index.tex Beze_2023_the-Price-Elasticity-of-Housing-Supply-in-Germany.pdf
@@ -99,7 +100,7 @@ Please look at the [`script/constraints/compute_supply_constraints.R`](./script/
 
 BibTeX entry:
 
-```tex
+``` tex
 @book{beze_2023,
     address = {DE},
     title = {Geographic {Constraints} and the {Housing} {Supply} {Elasticity} in {Germany}},

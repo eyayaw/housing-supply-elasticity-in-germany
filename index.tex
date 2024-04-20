@@ -1585,6 +1585,14 @@ impact on house prices and housing supply.
 \addcontentsline{toc}{section}{Appendix}
 
 % \setupappendix
+\setcounter{equation}{0}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+\setcounter{section}{1} %since are inside the appendix section
+\renewcommand\thesection{\Alph{section}}
+\renewcommand\theequation{\thesection.\arabic{equation}}    
+\renewcommand\thefigure{\thesection.\arabic{figure}}    
+\renewcommand\thetable{\thesection.\arabic{table}}  
 
 \subsection{Derivation of the housing supply
 function}\label{sec-hs-appendix}
