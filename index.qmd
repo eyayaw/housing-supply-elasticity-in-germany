@@ -16,18 +16,19 @@ format:
     include-in-header: preamble.tex
     cite-method: natbib
     toc: false
+    number-sections: true
     keep-tex: true
     from: markdown+autolink_bare_uris
 natbiboptions: round
 documentclass: article
 nocite: |
   [@bbsr_2021]
+output-file: Beze_2023_the-Price-Elasticity-of-Housing-Supply-in-Germany
+shift-heading-level-by: -1
 # subtitle: |
 #   \begin{center}
 #   \href{https://uni-duisburg-essen.sciebo.de/s/km7tQzcygRQjwp6}{Click here for the latest version.}
 #   \end{center}
-output-file: Beze_2023_the-Price-Elasticity-of-Housing-Supply-in-Germany
-shift-heading-level-by: -1
 ---
 
 ```{=tex}
