@@ -130,7 +130,7 @@ the project.**
 
 BibTeX entry:
 
-``` tex
+``` bibtex
 @book{beze_2023,
     address = {DE},
     title = {Geographic {Constraints} and the {Housing} {Supply} {Elasticity} in {Germany}},

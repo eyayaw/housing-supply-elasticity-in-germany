@@ -2,7 +2,19 @@ import os
 import sys
 import re
 
-# https://regex101.com/r/RROSt7/3
+# This script extracts notes from figure captions and places them in a minipage below the figure.
+# The notes should be enclosed in a pair of triple angle brackets.
+# #| fig-cap: A nice plot.<<<*Notes:* This is a note.>>>
+# becomes: 
+# ...
+#   \caption{A nice plot.}
+#   \begin{minipage}{0.975\textwidth}
+#     \small
+#     \emph{Notes:} This is a note.
+#   \end{minipage}
+# ...
+
+# regex pattern to match the figure environment and extract notes from the caption. See https://regex101.com/r/RROSt7/3
 
 regex = r"(?s)(?P<head>\\begin\{figure\}.*?(?:\\caption\{.*?))(?P<notes_delim>(?:\\textless){3}\{\}(?P<notes>\\(?:emph|textit)\{Notes:\}.*?)(?:\\textgreater){3}\{\})(?P<trailing>\})(?P<tail>.*?\\end\{figure\})"
 
@@ -38,7 +50,7 @@ def main():
     file_path = sys.argv[1] # tex path
     out_path = sys.argv[2]  # pdf path
     if not out_path:
-        out_path = file_path.replace(".tex", "_tidy.tex")
+        out_path = file_path.replace(".tex", "_tidy.pdf")
     tidy_figure_notes(file_path, overwrite=True)
     print("Rendering PDF ...")
     os.system(f'Rscript -e \'tinytex::xelatex("{file_path}", pdf_file="{out_path}")\'')
