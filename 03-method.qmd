@@ -76,9 +76,9 @@ $$
 
 [^03-method-4]: For simplicity, I assume that market imperfections are minimal such that workers earn wages equal or proportional to their productivity.
 
-Assuming that locations within district $i$ are perfect demand substitutes for given values of parcel characteristics, then $P_{i}$ representing the average price of housing in the district, summing up over the housing consumption of all the residents $N$ of $i$, the log aggregate housing demand function for district $i$ can be written as 
+Assuming that locations within district $i$ are perfect demand substitutes for given values of parcel characteristics, and letting $P_{i}$ represent the average price of housing in the district, summing over the housing consumption of all $N$ residents of $i$ gives the log aggregate housing demand function for district $i$:
 $$
-\ln P_{i}=\ln \beta + \ln w_{i}-\ln H_{i}^{d} + ln N_{i}. 
+\ln P_{i}=\ln \beta + \ln w_{i}-\ln H_{i}^{d} + \ln N_{i}.
 $$ {#eq-agg-hd}
 
 The housing demand function in @eq-agg-hd shows how exogenous productivity ($w_i$) changes can be used as demand shifters for identifying the housing supply elasticity.[^03-method-5]
@@ -93,7 +93,7 @@ The main estimation equation is the aggregate housing supply function @eq-agg-hs
 $$
 \Delta\ln H_i^S =  a^S_i + \varepsilon^S_i\Delta\ln P_i + \boldsymbol{\beta}\mathbf{X}^S_i + u^S_i, 
 $$ {#eq-main}
-where $i$ indexes districts across Germany and changes are computed from long (log) differences between 2008-2019, and $\mathbf{X}$ includes a set of district controls.[^03-method-6] The parameter vector of interest is $\varepsilon^S_i=\mathbf{Y}_i\varepsilon$. Following @saiz_2010 and @baum-snow_han_2019, such a setup allows us to compute an elasticity estimate for each district $i$. For doing so, $\varepsilon^S_i$ can be defined as a function of observed district supply characteristics $\mathbf{Y}_i$ such as undevelopable fraction of land, level of existing land development (developed fraction), and regulation. First, as a baseline specification, and following @saiz_2010, I start with a common price elasticity of housing supply across all districts, i.e., $\varepsilon^S_i=\varepsilon^S \;\forall i$, which corresponds to $\varepsilon$ in the aggregate housing supply function in @eq-agg-hs. Then, I consider estimating the housing supply elasticity levels that vary across districts as a function of these observed district supply conditions.
+where $i$ indexes districts across Germany and changes are computed from long (log) differences between 2008 and 2019, and $\mathbf{X}$ includes a set of district controls.[^03-method-6] The parameter vector of interest is $\varepsilon^S_i=\mathbf{Y}_i\varepsilon$. Following @saiz_2010 and @baum-snow_han_2019, such a setup allows us to compute an elasticity estimate for each district $i$. To do so, $\varepsilon^S_i$ can be defined as a function of observed district supply characteristics $\mathbf{Y}_i$ such as undevelopable fraction of land, level of existing land development (developed fraction), and regulation. First, as a baseline specification, and following @saiz_2010, I start with a common price elasticity of housing supply across all districts, i.e., $\varepsilon^S_i=\varepsilon^S \;\forall i$, which corresponds to $\varepsilon$ in the aggregate housing supply function in @eq-agg-hs. Then, I consider estimating the housing supply elasticity levels that vary across districts as a function of these observed district supply conditions.
 
 [^03-method-6]: The control variables include construction and labor costs, housing supply constraints, and dummy variables for whether the district is urban and in West Germany. Depending on the variable type, controls are either in levels or logarithms.
 
@@ -122,7 +122,7 @@ $$
 \beta^{\text{Unavail}} \Delta \ln P_i\times\text{Unavail}_i + \boldsymbol{\beta}\boldsymbol{X}_i^S + u^S_i\,,
 \end{aligned} 
 $$ {#eq-case-4}
-where $\beta^{\text{Developed}} \le 0\,, \beta^{\text{Unvail}}\le0$.Then, the elasticity is given by $\varepsilon^S_i = \varepsilon^S + \beta^{\text{Developed}}\text{Developed}_i + \beta^{\text{Unavail}}\text{Unavail}_i$.
+where $\beta^{\text{Developed}} \le 0\,, \beta^{\text{Unavail}}\le0$. Then, the elasticity is given by $\varepsilon^S_i = \varepsilon^S + \beta^{\text{Developed}}\text{Developed}_i + \beta^{\text{Unavail}}\text{Unavail}_i$.
 
 #### Constructing the Bartik instrument
 
@@ -150,4 +150,4 @@ From the data, I constructed seven (hence $K=7$) broad industry classes.[^03-met
 
 [^03-method-7]: The industry classification follows the [German Classification of Economic Activities, Edition 2008 (WZ_2008)](https://www.destatis.de/DE/Methoden/Klassifikationen/Gueter-Wirtschaftsklassifikationen/klassifikation-wz-2008.html). I aggregate the district and national industry employment data that I used for constructing the Bartik instrument to 7 broad industry classes: (1) agriculture, forestry, and fishing, (2) mining and quarrying, energy, and water, sewage, and waste, (3) manufacturing, (4) construction, (5) trade, transport, hospitality, and information and communication, (6) finance and insurance, and real estate, (7) public and other services, education, and health.
 
-The Bartik instrument used in the estimation is the predicted change in the logarithm of employment between the base period (2008) and the last (2019), $\widehat{\Delta\ln L_i} = \sum_k{z_{ik_2008} \left(\ln L_{(i^\prime)k_2019}-\ln L_{(i^\prime)k_2008}\right)}$.
+The Bartik instrument used in the estimation is the predicted change in the logarithm of employment between the base period (2008) and the last (2019), $\widehat{\Delta\ln L_i} = \sum_k{z_{ik_{2008}} \left(\ln L_{(i^\prime)k_{2019}}-\ln L_{(i^\prime)k_{2008}}\right)}$.
