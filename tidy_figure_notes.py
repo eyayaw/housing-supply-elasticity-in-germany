@@ -8,6 +8,7 @@ import re
 # becomes: 
 # ...
 #   \caption{A nice plot.}
+#   \vspace{10pt}
 #   \begin{minipage}{0.975\textwidth}
 #     \small
 #     \emph{Notes:} This is a note.
@@ -18,7 +19,7 @@ import re
 
 regex = r"(?s)(?P<head>\\begin\{figure\}.*?(?:\\caption\{.*?))(?P<notes_delim>(?:\\textless){3}\{\}(?P<notes>\\(?:emph|textit)\{Notes:\}.*?)(?:\\textgreater){3}\{\})(?P<trailing>\})(?P<tail>.*?\\end\{figure\})"
 
-subst = "\\g<head>\\g<trailing>\\n\\\\begin{minipage}{0.975\\\\textwidth}\\n\\\\small\\n\\g<notes>\\n\\\\end{minipage}\\n\\g<tail>"
+subst = "\\g<head>\\g<trailing>\\n\\\\vspace{10pt}\\n\\\\begin{minipage}{0.975\\\\textwidth}\\n\\\\small\\n\\g<notes>\\n\\\\end{minipage}\\n\\g<tail>"
 
 
 def tidy_figure_notes(file_path, overwrite=True):

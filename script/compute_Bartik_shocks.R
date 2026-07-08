@@ -23,7 +23,7 @@ sectors = unique(regional$sector) |>
   }()
 K = nrow(sectors) # number of industries (should be 7)
 base_year = 2008L # some initial period (base year)
-end_year = min(2019L, max(regional$year))
+end_year = min(2019L, max(regional$year, na.rm = TRUE))
 
 
 # wrangling ----
@@ -36,8 +36,16 @@ regional[, value := nafill(value, "locf"), .(did, sector)
 # keep from base year on
 regional = regional[year >= base_year, ]
 nat = nat[year >= base_year, ]
+
 # exclude the construction sector?
-# regional = regional[sector != sectors["Construction" == sectors$sector,]$label, ]
+# construction_sector = sectors[sectors$sector == "Construction", "label"]
+construction = copy(regional)[, share := value / sum(value), .(did, year)
+                              ][sector == construction_sector, -"sector"
+                                ][year %in% c(base_year, end_year), ]
+construction = reshape(
+  construction, direction = "wide", timevar = "year", idvar = "did", sep = "_"
+)
+# regional = regional[sector != (construction_sector), ]
 
 # leave-one-out total -----------------------------------------------------
 ## loot = the nation-wide employment in industry k excluding the district i

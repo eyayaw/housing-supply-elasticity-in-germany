@@ -2,7 +2,7 @@ library(data.table)
 
 # land cover classes ----
 
-## https://land.copernicus.eu/user-corner/technical-library/corine-land-cover-nomenclature-guidelines/html/index.html
+## https://land.copernicus.eu/content/corine-land-cover-nomenclature-guidelines/html/
 ## parse classes that are relevant to Germany from the pdf file
 pdf_path = "data/raw/geodata/corine-land-cover/clc5_2018.pdf"
 if (!file.exists(pdf_path)) {

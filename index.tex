@@ -1,4 +1,5 @@
 % Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
@@ -6,21 +7,23 @@
 \documentclass[
   12pt,
 ]{article}
-
+\usepackage{xcolor}
+\usepackage[a4paper]{geometry}
 \usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
-\ifPDFTeX\else  
-    % xetex/luatex font selection
+\ifPDFTeX\else
+  % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -38,23 +41,33 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
-\usepackage{xcolor}
-\usepackage[a4paper]{geometry}
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-\setcounter{secnumdepth}{5}
 % Make \paragraph and \subparagraph free-standing
+\makeatletter
 \ifx\paragraph\undefined\else
   \let\oldparagraph\paragraph
-  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
 \fi
 \ifx\subparagraph\undefined\else
   \let\oldsubparagraph\subparagraph
-  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
+\makeatother
 
 
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -66,17 +79,35 @@
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
 % Set default figure placement to htbp
-\makeatletter
 \def\fps@figure{htbp}
 \makeatother
+
+
+
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+\usepackage[round]{natbib}
+\bibliographystyle{apalike}
+
 
 
 \usepackage{lscape,rotating}
@@ -154,16 +185,9 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-\ifLuaTeX
-  \usepackage{selnolig}  % disable illegal ligatures
-\fi
-\usepackage[round]{natbib}
-\bibliographystyle{apalike}
-\nocite{bbsr_2021}
 \usepackage{bookmark}
-
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
+\urlstyle{same}
 \hypersetup{
   pdftitle={Geographic Constraints and the Housing Supply Elasticity in Germany},
   pdfauthor={Eyayaw Beze},
@@ -173,6 +197,7 @@
   citecolor={Blue},
   urlcolor={Blue},
   pdfcreator={LaTeX via pandoc}}
+
 
 \title{Geographic Constraints and the Housing Supply Elasticity in
 Germany}
@@ -186,10 +211,10 @@ Germany}
   Finally, I am highly grateful for the financial support from the
   Stiftung Mercator via the RGS Econ. -- All correspondence to: Eyayaw
   Beze, eyayaw.beze@gmail.com, Essen, Germany}}
-\date{April 21, 2024}
-
+\date{January 08, 2025}
 \begin{document}
 \maketitle
+
 
 % \begin{bibunit}
 
@@ -226,14 +251,14 @@ economics because it drives the congestion externalities and governs
 urban growth dynamics. An inelastic supply of land or housing means that
 any positive change in housing demand or location due to a positive
 productivity or amenity shock translates into higher prices---a major
-source of urban disutility---rather than higher quantities. On the
-contrary, if housing is supplied more elastically, we might expect
-smaller price changes and larger adjustments in city sizes. Moreover,
-inelastic supply aggravates house price differences across regions,
-affecting inter-regional labor mobility, and may constrain housing
-affordability in cities and regions, particularly in the big and growing
-ones. Thus, the housing supply elasticity is central to understanding
-the long-term development of cities and regions
+source of urban disutility---rather than higher quantities. In contrast,
+if housing is supplied more elastically, we might expect smaller price
+changes and larger adjustments in city sizes. Moreover, inelastic supply
+aggravates house price differences across regions, affecting
+inter-regional labor mobility, and may constrain housing affordability
+in cities and regions, particularly in the big and growing ones. Thus,
+the housing supply elasticity is central to understanding the long-term
+development of cities and regions
 \citep{combes_etal_2019, glaeser_etal_2006, saks_2008, lerbs_2014}.
 
 Over the past two decades, house prices have risen in cities worldwide,
@@ -242,27 +267,27 @@ supply of new housing. Significant variations in the level and growth of
 house prices across cities and locations within cities and regions have
 been recorded \citep{glaeser_2020, hilber_mense_2021}. An unresponsive
 housing supply can undoubtedly lead to higher house prices. However,
-examining what limits the housing supply and why may take more work. For
-example, in the US, house price gaps in rural and urban areas are much
-larger than the gaps in construction costs which is understood as a
-reflection of the difficulty of building new houses, especially in dense
-urban cores \citep{glaeser_2020}. While building new houses may help
-reduce house prices and alleviate affordability issues, answering why
-some cities and regions can build more houses more flexibly than others
-in response to the growing demand for housing is essential. More
-precisely, why do changes in demand for housing, triggered by
-productivity or amenity shocks, increase house prices rather than
-inducing more construction activities and city growth in some cities and
-not others?
+establishing what limits the housing supply, and why, is less
+straightforward. For example, in the US, house price gaps in rural and
+urban areas are much larger than the gaps in construction costs, which
+is understood as a reflection of the difficulty of building new houses,
+especially in dense urban cores \citep{glaeser_2020}. While building new
+houses may help reduce house prices and alleviate affordability issues,
+answering why some cities and regions can build more houses more
+flexibly than others in response to the growing demand for housing is
+essential. More precisely, why do changes in demand for housing,
+triggered by productivity or amenity shocks, increase house prices
+rather than inducing more construction activities and city growth in
+some cities and not others?
 
 This study empirically examines these questions by analyzing the growth
-of housing supply and house prices between 2008-2019 across the 401
+of housing supply and house prices between 2008 and 2019 across the 401
 German districts.\footnote{There are 401 districts (``Kreise'' in
   German) according to the 2019 end-of-the-year
   \href{https://www.destatis.de/DE/Themen/Laender-Regionen/Regionales/Gemeindeverzeichnis/Administrativ/Archiv/Verwaltungsgliederung/31122019_Jahr.html}{(31.12.2019)}
   administrative structure breakdown.} More precisely, I estimate the
-price elasticity of housing supply from a productivity or amenity shock
-induced response in housing supply. The main source of variation
+price elasticity of housing supply from the response of housing supply
+to productivity or amenity shocks. The main source of variation
 exploited for identifying the housing supply elasticity parameter is a
 \citet{bartik_1991} labor demand shock, which has been widely used in
 the literature (for example, \citet{saiz_2010} and
@@ -289,11 +314,11 @@ elasticity for Germany, using a dynamic panel data model from new
 construction permits of single-family homes for 2004-2010. By adopting
 the recent approaches in the literature
 \citep{saiz_2010, hilber_vermeulen_2016, baum-snow_han_2019}, this paper
-presents the German housing market's peculiarities regarding the housing
-supply elasticity.\footnote{The German housing market is known for its
-  stability, pro-tenant rental laws, moderate rental income taxes, low
-  interest and mortgage rates, recent fundamental supply shortages, and
-  stiff land use regulations
+documents the German housing market's peculiarities regarding the
+housing supply elasticity.\footnote{The German housing market is known
+  for its stability, pro-tenant rental laws, moderate rental income
+  taxes, low interest and mortgage rates, recent fundamental supply
+  shortages, and stiff land use regulations
   (\href{https://www.dbresearch.com/PROD/RPS_EN-PROD/PROD_0000000000517463/Outlook_for_the_German_residential_property_market.pdf?undefined&realload=OGCzKhorommVYqr3DKzCKCT/4~0T75BVVmGs5XHbQs3QdBI~xyjvWG3i2CAeU6MJ}{German
   Property Market Outlook 2021, Deutsche Bank AG, accessed August 10,
   2022},
@@ -301,14 +326,14 @@ supply elasticity.\footnote{The German housing market is known for its
   Property Guide, accessed August 12, 2022}). Moreover, it was one of
   the few housing markets that experienced less house price volatility
   during the 2008-2009 financial crisis. Because of these unique
-  features (subtle nuances), studying this market, particularly
-  concerning housing supply and elasticity differences across districts,
-  would be a great addition to the literature.} For doing so, I leverage
-a detailed unique house price dataset by \citet{rwi_redhk_2020} covering
-the whole of Germany available for 2007 onward. Furthermore, in line
-with the housing production literature, I use total residential
-floorspace over housing units as the main measure of housing quantity as
-it better captures the true level of housing supply
+  features, studying this market, particularly concerning housing supply
+  and elasticity differences across districts, would be a great addition
+  to the literature.} To do so, I use a detailed house price dataset by
+\citet{rwi_redhk_2020} covering the whole of Germany, available from
+2007 onward. Furthermore, in line with the housing production
+literature, I use total residential floorspace instead of housing units
+as the main measure of housing quantity as it better captures the true
+level of housing supply
 \citep{baum-snow_han_2019, epple_etal_2010}.\footnote{In the literature,
   housing supply has been measured or proxied by several variables,
   including housing units (stock), new construction permits,
@@ -326,34 +351,34 @@ elasticity via a two-stage least squares (2SLS) estimation using
 predicted employment growth as an instrument for house price growth.
 
 The data show that most districts in Germany have experienced
-substantial growth in house prices, an about 32\% change between 2008
+substantial growth in house prices, a change of about 32\% between 2008
 and 2019, on average. Urban districts, in particular, have experienced
 slightly higher growth than rural districts, but there is little
 difference in price growth between the West and East German districts.
 In contrast, the housing supply growth has been weak across German
 districts, about 7\%, on average. New construction permits and
-completions have been continuously declining since 1995, gradually
-rising after 2009, yet the 2008-2019 levels remain far below the late
-1990s and early 2000s.
+completions declined continuously from 1995 until 2009 and have been
+gradually rising since, yet the 2008-2019 levels remain far below those
+of the late 1990s and early 2000s.
 
 Consequently, districts, on average, have been supply-inelastic.
-According to the baseline results, on average, a district has about 0.22
-elasticity in floorspace, 0.25 in units. That means, over the 2008-2019
-period, a 10\% increase in house prices has generated a 2.2\% growth in
-residential floorspace, on average, keeping other things constant. These
-estimates are similar to what \citet{lerbs_2014} found for 2004-2010 (a
-short-run elasticity of 0.25 and a long-run value of 0.4).\footnote{Apart
-  from the time periods, however, estimates in this paper may be
-  different from \citet{lerbs_2014} estimates due to differences in the
-  empirical methods employed. First, permits are used as a housing
-  quantity measure, as opposed to the residential floorspace used in
-  this paper. Second, the price data used in the two papers are
-  different.} \citet{baum-snow_han_2019} also found housing supply
-elasticity estimates in a similar range for census tracts in the US for
-2000-2010.\footnote{The authors estimate the housing supply elasticity
-  to be in a range of 0.3-0.5 aggregated to the Metropolitan Statistical
-  Area (MSA) level (see (3) and (8) columns of Table 6 and Table 11 in
-  the Appendix of their paper).}
+According to the baseline results, on average, a district has a
+floorspace elasticity of about 0.22 and a units elasticity of 0.25. That
+is, over 2008-2019, a 10\% increase in house prices has generated a
+2.2\% growth in residential floorspace, on average, keeping other things
+constant. These estimates are similar to what \citet{lerbs_2014} found
+for 2004-2010 (a short-run elasticity of 0.25 and a long-run value of
+0.4).\footnote{Apart from the time periods, however, estimates in this
+  paper may be different from \citet{lerbs_2014} estimates due to
+  differences in the empirical methods employed. First, permits are used
+  as a housing quantity measure, as opposed to the residential
+  floorspace used in this paper. Second, the price data used in the two
+  papers are different.} \citet{baum-snow_han_2019} also found housing
+supply elasticity estimates in a similar range for census tracts in the
+US for 2000-2010.\footnote{The authors estimate the housing supply
+  elasticity to be in a range of 0.3-0.5 aggregated to the Metropolitan
+  Statistical Area (MSA) level (see (3) and (8) columns of Table 6 and
+  Table 11 in the Appendix of their paper).}
 
 The baseline specification obscures district heterogeneity since it does
 not allow the housing supply elasticity to vary across districts.
@@ -373,7 +398,7 @@ Finally, this paper provides robust housing supply elasticity estimates
 for Germany from 2008-2019. These estimates may prove useful for
 calibrating quantitative urban or regional models in Germany, which
 previously relied heavily on estimates for other markets. In addition,
-the study's utilization of supply constraints in Germany, precisely the
+the study's use of supply constraints in Germany, specifically the
 measurement of undevelopable land constructed from elevation and land
 cover data, can be valuable for other studies examining the housing
 supply constraints in Germany.
@@ -389,9 +414,9 @@ In other markets, the literature is somewhat limited, except for a few
 notable studies, such as \citet{hilber_vermeulen_2016} and
 \citet{buchler_etal_2021}, which looked at the UK and Swiss markets,
 respectively. Much of the existing work looks at differences between
-cities concerning spatial scale. Few studies take on within cities and
-regions, such as neighborhoods, at a granular spatial scale, for
-example, \citet{baum-snow_han_2019}.
+cities concerning spatial scale. Few studies examine variation within
+cities and regions, such as neighborhoods, at a granular spatial scale
+(for example, \citet{baum-snow_han_2019}).
 
 \citet{glaeser_gyourko_2005}, \citet{saiz_2010}, \citet{paciorek_2013},
 \citet{hilber_vermeulen_2016}, and \citet{baum-snow_han_2019} explore
@@ -409,13 +434,14 @@ found to be geographically constrained. \citet{paciorek_2013} focuses on
 the relationship between supply constraints and house price volatility
 and indicates that permit delays and marginal costs of new investment
 explain much of the observable differences in elasticity across markets.
-\citet{hilber_vermeulen_2016} finds regulatory constraints to be the
-causal impact of various long-run supply constraints on house prices in
-England. Finally, \citet{baum-snow_han_2019} provides a comprehensive
-characterization of housing supply elasticities for residential
-neighborhoods in 306 US metro areas and finds that distance from urban
-centers, initial development density, topography, and zoning regimes are
-among the most important determinants of local housing supply.
+\citet{hilber_vermeulen_2016} estimates the causal impact of regulatory
+and other long-run supply constraints on house prices in England and
+finds that regulatory constraints matter most. Finally,
+\citet{baum-snow_han_2019} provides a comprehensive characterization of
+housing supply elasticities for residential neighborhoods in 306 US
+metro areas and finds that distance from urban centers, initial
+development density, topography, and zoning regimes are among the most
+important determinants of local housing supply.
 
 In summary, the literature on the impact of supply constraints on house
 prices and supply is extensive in the US but limited for other countries
@@ -424,8 +450,8 @@ both geographical constraints \citep[see][]{saiz_2010, paciorek_2013}
 and regulatory constraints
 \citep[see][]{glaeser_gyourko_2005, paciorek_2013, gyourko_etal_2021, glaeser_2020}
 explain much of the rapid house price growth across cities and markets
-in the US, as well in the UK \citep{hilber_vermeulen_2016}. In most of
-the US studies, the Wharton Residential Land Use Regulatory Index
+in the US, as well as in the UK \citep{hilber_vermeulen_2016}. In most
+of the US studies, the Wharton Residential Land Use Regulatory Index
 (WRLURI 2006 or 2018) has been exclusively used as a measure of
 regulatory restrictiveness. In contrast, \citet{hilber_vermeulen_2016}
 used a dataset that includes direct information on actual planning
@@ -445,8 +471,8 @@ This study extends the analysis period of \citet{lerbs_2014} to
 2008-2019, providing a more recent assessment of the price elasticity of
 housing supply in Germany. Unlike the previous study, which focused on
 single-family homes using construction permits for 2004-2010, this study
-uses residential floorspace, including for single-family homes,
-construction permits, and completion, providing a more comprehensive
+uses residential floorspace (including for single-family homes), as well
+as construction permits and completions, providing a more comprehensive
 measure of housing supply. Additionally, by examining the impact of
 geographic constraints on housing supply elasticity at the district
 level, this study captures the heterogeneity in housing supply across
@@ -479,7 +505,7 @@ supply}
 A competitive developer combines a fixed amount of land \(\overline{T}\)
 and non-land inputs \(K\), which I simply call capital, to produce
 housing \(H\) via a Cobb-Douglas technology:
-\begin{equation}\phantomsection\label{eq-cobb}{
+\begin{equation}\protect\phantomsection\label{eq-cobb}{
 H = H(A, \overline{T}, K) = A \overline{T}^{\alpha} K^{1-\alpha}, 
 }\end{equation} where \(\alpha \in (0, 1)\). \(A\) captures supply
 heterogeneity across parcels due to local labor costs, productivity,
@@ -510,7 +536,8 @@ By substituting the factor demand equation for capital back into the
 housing production function Equation~\ref{eq-cobb}, the per parcel
 supply function can be written as: \[
 H(A, \overline{T}, K^*(P(x), \overline{T}, A))=\mu A^{\frac{1}{\alpha}}{P(x)}^{\frac{1-\alpha}{\alpha}}\overline{T} \equiv H^S(P(x), A)\,,\quad \text{with } \mu = (1-\alpha)^{\frac{1-\alpha}{\alpha}}.
-\] In log-linear form, \begin{equation}\phantomsection\label{eq-hs}{ 
+\] In log-linear form,
+\begin{equation}\protect\phantomsection\label{eq-hs}{ 
 \ln H^S(P(x), A, \overline{T}) = \ln \mu + \frac{1}{\alpha}\ln A + \underbrace{\Bigl(\frac{1-\alpha}{\alpha}\Bigr)}_{\varepsilon}\ln P(x) + \ln \overline{T}.
 }\end{equation} This shows that the supply of housing developed on a
 parcel depends on local supply heterogeneity \(A\), local housing demand
@@ -528,7 +555,7 @@ parcels that are developed in \(i\), then the stock of developed land in
 implicit district-level aggregate housing supply function
 \(S_i(P_i(x))\) can then be defined as the product of the (average)
 housing supply per parcel and the stock of developed land:
-\begin{equation}\phantomsection\label{eq-agg-hs}{
+\begin{equation}\protect\phantomsection\label{eq-agg-hs}{
 \begin{aligned}
 S_i(P_i) = H_i^S(P_i, A_i)\cdot \mathcal{T}_{i}(P_i)\\ 
 \ln S_i(P_i) = \Bigl[\ln \mu_i + \frac{1}{\alpha}\ln A_i + \varepsilon\ln P_i \Bigr]+ \Bigl[\ln\Lambda_i(P_i) + \ln\mathcal{L}_i\Bigr]
@@ -537,7 +564,7 @@ S_i(P_i) = H_i^S(P_i, A_i)\cdot \mathcal{T}_{i}(P_i)\\
 
 Differentiating Equation~\ref{eq-agg-hs} with respect to \(\ln P\)
 delivers the housing supply elasticity,
-\begin{equation}\phantomsection\label{eq-elasticity}{
+\begin{equation}\protect\phantomsection\label{eq-elasticity}{
 \varepsilon^S_{i} \equiv \varepsilon + \frac{\partial \ln\Lambda_i(P_i)}{\partial \ln P_i},
 }\end{equation} where the first term captures the intensive margin of
 development (floorspace per parcel) and the second reflects the
@@ -572,12 +599,12 @@ H^{*}_i(P_i(x), w_i) = \beta\frac{w_i}{P_i(x)} \equiv H^d_i(P_i(x), w_i).
 \]
 
 Assuming that locations within district \(i\) are perfect demand
-substitutes for given values of parcel characteristics, then \(P_{i}\)
-representing the average price of housing in the district, summing up
-over the housing consumption of all the residents \(N\) of \(i\), the
-log aggregate housing demand function for district \(i\) can be written
-as \begin{equation}\phantomsection\label{eq-agg-hd}{
-\ln P_{i}=\ln \beta + \ln w_{i}-\ln H_{i}^{d} + ln N_{i}. 
+substitutes for given values of parcel characteristics, and letting
+\(P_{i}\) represent the average price of housing in the district,
+summing over the housing consumption of all \(N\) residents of \(i\)
+gives the log aggregate housing demand function for district \(i\):
+\begin{equation}\protect\phantomsection\label{eq-agg-hd}{
+\ln P_{i}=\ln \beta + \ln w_{i}-\ln H_{i}^{d} + \ln N_{i}.
 }\end{equation}
 
 The housing demand function in Equation~\ref{eq-agg-hd} shows how
@@ -602,10 +629,10 @@ shifters (such as construction costs or productivity).
 
 The main estimation equation is the aggregate housing supply function
 Equation~\ref{eq-agg-hs} in discrete changes
-\begin{equation}\phantomsection\label{eq-main}{
+\begin{equation}\protect\phantomsection\label{eq-main}{
 \Delta\ln H_i^S =  a^S_i + \varepsilon^S_i\Delta\ln P_i + \boldsymbol{\beta}\mathbf{X}^S_i + u^S_i, 
 }\end{equation} where \(i\) indexes districts across Germany and changes
-are computed from long (log) differences between 2008-2019, and
+are computed from long (log) differences between 2008 and 2019, and
 \(\mathbf{X}\) includes a set of district controls.\footnote{The control
   variables include construction and labor costs, housing supply
   constraints, and dummy variables for whether the district is urban and
@@ -613,7 +640,7 @@ are computed from long (log) differences between 2008-2019, and
   in levels or logarithms.} The parameter vector of interest is
 \(\varepsilon^S_i=\mathbf{Y}_i\varepsilon\). Following \citet{saiz_2010}
 and \citet{baum-snow_han_2019}, such a setup allows us to compute an
-elasticity estimate for each district \(i\). For doing so,
+elasticity estimate for each district \(i\). To do so,
 \(\varepsilon^S_i\) can be defined as a function of observed district
 supply characteristics \(\mathbf{Y}_i\) such as undevelopable fraction
 of land, level of existing land development (developed fraction), and
@@ -656,7 +683,7 @@ of existing development, measured by the fraction of land that is
 already developed (\emph{Developed}), have more inelastic housing supply
 than newer or physically growing districts, i.e., \(\varepsilon^S_i\) is
 a function of development intensity:
-\begin{equation}\phantomsection\label{eq-case-2}{
+\begin{equation}\protect\phantomsection\label{eq-case-2}{
 \Delta\ln H_i^s = \varepsilon^S\Delta\ln P_i + \beta^{Developed} \Delta \ln P_i\times\text{Developed}_i + \boldsymbol{\beta}\boldsymbol{X}_i^S + u^S_i\,,
 }\end{equation} where \(\beta^{\text{Developed}} \le 0\). Then, we have
 district-specific housing supply elasticities that incorporate
@@ -667,7 +694,7 @@ Second, I test whether districts that are land-constrained due to
 geography (measured by \emph{Unavail}) have more inelastic housing
 supply than relatively unconstrained districts, i.e.,
 \(\varepsilon^S_i\) is a function of land unavailability:
-\begin{equation}\phantomsection\label{eq-case-3}{ 
+\begin{equation}\protect\phantomsection\label{eq-case-3}{ 
 \Delta\ln H_i^s = \varepsilon^S\Delta\ln P_i + \beta^{\text{Unavail}} \Delta \ln P_i\times\text{Unavail}_i + \boldsymbol{\beta}\boldsymbol{X}_i^S + u^S_i\,,
 }\end{equation} where \(\beta^{\text{Unavail}} \le 0\). Then, the
 elasticity is given by
@@ -677,13 +704,13 @@ Third, I combine the above two cases and test the importance of both
 variables (developed and unavailable land fractions) in affecting the
 response of supply growth to price growth, i.e., \(\varepsilon^S_i\) is
 a function of both developed land and land unavailability:
-\begin{equation}\phantomsection\label{eq-case-4}{
+\begin{equation}\protect\phantomsection\label{eq-case-4}{
 \begin{aligned}
 \Delta\ln H_i^s = \varepsilon^S\Delta\ln P_i + \beta^{\text{Developed}} \Delta \ln P_i\times\text{Developed}_i + \\
 \beta^{\text{Unavail}} \Delta \ln P_i\times\text{Unavail}_i + \boldsymbol{\beta}\boldsymbol{X}_i^S + u^S_i\,,
 \end{aligned} 
 }\end{equation} where
-\(\beta^{\text{Developed}} \le 0\,, \beta^{\text{Unvail}}\le0\).Then,
+\(\beta^{\text{Developed}} \le 0\,, \beta^{\text{Unavail}}\le0\). Then,
 the elasticity is given by
 \(\varepsilon^S_i = \varepsilon^S + \beta^{\text{Developed}}\text{Developed}_i + \beta^{\text{Unavail}}\text{Unavail}_i\).
 
@@ -759,7 +786,7 @@ as the initial period (i.e., \(b=2008\)).
 The Bartik instrument used in the estimation is the predicted change in
 the logarithm of employment between the base period (2008) and the last
 (2019),
-\(\widehat{\Delta\ln L_i} = \sum_k{z_{ik_2008} \left(\ln L_{(i^\prime)k_2019}-\ln L_{(i^\prime)k_2008}\right)}\).
+\(\widehat{\Delta\ln L_i} = \sum_k{z_{ik_{2008}} \left(\ln L_{(i^\prime)k_{2019}}-\ln L_{(i^\prime)k_{2008}}\right)}\).
 
 \section{Data}\label{data}
 
@@ -772,7 +799,7 @@ Database.
 
 I use the RWI-GEO-Real Estate Data of the FDZ Ruhr at RWI
 \citep{rwi_redhk_2020} to construct quality-adjusted house
-prices.\footnote{The original data is provided by
+prices.\footnote{The original data are provided by
   \emph{ImmobilienScout24}, Germany's largest online platform for
   listing real estate (for both selling and renting houses and
   apartments). The house prices are self-reported offer prices by the
@@ -785,7 +812,7 @@ to quality-adjust house prices.
 
 I construct a mix-adjusted house price index from the following panel
 hedonic regression
-\begin{equation}\phantomsection\label{eq-hedonic-hse}{
+\begin{equation}\protect\phantomsection\label{eq-hedonic-hse}{
 \ln P_{hit} = \delta_{it} + \mathbf{X}_{hit}\boldsymbol{\beta} + e_{hit},
 }\end{equation} where \(h\) indexes houses, \(i\) districts and \(t\)
 years 2008-2019, \(P\) price of houses in euros per
@@ -796,7 +823,7 @@ includes a set of house characteristics.\footnote{House attributes
   of rooms, number of floors, number of bedrooms, number of bathrooms,
   type of the house, type of heating, years of construction and
   renovation, condition and facilities of the property, whether the
-  property has a basement, a guest washroom, is or in a protected
+  property has a basement, a guest washroom, is in or is a protected
   building, and is usable as a holiday house. The mix-adjusted house
   price index computation is based on the method described by
   \citet{ahlfeldt_etal_2020}.} In Equation~\ref{eq-hedonic-hse}, the
@@ -853,7 +880,7 @@ From the Corine Land Cover (CLC) Germany, compiled by the
 Remote Sensing Data Center (DFD) of DLR} and the
 \href{https://www.bkg.bund.de}{Federal Agency for Cartography and
 Geodesy (BKG)}, I calculated the exact share of land covered with
-wetlands and water bodies to measure land unavailability. More,
+wetlands and water bodies to measure land unavailability. Moreover,
 development intensity is constructed from the exact share of
 ``artificial surfaces'', a comprehensive land cover class that includes
 continuous and discontinuous urban fabric, defined by CLC.
@@ -869,17 +896,18 @@ as a development option. In other words, land already developed may not
 be regarded as undevelopable as it can be redeveloped. In this paper,
 already-developed land is not part of the undevelopable land. I use the
 land cover classes defined by
-\href{https://land.copernicus.eu/user-corner/technical-library/corine-land-cover-nomenclature-guidelines/html/index.html}{Corine
+\href{https://land.copernicus.eu/content/corine-land-cover-nomenclature-guidelines/html/}{Corine
 Land Cover (CLC)} that are relevant to Germany.
 
 The area with a slope greater than 15\% is defined over the district's
 total ``developable stock'' of land. I define the developable stock as
 the district's total administrative area, excluding the area covered
-with wetlands and water bodies. In other words, areas covered by forests
-or agriculture make up the developable stock. Note that developable
-stock does not exclude areas with a slope greater than 15\%. The
-fraction of area with a slope greater than 15\% is defined over this
-quantity, i.e., developable stock as a denominator.
+with wetlands and water bodies. In other words, areas covered by
+forests, agriculture, or artificial surfaces (which can be redeveloped)
+make up the developable stock. Note that developable stock does not
+exclude areas with a slope greater than 15\%. The fraction of area with
+a slope greater than 15\% is defined over this quantity, i.e.,
+developable stock as a denominator.
 
 More concisely, denoting the district's total administrative area by
 \(T\), developed land by \(T^{\text{artificial}}\), area covered by
@@ -887,7 +915,7 @@ wetland by \(T^{\text{wetland}}\), water bodies by \(T^{\text{water}}\),
 agriculture by \(T^{\text{agri}}\), and forests by
 \(T^{\text{forest}}\), then developable stock \(T^{\text{developable}}\)
 is given by \[
-T^{\text{developable}} = T - T^{\text{wetland}} - T^{\text{water}} = T^{\text{agri}}  + T^{\text{forest}}.
+T^{\text{developable}} = T - T^{\text{wetland}} - T^{\text{water}} = T^{\text{agri}}  + T^{\text{forest}} + T^{\text{artificial}}.
 \]
 
 Then, the fraction of developable land that is lost to steep slopes is
@@ -917,62 +945,63 @@ changes in housing demand is predicted employment, also known as Bartik
 or local labor demand shock. I use employment data decomposed by seven
 industries to construct this shock using the 2008 industry employment
 levels in German districts and the national industry-specific employment
-growth rates from 2008 to 2019. Labor demand shock is local employment
-growth in each district that would have resulted, given the district's
-industry composition in the initial period (2008), had employment in
-each industry developed over time (2008-2019) in the same way as at the
-national (Germany) level.
+growth rates from 2008 to 2019. The labor demand shock is the local
+employment growth in each district that would have resulted, given the
+district's industry composition in the initial period (2008), had
+employment in each industry developed over time (2008-2019) in the same
+way as at the national (Germany) level.
 
 Finally, other controls, including the price of land, population,
 income, and other socioeconomic control variables used in this study,
-are all obtained from the \citet{atlasde_2022}.
+are all obtained from \citet{atlasde_2022}.
 
 \section{Results}\label{results}
 
 \subsection{Descriptive analysis}\label{descriptive-analysis}
 
 As shown in Figure~\ref{fig-price-growth}, average prices of houses in
-Germany have significantly increased over the 2008-2019 time period
-across districts. In level terms, the average price of houses (of all
-types) was about €2,563 per m\textsuperscript{2} in 2008, which rose by
-about 32.2\% to about €3,388 per m\textsuperscript{2} in 2019.
-Single-family homes followed the same trend; the average price of
-single-family homes increased by about 28.9\%.\footnote{These house
-  prices are quality-adjusted, i.e., these are the hedonic values (as
-  discussed in Section~\ref{sec-hedonic-hse}). Additionally, prices are
-  adjusted for inflation using Germany's 2015 general Consumer Price
-  Index.} Variation in average house prices (measured by the standard
-deviation) across districts has significantly risen over this period.
-For all homes, the standard deviation of prices in €\(/m^2\) has
-increased by 84\%, from about 883 in 2008 to about 1,625 in 2019. For
-single-family homes, price variation has gone up by 78\%, from 991 in
-2008 to 1,760 in 2019.
+Germany have increased substantially over 2008-2019 across districts. In
+level terms, the average price of houses (of all types) was about €2,563
+per m\textsuperscript{2} in 2008, which rose by about 32.2\% to about
+€3,388 per m\textsuperscript{2} in 2019. Single-family homes followed
+the same trend; the average price of single-family homes increased by
+about 28.9\%.\footnote{These house prices are quality-adjusted, i.e.,
+  these are the hedonic values (as discussed in
+  Section~\ref{sec-hedonic-hse}). Additionally, prices are adjusted for
+  inflation using Germany's 2015 general Consumer Price Index.}
+Variation in average house prices (measured by the standard deviation)
+across districts has risen substantially over this period. For all
+homes, the standard deviation of prices in €\(/m^2\) has increased by
+84\%, from about 883 in 2008 to about 1,625 in 2019. For single-family
+homes, price variation has gone up by 78\%, from 991 in 2008 to 1,760 in
+2019.
 
 Across space, as shown in Figure~\ref{fig-spatial-pattern}, there has
 been high variation in the level and the growth of house prices,
 especially in and around big ``city-districts''. High-price places in
-2008, such as Berlin, Munich, and Hamburg, remained expensive also in
-2019 and experienced a higher house value appreciation. Urban districts
-have experienced relatively higher growth than their rural counterparts.
+2008, such as Berlin, Munich, and Hamburg, remained expensive in 2019
+and experienced higher house value appreciation. Urban districts have
+experienced relatively higher growth than their rural counterparts.
 Price levels have risen by about 34.5\% in urban and by 28.9\% in rural
-districts, on average, over the 2008-2019 time period. Prices of
-single-family homes have grown by about 30.7\% and 26.2\%, in urban and
-rural districts, respectively. In contrast, there has been little
-disparity along the West-East divide; house prices have risen by about
-32.4\% in the West and 30.7\% in the East districts. However, the growth
-of prices of single-family homes has been higher in the East German
-districts, by 32.5\%, while in the West districts by 28.3\%.
+districts, on average, over 2008-2019. Prices of single-family homes
+have grown by about 30.7\% and 26.2\%, in urban and rural districts,
+respectively. In contrast, there has been little disparity along the
+West-East divide; house prices have risen by about 32.4\% in the West
+and 30.7\% in the East districts. However, the growth of prices of
+single-family homes has been higher in the East German districts, by
+32.5\%, while in the West districts by 28.3\%.
 
 \begin{figure}
 
 \centering{
 
-\includegraphics{output/figs/fig-price-growth-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-price-growth-1.pdf}}
 
 }
 
 \caption{\label{fig-price-growth}The development of house prices in
 Germany.}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:} \(\ln P\) is the log
@@ -989,12 +1018,13 @@ homes. House prices are in 2015 prices. Data obtained from
 
 \centering{
 
-\includegraphics{output/figs/fig-spatial-pattern-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-spatial-pattern-1.pdf}}
 
 }
 
 \caption{\label{fig-spatial-pattern}Spatial trends: house prices across
 districts in Germany.}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:} This
@@ -1009,40 +1039,40 @@ prices. Data obtained from
 \end{figure}%
 
 In contrast, the growth of the residential housing supply has not been
-strong in Germany. In the 2008-2019 time period, in the average
-district, housing supply, measured by the stock of residential
-buildings, has grown by 6.74\%, and about twice higher growth has been
-recorded for single-family residential homes, 13.09\%. Urban districts
-have experienced relatively higher growth in housing supply, too, about
-6.9\% in urban and 6.5\% in rural districts. For the supply of
-single-family homes, 14.3\% and 11.6\% growth have been seen in urban
-and rural districts, respectively. On average, the housing supply in
-West German districts has grown by 7\%, whereas in East German districts
-it has grown by 5.7\%. The supply of single-family homes in West German
-districts has grown by 12.7\%, while in east districts by 15.1\%.
+strong in Germany. Over 2008-2019, housing supply in the average
+district, measured by the stock of residential buildings, has grown by
+6.74\%, and single-family residential homes have recorded about twice
+that growth (13.09\%). Urban districts have experienced relatively
+higher growth in housing supply, too, about 6.9\% in urban and 6.5\% in
+rural districts. For the supply of single-family homes, 14.3\% and
+11.6\% growth have been seen in urban and rural districts, respectively.
+On average, the housing supply in West German districts has grown by
+7\%, whereas in East German districts it has grown by 5.7\%. The supply
+of single-family homes in West German districts has grown by 12.7\%,
+while in east districts by 15.1\%.
 
 Figure~\ref{fig-price-quantity-growth} compares average log house prices
-and quantity growth over time. Growth in housing supply has not been
-stronger than the growth of house prices. Permits and completions data
+and quantity growth over time. Growth in housing supply has been much
+weaker than the growth of house prices. Permits and completions data
 support the slow development of the housing supply. New construction, in
 terms of permits and completions of residential buildings, as shown in
-Figure~\ref{fig-construction-activities}, has taken a gradual uptick
-since 2009. However, the levels of this period are far below the
-1995-2005 levels. On average, a district in 1995 permitted the
-construction of 517 residential buildings, of which 477 were completed
-in the following year. The net addition to housing stock, housing
-flow---level change in housing stock, was 479. The continuous decline of
-new building permits and completions from the late 1990s until 2009
-might show the increasing difficulty of building new houses in Germany
-over the decades.
+Figure~\ref{fig-construction-activities}, has gradually risen since
+2009. However, the levels of this period are far below those of the late
+1990s and early 2000s. On average, a district in 1995 permitted the
+construction of 517 residential buildings, and 477 buildings were
+completed in the following year. The net addition to the housing stock
+(the housing flow, i.e., the level change in the stock) was 479. The
+continuous decline of new building permits and completions from the late
+1990s until 2009 might show the increasing difficulty of building new
+houses in Germany over the decades.
 
 \begin{figure}
 
-\begin{minipage}{0.50\linewidth}
+\begin{minipage}[t]{0.50\linewidth}
 
 \centering{
 
-\includegraphics{output/figs/fig-price-quantity-growth-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-price-quantity-growth-1.pdf}}
 
 }
 
@@ -1051,11 +1081,11 @@ buildings}
 
 \end{minipage}%
 %
-\begin{minipage}{0.50\linewidth}
+\begin{minipage}[t]{0.50\linewidth}
 
 \centering{
 
-\includegraphics{output/figs/fig-price-quantity-growth-2.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-price-quantity-growth-2.pdf}}
 
 }
 
@@ -1065,6 +1095,7 @@ buildings}
 
 \caption{\label{fig-price-quantity-growth}The growth of house prices vs
 housing supply.}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:} This figure
@@ -1073,7 +1104,7 @@ the log of average housing supply (measured by residential buildings) in
 Germany by house type. Panel (A) displays growth rates (\%) for all
 types of residential buildings, including single-family buildings, and
 Panel (B) displays single-family buildings. The 2011 data points appear
-incorrect due to data inconsistency in connection to the 2011 German
+incorrect due to data inconsistency in connection with the 2011 German
 Census. The house price data are obtained from \citet{rwi_redhk_2020},
 and data for housing quantity measures are extracted from
 \citet{atlasde_2022}.
@@ -1086,12 +1117,13 @@ and data for housing quantity measures are extracted from
 
 \centering{
 
-\includegraphics{output/figs/fig-construction-activities-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-construction-activities-1.pdf}}
 
 }
 
 \caption{\label{fig-construction-activities}Construction activities,
 residential buildings.}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:} This
@@ -1146,11 +1178,11 @@ instrument and the growth of house prices.
 
 \begin{figure}
 
-\begin{minipage}{0.50\linewidth}
+\begin{minipage}[t]{0.50\linewidth}
 
 \centering{
 
-\includegraphics{output/figs/fig-first-stage-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-first-stage-1.pdf}}
 
 }
 
@@ -1158,11 +1190,11 @@ instrument and the growth of house prices.
 
 \end{minipage}%
 %
-\begin{minipage}{0.50\linewidth}
+\begin{minipage}[t]{0.50\linewidth}
 
 \centering{
 
-\includegraphics{output/figs/fig-first-stage-2.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-first-stage-2.pdf}}
 
 }
 
@@ -1172,6 +1204,7 @@ instrument and the growth of house prices.
 
 \caption{\label{fig-first-stage}The relevance of the Bartik
 instrument.}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:} This figure shows
@@ -1186,38 +1219,38 @@ pair for a district. The house prices data are obtained from
 
 \end{figure}%
 
-The instrument indicates that in the 2008-2019 time period, all of the
-districts would have experienced positive overall industry employment
-growth and hence housing demand had employment in each industry grown
+The instrument indicates that over 2008-2019, all of the districts would
+have experienced positive overall industry employment growth, and hence
+positive housing demand growth, had employment in each industry grown
 the same as at the national level.\footnote{In terms of the actual
   observed level of employment (\(\Delta\ln{ L_i}\)), 347 out of 401
   (86.5\%) districts have experienced positive employment growth.} Of
-these 401 districts with positive employment growth, 365 of them have
+these 401 districts with positive predicted employment growth, 365 have
 seen positive growth in house prices, and 380 in housing supply, and
-only 348 have experienced positive growth in both.\footnote{However, of
-  all 401 districts, 365 of them have seen positive growth in house
-  prices, and 380 in housing supply.} The fact that not all districts
-that have received positive growth in housing demand have experienced
-positive growth in housing supply may imply that changes in housing
-demand do not necessarily translate into a positive supply response.
-This demonstrates the relevance of estimating the housing supply
-elasticity because it helps us know whether demand growth is creating
-city growth or higher house prices. In other words, looking at the local
-housing supply conditions is essential to understand the differential
-outcome of demand growth. In Section~\ref{sec-district-heterogeneity}, I
-discuss why a (demand-driven) change in house prices may trigger a
-differential (positive) growth in housing supply across districts.
+only 348 have experienced positive growth in both. The fact that not all
+districts that have received positive growth in housing demand have
+experienced positive growth in housing supply may imply that changes in
+housing demand do not necessarily translate into a positive supply
+response. This demonstrates the relevance of estimating the housing
+supply elasticity because it helps us know whether demand growth is
+creating city growth or higher house prices. In other words, looking at
+the local housing supply conditions is essential to understand the
+differential outcome of demand growth. In
+Section~\ref{sec-district-heterogeneity}, I discuss why a
+(demand-driven) change in house prices may trigger a differential
+(positive) growth in housing supply across districts.
 
 \begin{figure}
 
 \centering{
 
-\includegraphics{output/figs/fig-quantity-vs-price-netted-out-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-quantity-vs-price-netted-out-1.pdf}}
 
 }
 
 \caption{\label{fig-quantity-vs-price-netted-out}The growth of the
 housing supply vs prices.}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:} This
@@ -1245,11 +1278,11 @@ change. Then, I plot housing supply growth (\(\Delta\ln H_i\)) against
 (the netted) price growth \(\widehat{\Delta\ln P_i}\). There is a higher
 variation in price growth than in supply growth. On average, supply
 growth has been less responsive to price growth; the slope coefficient
-is 0.14. That means, on average, a 1\% price growth is associated with a
+is 0.14. That is, on average, a 1\% price growth is associated with a
 0.14\% growth in the housing supply, which implies that the housing
-supply has been inelastic in Germany. This study aims to explore the
+supply has been inelastic in Germany. This study explores the
 disparities in the responsiveness of housing supply among districts. The
-data shows varying growth rates in housing supply and prices among
+data show varying growth rates in housing supply and prices among
 districts. By examining the reasons for this heterogeneity, we can
 better understand the variation in the housing supply elasticity across
 districts.
@@ -1262,16 +1295,16 @@ geographical constraints affect the housing supply elasticity. For
 instance, urban districts or cities have high existing built-ups, i.e.,
 a larger fraction of their land is already developed. This creates a
 physical constraint for new development or redevelopment. As a result,
-highly developed or dense cities may not respond, to a certain change in
-housing demand, as much as growing and scarcely populated rural
+highly developed or dense cities may not respond to a given change in
+housing demand as much as growing and scarcely populated rural
 districts---which usually have relatively lower levels of existing land
 development (thus have more land for new construction). This is what the
-data, as well as the empirical results, show. In 2006, the data
-available close to the initial period of the study (i.e., 2008), the
-average level of development intensity, measured by the fraction of land
-that is already developed, was 0.16 (see Section~\ref{sec-constraints}).
-Urban districts had a higher level of land development (0.24), on
-average, as compared to the rural districts' (0.09) (see
+data, as well as the empirical results, show. In 2006 (the closest year
+with available data to the study's initial period, 2008), the average
+level of development intensity, measured by the fraction of land that is
+already developed, was 0.16 (see Section~\ref{sec-constraints}). Urban
+districts had a higher level of land development (0.24), on average, as
+compared to the rural districts' (0.09) (see
 Figure~\ref{fig-developed-fraction-histogram}). Thus, this development
 intensity heterogeneity might explain the variation in the housing
 supply elasticity across districts.
@@ -1290,18 +1323,18 @@ close to the Alps and the north close to the coast, land
 undevelopability is small in most districts. Thus, one may expect this
 variable to be insignificant in explaining Germany's housing supply
 elasticity. The average land undevelopability was less than 10\% (0.08)
-in 2006, and about 0.6683292 of the districts have a value below it. A
-few extreme cases are Berchtesgadener Land and Garmisch-Partenkirchen,
+in 2006, and about 66.8\% of the districts have a value below it. A few
+extreme cases are Berchtesgadener Land and Garmisch-Partenkirchen,
 Bavarian districts known for ski resorts, with over 60\% of their land
 being undevelopable.
 
 \begin{figure}
 
-\begin{minipage}{0.50\linewidth}
+\begin{minipage}[t]{0.50\linewidth}
 
 \centering{
 
-\includegraphics{output/figs/fig-scatter-supply-constraints-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-scatter-supply-constraints-1.pdf}}
 
 }
 
@@ -1309,11 +1342,11 @@ being undevelopable.
 
 \end{minipage}%
 %
-\begin{minipage}{0.50\linewidth}
+\begin{minipage}[t]{0.50\linewidth}
 
 \centering{
 
-\includegraphics{output/figs/fig-scatter-supply-constraints-2.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-scatter-supply-constraints-2.pdf}}
 
 }
 
@@ -1323,6 +1356,7 @@ being undevelopable.
 
 \caption{\label{fig-scatter-supply-constraints}Housing supply growth vs
 housing supply constraints.}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:}
@@ -1393,18 +1427,18 @@ Table~\ref{tbl-iv-main-results-checked}, I control for districts' levels
 of development intensity in 2006 by interacting it with \(\Delta\ln P\).
 For the average development intensity of 16.08\%, the housing supply
 elasticity is 0.22. Moving within the interquartile range of development
-intensity (5.4\%-23.0\%), lowers the floorspace elasticity from 0.27 to
+intensity (5.4\%-23.0\%) lowers the floorspace elasticity from 0.27 to
 0.19\footnote{That is computed as
   (\(\widehat{\varepsilon_i} = \widehat{\varepsilon} + \widehat{\beta}^{\text{Developed}}\cdot\text{Developed}_i = 0.3 -0.46 \cdot\text{Developed}_i = (0.27, 0.19)\)).},
-that is a 42\% difference in the housing supply elasticity.
+a difference of 42\% relative to the lower estimate.
 
 \begin{figure}
 
-\begin{minipage}{0.50\linewidth}
+\begin{minipage}[t]{0.50\linewidth}
 
 \centering{
 
-\includegraphics{output/figs/fig-supply-constraints-elasticity-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-supply-constraints-elasticity-1.pdf}}
 
 }
 
@@ -1412,11 +1446,11 @@ that is a 42\% difference in the housing supply elasticity.
 
 \end{minipage}%
 %
-\begin{minipage}{0.50\linewidth}
+\begin{minipage}[t]{0.50\linewidth}
 
 \centering{
 
-\includegraphics{output/figs/fig-supply-constraints-elasticity-2.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-supply-constraints-elasticity-2.pdf}}
 
 }
 
@@ -1428,6 +1462,7 @@ land}
 \caption{\label{fig-supply-constraints-elasticity}Housing supply
 constraints and housing supply
 elasticity.}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:} This figure shows
@@ -1455,20 +1490,20 @@ coefficient \(\widehat{\beta}^{\text{Unavail}}\) (see column (3) of
 Table~\ref{tbl-iv-main-results-checked} and
 Figure~\ref{fig-supply-constraints-elasticity}). Controlling for the
 level of land unavailability (\(\text{Unavail}\)), the estimated
-floorspace elasticity does not change, 0.232.\footnote{This is computed
+floorspace elasticity does not change (0.232).\footnote{This is computed
   as
   \(\widehat{\varepsilon_i} =\widehat{\varepsilon} + \widehat{\beta}^{\text{Unavail}}\cdot\text{Unavail}_i = 0.23\),
   because \(\widehat{\beta}^{\text{Unavail}}\) is insignificant.} As
 compared to the constant elasticity case
-(\(\widehat{\varepsilon}=0.221\)), the difference is negligible
-(-0.011). This may imply that land unavailability does not lower the
-housing supply elasticity. This is consistent with the low variation in
-land unavailability across districts; the average land unavailability
-(0.08) is small. Thus, there is no clear pattern that land
-unavailability lowers the housing supply elasticity in Germany.
+(\(\widehat{\varepsilon}=0.221\)), the difference is negligible (0.011).
+This may imply that land unavailability does not lower the housing
+supply elasticity. This is consistent with the low variation in land
+unavailability across districts; the average land unavailability (0.08)
+is small. Thus, there is no clear pattern that land unavailability
+lowers the housing supply elasticity in Germany.
 
 Finally, the above two steps are combined, corresponding to estimating
-\(\varepsilon_i\) in Equation~\ref{eq-case-4} and amplifying both
+\(\varepsilon_i\) in Equation~\ref{eq-case-4} and allowing for both
 constraints' impact on the housing supply elasticity. As shown in column
 (4) of Table~\ref{tbl-iv-main-results-checked}, at the mean value of
 \(\text{Developed}\), the estimate for the housing supply elasticity is
@@ -1486,22 +1521,22 @@ constrains the housing supply elasticity, while land undevelopability
 due to restrictive geography has no significant impact. Comparing the
 estimated coefficients on the respective interaction terms (see
 Table~\ref{tbl-iv-main-results-checked}) shows that development
-intensity has an about 0.46 negative impact in mediating the response of
-housing supply growth to price growth
-(\(\widehat{\beta}^{\text{Developed}} = -0.46\)). Land development
-intensity ranges between (0.02, 0.81), as a result, the housing supply
-elasticity estimate ranges between (0.3, -0.07). As the left panel in
-Figure~\ref{fig-distributions-elasticity-constraints} shows, the higher
-variation in the share of developed land (with a standard deviation of
-0.16) translates into variations in the housing supply elasticity.
+intensity lowers the response of housing supply growth to price growth
+by about 0.46 (\(\widehat{\beta}^{\text{Developed}} = -0.46\)). Land
+development intensity ranges from 0.02 to 0.81; as a result, the housing
+supply elasticity estimate ranges from 0.3 to -0.07. As the left panel
+in Figure~\ref{fig-distributions-elasticity-constraints} shows, the
+higher variation in the share of developed land (with a standard
+deviation of 0.16) translates into variations in the housing supply
+elasticity.
 
 \begin{figure}
 
-\begin{minipage}{0.50\linewidth}
+\begin{minipage}[t]{0.50\linewidth}
 
 \centering{
 
-\includegraphics{output/figs/fig-distributions-elasticity-constraints-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-distributions-elasticity-constraints-1.pdf}}
 
 }
 
@@ -1510,11 +1545,11 @@ supply constraints}
 
 \end{minipage}%
 %
-\begin{minipage}{0.50\linewidth}
+\begin{minipage}[t]{0.50\linewidth}
 
 \centering{
 
-\includegraphics{output/figs/fig-distributions-elasticity-constraints-2.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-distributions-elasticity-constraints-2.pdf}}
 
 }
 
@@ -1526,6 +1561,7 @@ supply elasticity}
 \caption{\label{fig-distributions-elasticity-constraints}Housing supply
 constraints and elasticity
 heterogeneities.}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:} This figure
@@ -1545,26 +1581,26 @@ Table~\ref{tbl-iv-main-results-checked}.
 
 While the existing literature presents strong evidence about the impact
 of housing supply constraints on house prices and housing supply
-elasticities in the US housing market, the literature needs to be more
-comprehensive about other markets. Therefore, this paper attempts to
+elasticities in the US housing market, the literature is less
+comprehensive for other markets. Therefore, this paper attempts to
 highlight the unique characteristics of the German housing market
 concerning housing supply constraints and elasticity.
 
-According to the data, house prices grew by more than 5 times higher
-than that of housing supply, 32.2\%, 6.74\%, respectively, in the
-2008-2019 period. Although this period has seen a growth in new housing
-construction, the levels are far below those of the early 1990s. As this
-growth imbalance suggests, Germany's housing supply is quite inelastic.
-Moreover, housing supply constraints tend to lower the housing supply
-elasticity, consistent with the literature, despite the small variations
-of topological constraints across districts. More precisely, districts
-with less built-up, and more flat and developable land, have a less
-inelastic housing supply. Land use regulations are a crucial component
-of supply constraints. The strong negative impact of these regulations
-on housing supply and elasticity is well-documented (see
+According to the data, house prices grew almost 5 times as fast as
+housing supply (32.2\% versus 6.74\%) over 2008-2019. Although this
+period has seen a growth in new housing construction, the levels are far
+below those of the late 1990s and early 2000s. As this growth imbalance
+suggests, Germany's housing supply is quite inelastic. Moreover, housing
+supply constraints tend to lower the housing supply elasticity,
+consistent with the literature, despite the small variations of
+topographical constraints across districts. More precisely, districts
+with less built-up land and more flat, developable land have a more
+elastic housing supply. Land use regulations are a crucial component of
+supply constraints. The strong negative impact of these regulations on
+housing supply and elasticity is well-documented (see
 \citet{glaeser_gyourko_2005}, \citet{saiz_2010},
 \citet{baum-snow_han_2019}). However, this paper's supply constraints
-are limited to topographical constraints due to the need for
+are limited to topographical constraints due to the lack of
 administrative land use regulation data. Future research could help us
 understand the stringency of land use regulation in Germany and its
 impact on house prices and housing supply.
@@ -1600,7 +1636,7 @@ function}\label{sec-hs-appendix}
 A competitive developer combines a fixed amount of land \(\overline{T}\)
 and non-land inputs \(K\), which I simply call capital, to produce
 housing \(H\) via a Cobb-Douglas technology:
-\begin{equation}\phantomsection\label{eq-cobb-appendix}{
+\begin{equation}\protect\phantomsection\label{eq-cobb-appendix}{
 H = H(A, \overline{T}, K) = A \overline{T}^{\alpha} K^{1-\alpha},
 }\end{equation} where \(\alpha \in (0, 1)\). \(A\) captures supply
 heterogeneity across parcels due to local labor costs, productivity,
@@ -1659,7 +1695,7 @@ H(K^*(P(x), \overline{T}, A)) &= A \overline{T}^\alpha_i \left(K^*(P(x), \overli
 \]
 
 In log-linear form,
-\begin{equation}\phantomsection\label{eq-hs-appendix}{
+\begin{equation}\protect\phantomsection\label{eq-hs-appendix}{
 \begin{aligned}
 \ln H^S(P(x), A, \overline{T}) &= \ln \mu + \frac{1}{\alpha}\ln A + \underbrace{\Bigl(\frac{1-\alpha}{\alpha}\Bigr)}_{\varepsilon}\ln P(x) + \ln \overline{T}.
 \end{aligned}
@@ -1680,7 +1716,8 @@ developed land in \(i\) is defined as
 implicit \textbf{district-level aggregate housing supply function}
 \(S_i(P_i(x))\) can be defined as the product of (average)
 \textbf{housing supply per parcel} and the \textbf{stock of developed
-land:} \begin{equation}\phantomsection\label{eq-agg-hs-appendix}{
+land:}
+\begin{equation}\protect\phantomsection\label{eq-agg-hs-appendix}{
 \begin{aligned}
 S_i(P_i) = H_i^S(P_i, A_i)\cdot \mathcal{T}_{i}(P_i)\\ 
 \ln S_i(P_i) = \Bigl[\ln \mu_i + \frac{1}{\alpha}\ln A_i + \varepsilon\ln P_i \Bigr]+ \Bigl[\ln\Lambda_i(P_i) + \ln\mathcal{L_i}\Bigr]
@@ -1688,7 +1725,7 @@ S_i(P_i) = H_i^S(P_i, A_i)\cdot \mathcal{T}_{i}(P_i)\\
 }\end{equation}
 
 Now I can derive the housing supply elasticity,
-\begin{equation}\phantomsection\label{eq-elasticity-appendix}{
+\begin{equation}\protect\phantomsection\label{eq-elasticity-appendix}{
 \begin{aligned}
 \varepsilon^S_{i} \equiv \frac{\partial \ln S_{i}\left(P_{i}\right)}{\partial \ln P_{i}}&=\frac{d \ln H^S_{i}\left(P_{i}\right)}{\partial \ln P_{i}}+ \frac{\partial \ln \mathcal{T}_{i}\left(P_{i}\right)}{\partial \ln P_{i}} \\
 &= \varepsilon + \frac{\partial \ln\Lambda_i(P_i)}{\partial \ln P_i},
@@ -1803,12 +1840,13 @@ Results: Housing Supply Elasticity Estimates}
 
 \centering{
 
-\includegraphics{output/figs/fig-quantity-growth-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-quantity-growth-1.pdf}}
 
 }
 
 \caption{\label{fig-quantity-growth}The total building stock in Germany
 (annual change).}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:} This figure
@@ -1825,12 +1863,13 @@ types, including ``single-family'' homes. The data are obtained from
 
 \centering{
 
-\includegraphics{output/figs/fig-price-variation-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-price-variation-1.pdf}}
 
 }
 
 \caption{\label{fig-price-variation}The house price variability across
 districts in Germany.}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:} This
@@ -1849,12 +1888,13 @@ are obtained from
 
 \centering{
 
-\includegraphics{output/figs/fig-developed-fraction-histogram-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-developed-fraction-histogram-1.pdf}}
 
 }
 
 \caption{\label{fig-developed-fraction-histogram}Land development in
 rural vs urban districts.}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:} This
@@ -1872,12 +1912,13 @@ land.
 
 \centering{
 
-\includegraphics{output/figs/fig-developed-fraction-growth-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-developed-fraction-growth-1.pdf}}
 
 }
 
 \caption{\label{fig-developed-fraction-growth}The distribution of land
 development growth: 2006-2018.}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:}
@@ -1895,13 +1936,14 @@ urban districts.
 
 \centering{
 
-\includegraphics{output/figs/fig-predicted-vs-actual-labor-demand-shock-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/fig-predicted-vs-actual-labor-demand-shock-1.pdf}}
 
 }
 
 \caption{\label{fig-predicted-vs-actual-labor-demand-shock}Correlation
 between the predicted and the actual employment
 growth.}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:} The figure compares
@@ -1919,12 +1961,13 @@ study. Employment data are sourced from
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{output/figs/developable-land.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{output/figs/developable-land.png}
 
 }
 
 \caption{\label{fig-developable-land}Developable land in
 Germany.}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:} This figure shows the
@@ -1947,12 +1990,13 @@ Geodesy (BKG)}.
 
 \centering{
 
-\includegraphics[width=7.5in,height=\textheight]{output/figs/undevelopable-land.png}
+\pandocbounded{\includegraphics[keepaspectratio]{output/figs/undevelopable-land.png}}
 
 }
 
 \caption{\label{fig-undevelopable-land}Undevelopable
 land.}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:} This figure shows the
@@ -1973,12 +2017,13 @@ Geodesy (BKG)}.
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{output/figs/developed-land.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{output/figs/developed-land.png}
 
 }
 
 \caption{\label{fig-developed-land}Developed
 land.}
+\vspace{10pt}
 \begin{minipage}{0.975\textwidth}
 \small
 \emph{Notes:} This figure shows the
@@ -1998,6 +2043,8 @@ Geodesy (BKG)}.
 
 % \end{bibunit}
 
+
+\nocite{bbsr_2021}
 
 
 

@@ -39,7 +39,7 @@ source("script/constraints/compute_supply_constraints.R")
 # 7 ----
 ## Bartik shocks
 source("script/cleaning/clean_employment_data.R")
-source("script/compute_Bartik_shocks.R")
+source("script/compute_bartik_shocks.R")
 
 # 8 -----
 source("script/merge_datasets.R")
